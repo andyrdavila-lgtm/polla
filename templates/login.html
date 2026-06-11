@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Iniciar Sesión · Polla Mundialista 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --y:   #F5C400;
+    --b:   #0A2FA8;
+    --r:   #D0021B;
+    --dk:  #060D1F;
+    --mid: #0D1A3A;
+    --s1:  #111C38;
+    --s2:  #162040;
+    --brd: rgba(255,255,255,0.08);
+    --tx:  rgba(255,255,255,0.92);
+    --txm: rgba(255,255,255,0.55);
+    --txd: rgba(255,255,255,0.30);
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--dk);
+    color: var(--tx);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  /* ── BG ── */
+  .bg-wrap {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 55% 70% at 80% 20%, rgba(10,47,168,0.22) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 55% at 10% 85%, rgba(208,2,27,0.14) 0%, transparent 55%),
+      var(--dk);
+  }
+  .bg-wrap::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(245,196,0,0.05) 1px, transparent 1px);
+    background-size: 52px 52px;
+    animation: gridDrift 30s linear infinite;
+  }
+  @keyframes gridDrift { to { background-position: 52px 52px; } }
+
+  /* ── EC STRIPE (decorativa) ── */
+  .ec-stripe {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 3px;
+    background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
+  }
+
+  /* ── NAV MINI ── */
+  nav {
+    position: relative; z-index: 10;
+    display: flex; justify-content: center;
+    padding: 1.5rem 2rem 0;
+  }
+  .nav-logo {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 1rem; font-weight: 600; letter-spacing: 0.02em;
+    color: var(--tx); text-decoration: none;
+    background: rgba(6,13,31,0.7);
+    backdrop-filter: blur(12px);
+    padding: 0.6rem 1.4rem;
+    border-radius: 60px;
+    border: 1px solid var(--brd);
+  }
+  .nav-ball {
+    font-size: 1.2rem;
+    animation: spin 5s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── LOGIN CONTAINER ── */
+  .login-container {
+    position: relative; z-index: 2;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem 3rem;
+  }
+
+  .login-card {
+    background: var(--s1);
+    border: 1px solid var(--brd);
+    border-radius: 32px;
+    padding: 2.2rem 2rem;
+    width: 100%;
+    max-width: 460px;
+    backdrop-filter: blur(8px);
+    transition: transform 0.3s, border-color 0.3s;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  }
+  .login-card:hover {
+    border-color: rgba(245,196,0,0.35);
+    transform: translateY(-3px);
+  }
+
+  /* Header */
+  .login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .login-icon {
+    font-size: 3rem;
+    margin-bottom: 0.6rem;
+    display: inline-block;
+  }
+  .login-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.06em;
+    color: var(--y);
+  }
+  .login-header p {
+    font-size: 0.8rem;
+    color: var(--txm);
+    margin-top: 0.4rem;
+  }
+
+  /* Form */
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  .form-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--txm);
+    margin-bottom: 0.5rem;
+  }
+  .form-label i {
+    margin-right: 0.4rem;
+    color: var(--y);
+  }
+  .input-wrapper {
+    position: relative;
+  }
+  .form-control {
+    width: 100%;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--brd);
+    border-radius: 16px;
+    padding: 0.9rem 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: var(--tx);
+    transition: all 0.2s;
+  }
+  .form-control:focus {
+    outline: none;
+    border-color: var(--y);
+    background: rgba(0,0,0,0.5);
+    box-shadow: 0 0 0 3px rgba(245,196,0,0.1);
+  }
+  .form-control::placeholder {
+    color: var(--txd);
+  }
+
+  /* Toggle password */
+  .toggle-pw {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--txm);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: color 0.2s;
+  }
+  .toggle-pw:hover { color: var(--y); }
+
+  /* Checkbox */
+  .form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.8rem;
+  }
+  .form-check input {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--y);
+    cursor: pointer;
+  }
+  .form-check label {
+    font-size: 0.8rem;
+    color: var(--txm);
+    cursor: pointer;
+  }
+
+  /* Button */
+  .btn-login {
+    width: 100%;
+    background: var(--y);
+    border: none;
+    border-radius: 60px;
+    padding: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dk);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 1.5rem;
+  }
+  .btn-login::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.3);
+    transform: translateX(-110%) skewX(-15deg);
+    transition: transform 0.4s ease;
+  }
+  .btn-login:hover::before { transform: translateX(110%) skewX(-15deg); }
+  .btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(245,196,0,0.35);
+  }
+  .btn-login:active { transform: scale(0.97); }
+  .btn-login:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Enlaces */
+  .text-center {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--txm);
+  }
+  .text-center a {
+    color: var(--y);
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.2s;
+  }
+  .text-center a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    margin-top: 0.8rem;
+  }
+  .divider-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--y), transparent);
+    width: 80px;
+    margin: 1rem auto 0;
+    border-radius: 2px;
+  }
+
+  /* Alertas */
+  .alert {
+    padding: 0.8rem 1rem;
+    border-radius: 14px;
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid transparent;
+  }
+  .alert-danger {
+    background: rgba(208,2,27,0.12);
+    border-color: rgba(208,2,27,0.4);
+    color: #ff7a7a;
+  }
+  .alert-success {
+    background: rgba(10,47,168,0.12);
+    border-color: rgba(10,47,168,0.3);
+    color: #8bb5ff;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(14px);
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--s1);
+    border: 1px solid rgba(245,196,0,0.3);
+    border-radius: 28px;
+    max-width: 460px;
+    width: 100%;
+    overflow: hidden;
+    animation: fadeUp 0.3s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--brd);
+  }
+  .modal-header h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    color: var(--y);
+  }
+  .modal-close {
+    background: rgba(255,255,255,0.07);
+    border: none;
+    color: var(--tx);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background 0.2s;
+  }
+  .modal-close:hover { background: var(--r); }
+  .modal-body {
+    padding: 1.5rem;
+  }
+  .modal-body p {
+    font-size: 0.85rem;
+    color: var(--txm);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+  .modal-input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--brd);
+    border-radius: 14px;
+    color: var(--tx);
+    margin-bottom: 1rem;
+  }
+  .modal-input:focus {
+    outline: none;
+    border-color: var(--y);
+  }
+  .modal-buttons {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: flex-end;
+  }
+  .modal-btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 40px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+  .modal-btn-primary {
+    background: var(--y);
+    color: var(--dk);
+  }
+  .modal-btn-primary:hover { opacity: 0.85; transform: scale(0.98); }
+  .modal-btn-secondary {
+    background: rgba(255,255,255,0.08);
+    color: var(--tx);
+    border: 1px solid var(--brd);
+  }
+  .modal-btn-secondary:hover { background: rgba(255,255,255,0.12); }
+  .reset-message {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+
+  /* Spinner */
+  .spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(0,0,0,0.2);
+    border-top-color: var(--dk);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin-right: 0.4rem;
+  }
+
+  /* Footer */
+  footer {
+    position: relative; z-index: 2;
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.7rem;
+    color: var(--txd);
+    border-top: 1px solid var(--brd);
+    margin-top: auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 500px) {
+    .login-card { padding: 1.8rem 1.3rem; }
+    .btn-login { font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-wrap"></div>
+<div class="ec-stripe"></div>
+
+<!-- Mini nav solo con logo -->
+<nav>
+  <a class="nav-logo" href="{{ url_for('index') }}">
+    <span class="nav-ball">⚽</span> Polla Mundialista 2026
+  </a>
+</nav>
+
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-icon">⚽</div>
+      <h2>POLLA MUNDIALISTA 2026</h2>
+      <p>Ingresa con tus credenciales</p>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <form id="loginForm" method="POST" action="{{ url_for('login') }}">
+      <div class="form-group">
+        <label class="form-label"><i class="icon">👤</i> USUARIO O EMAIL</label>
+        <input type="text" name="username" id="username" class="form-control" 
+               placeholder="ej: juan.perez o juan@ejemplo.com" autofocus required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><i class="icon">🔒</i> CONTRASEÑA</label>
+        <div class="input-wrapper">
+          <input type="password" name="password" id="password" class="form-control" 
+                 placeholder="Ingresa tu contraseña" required>
+          <button type="button" class="toggle-pw" id="togglePassword">
+            👁
+          </button>
+        </div>
+      </div>
+
+      <div class="form-check">
+        <input type="checkbox" id="remember">
+        <label for="remember">Recordarme en este equipo</label>
+      </div>
+
+      <button type="submit" class="btn-login" id="loginBtn">
+        <i class="icon">⚡</i> INICIAR SESIÓN
+      </button>
+
+      <div class="text-center">
+        <a href="#" id="forgotLink">¿Olvidaste tu contraseña?</a>
+      </div>
+      <div class="footer-links">
+        <a href="https://forms.gle/jUFFNYxYd2NJDjKr9" target="_blank" id="registerLink">
+          ✨ Regístrate aquí
+        </a>
+      </div>
+      <div class="divider-line"></div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL RECUPERAR CONTRASEÑA -->
+<div id="resetModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>🔐 Recuperar contraseña</h3>
+      <button class="modal-close" id="closeModalBtn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>Ingresa tu nombre de usuario o correo electrónico y te enviaremos un enlace para restablecer tu contraseña.</p>
+      <input type="text" id="resetEmail" class="modal-input" placeholder="Usuario o email" autocomplete="off">
+      <div id="resetMessage" class="reset-message"></div>
+      <div class="modal-buttons">
+        <button class="modal-btn modal-btn-secondary" id="cancelResetBtn">Cancelar</button>
+        <button class="modal-btn modal-btn-primary" id="sendResetBtn">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div>© 2026 Polla Mundialista 2026 — Todos los derechos reservados</div>
+</footer>
+
+<script>
+  // ==================== UTILIDADES ====================
+  function showAlert(message, type = 'danger') {
+    const container = document.getElementById('alertContainer');
+    container.innerHTML = `
+      <div class="alert alert-${type}">
+        <span>${type === 'danger' ? '⚠️' : '✅'}</span>
+        <span>${message}</span>
+      </div>
+    `;
+    setTimeout(() => {
+      container.innerHTML = '';
+    }, 5000);
+  }
+
+  // Toggle contraseña
+  const toggleBtn = document.getElementById('togglePassword');
+  const passwordField = document.getElementById('password');
+  toggleBtn.addEventListener('click', () => {
+    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordField.setAttribute('type', type);
+    toggleBtn.textContent = type === 'password' ? '👁' : '🙈';
+  });
+
+  // Recordar usuario (localStorage)
+  const rememberCheck = document.getElementById('remember');
+  const usernameInput = document.getElementById('username');
+
+  if (localStorage.getItem('rememberedUser')) {
+    usernameInput.value = localStorage.getItem('rememberedUser');
+    rememberCheck.checked = true;
+  }
+
+  // Validación y envío del formulario (mejora UX)
+  const loginForm = document.getElementById('loginForm');
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = usernameInput.value.trim();
+    const password = passwordField.value;
+
+    if (username.length < 2) {
+      showAlert('El usuario debe tener al menos 2 caracteres', 'danger');
+      return;
+    }
+    if (password.length === 0) {
+      showAlert('Ingresa tu contraseña', 'danger');
+      return;
+    }
+
+    // Guardar recordar usuario
+    if (rememberCheck.checked) {
+      localStorage.setItem('rememberedUser', username);
+    } else {
+      localStorage.removeItem('rememberedUser');
+    }
+
+    const btn = document.getElementById('loginBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner"></span> Ingresando...';
+    btn.disabled = true;
+
+    try {
+      const response = await fetch('{{ url_for('login') }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          username: username,
+          password: password
+        })
+      });
+      const data = await response.json();
+      if (data.success) {
+        window.location.href = "{{ url_for('dashboard') }}";
+      } else {
+        showAlert(data.error || 'Credenciales incorrectas', 'danger');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    } catch (error) {
+      showAlert('Error de conexión. Intenta de nuevo.', 'danger');
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
+  });
+
+  // ==================== MODAL RECUPERAR ====================
+  const modal = document.getElementById('resetModal');
+  const forgotLink = document.getElementById('forgotLink');
+  const closeModal = document.getElementById('closeModalBtn');
+  const cancelReset = document.getElementById('cancelResetBtn');
+  const sendReset = document.getElementById('sendResetBtn');
+  const resetEmailInput = document.getElementById('resetEmail');
+  const resetMessageDiv = document.getElementById('resetMessage');
+
+  function openModal() {
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    resetEmailInput.value = '';
+    resetMessageDiv.innerHTML = '';
+  }
+  function closeModalFunc() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  forgotLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal();
+  });
+  closeModal.addEventListener('click', closeModalFunc);
+  cancelReset.addEventListener('click', closeModalFunc);
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModalFunc();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModalFunc();
+  });
+
+  sendReset.addEventListener('click', async () => {
+    const emailOrUser = resetEmailInput.value.trim();
+    if (!emailOrUser) {
+      resetMessageDiv.innerHTML = '<span style="color:#ff7a7a;">⚠️ Ingresa tu usuario o email</span>';
+      return;
+    }
+    resetMessageDiv.innerHTML = '<span style="color:var(--y);">⏳ Enviando...</span>';
+    try {
+      const response = await fetch('/api/recuperar-contrasena', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email_or_user: emailOrUser })
+      });
+      const data = await response.json();
+      if (data.success) {
+        resetMessageDiv.innerHTML = '<span style="color:#8bb5ff;">✅ ' + (data.message || 'Revisa tu correo') + '</span>';
+        setTimeout(() => closeModalFunc(), 2500);
+      } else {
+        resetMessageDiv.innerHTML = '<span style="color:#ff7a7a;">❌ ' + (data.message || 'Error al enviar') + '</span>';
+      }
+    } catch (err) {
+      resetMessageDiv.innerHTML = '<span style="color:#ff7a7a;">❌ Error de conexión</span>';
+    }
+  });
+</script>
+</body>
+</html>
