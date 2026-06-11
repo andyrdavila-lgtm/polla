@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Iniciar Sesión - Polla Mundialista DGA 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&family=Barlow+Condensed:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --ec-yellow: #FFD100;
+            --ec-blue:   #003580;
+            --ec-red:    #CC0001;
+            --ec-dark:   #001a40;
+            --ec-mid:    #002a66;
+            --ec-green:  #1a6b1a;
+            --white:     #ffffff;
+            --off-white: #f4f1e8;
+            --gold:      #c8920a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Barlow', sans-serif;
+            background: var(--ec-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(ellipse at 20% 0%, rgba(0,53,128,0.6) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 100%, rgba(26,107,26,0.4) 0%, transparent 60%),
+                        var(--ec-dark);
+            pointer-events: none;
+        }
+        
+        .bg-canvas::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255,209,0,0.06) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridDrift 25s linear infinite;
+        }
+        
+        @keyframes gridDrift {
+            to { background-position: 60px 60px; }
+        }
+
+        /* Floating balls */
+        .floater {
+            position: fixed;
+            z-index: 0;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            opacity: 0.18;
+            animation: floatBall 18s ease-in-out infinite;
+        }
+        
+        .floater-1 { background: var(--ec-yellow); top: -80px; left: -80px; animation-delay: 0s; }
+        .floater-2 { background: var(--ec-blue); bottom: 10%; right: -100px; animation-delay: -6s; }
+        .floater-3 { background: var(--ec-red); top: 50%; left: 40%; animation-delay: -12s; width: 200px; height: 200px; }
+        
+        @keyframes floatBall {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -40px) scale(1.1); }
+            66% { transform: translate(-20px, 30px) scale(0.9); }
+        }
+
+        /* Login Container */
+        .login-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* Login Card */
+        .login-card {
+            background: rgba(0, 26, 64, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 209, 0, 0.25);
+            border-radius: 32px;
+            padding: 48px 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            animation: slideUp 0.6s ease;
+            max-width: 480px;
+            width: 100%;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        
+        .login-card:hover {
+            border-color: rgba(255, 209, 0, 0.5);
+            transform: translateY(-4px);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Header */
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .login-header i {
+            font-size: 64px;
+            color: var(--ec-yellow);
+            margin-bottom: 16px;
+            animation: spin 4s linear infinite;
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .login-header h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            letter-spacing: 0.06em;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+        
+        .login-header p {
+            font-family: 'Barlow', sans-serif;
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.6);
+            display: block;
+            margin-bottom: 8px;
+        }
+        
+        .form-label i {
+            margin-right: 8px;
+            color: var(--ec-yellow);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            font-family: 'Barlow', sans-serif;
+            font-size: 16px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 16px;
+            color: var(--white);
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--ec-yellow);
+            background: rgba(255,255,255,0.12);
+            box-shadow: 0 0 0 3px rgba(255,209,0,0.1);
+        }
+        
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+
+        /* Password wrapper */
+        .password-wrapper {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: rgba(255,255,255,0.5);
+            transition: color 0.3s;
+            background: transparent;
+            border: none;
+            font-size: 16px;
+        }
+        
+        .toggle-password:hover {
+            color: var(--ec-yellow);
+        }
+
+        /* Checkbox */
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--ec-yellow);
+        }
+        
+        .form-check-label {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+        }
+
+        /* Button */
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--ec-dark);
+            background: var(--ec-yellow);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 24px;
+        }
+        
+        .btn-login::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.3);
+            transform: translateX(-110%) skewX(-15deg);
+            transition: transform 0.4s ease;
+        }
+        
+        .btn-login:hover::before {
+            transform: translateX(110%) skewX(-15deg);
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(255,209,0,0.35);
+        }
+        
+        .btn-login:active {
+            transform: scale(0.97);
+        }
+        
+        .btn-login:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-login i {
+            margin-right: 10px;
+        }
+
+        /* Alert */
+        .alert {
+            padding: 14px 18px;
+            border-radius: 16px;
+            font-family: 'Barlow', sans-serif;
+            font-size: 14px;
+            margin-bottom: 24px;
+            border: 1px solid;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alert-danger {
+            background: rgba(204,0,1,0.15);
+            border-color: rgba(204,0,1,0.5);
+            color: #ff6b6b;
+        }
+        
+        .alert-success {
+            background: rgba(26,107,26,0.15);
+            border-color: rgba(26,107,26,0.5);
+            color: #90EE90;
+        }
+
+        /* Footer Links */
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-center p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .text-center a {
+            color: var(--ec-yellow);
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+        
+        .text-center a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Stripe decoration */
+        .stripe-decoration {
+            height: 3px;
+            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            width: 100px;
+            margin: 20px auto 0;
+            border-radius: 3px;
+        }
+
+        /* Toast notification */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            z-index: 2000;
+            animation: fadeInUp 0.3s ease;
+        }
+        
+        .toast-notification.success {
+            background: var(--ec-green);
+            border-left: 4px solid var(--ec-yellow);
+        }
+        
+        .toast-notification.error {
+            background: var(--ec-red);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            background: rgba(0,0,0,0.5);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 20px;
+            text-align: center;
+            margin-top: 0;
+        }
+        
+        .footer-stripe {
+            height: 3px;
+            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            width: 80px;
+            margin: 0 auto 12px;
+        }
+        
+        .footer-text {
+            font-size: 10px;
+            color: rgba(255,255,255,0.35);
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0,26,64,0.3);
+            border-top-color: var(--ec-dark);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 560px) {
+            .login-card {
+                padding: 32px 24px;
+            }
+            
+            .login-header h2 {
+                font-size: 28px;
+            }
+            
+            .btn-login {
+                font-size: 16px;
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-canvas"></div>
+    <div class="floater floater-1"></div>
+    <div class="floater floater-2"></div>
+    <div class="floater floater-3"></div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fas fa-futbol"></i>
+                <h2>POLLA MUNDIALISTA</h2>
+                <p>DGA LEGAL 2026</p>
+            </div>
+            
+            <div id="alertContainer">
+                {% if error %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i> {{ error }}
+                </div>
+                {% endif %}
+            </div>
+            
+            <form id="loginForm" method="POST" action="{{ url_for('login') }}">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-user"></i> USUARIO
+                    </label>
+                    <input type="text" name="username" id="username" class="form-control" required 
+                           placeholder="Ingresa tu usuario o email" autofocus>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i> CONTRASEÑA
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" id="password" class="form-control" required 
+                               placeholder="Ingresa tu contraseña">
+                        <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="remember">
+                    <label class="form-check-label" for="remember">
+                        Recordarme en este equipo
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </button>
+                
+                <div class="text-center">
+                    <p>
+                        ¿No tienes cuenta? 
+                        <a href="https://forms.gle/jUFFNYxYd2NJDjKr9" id="registerLink" target="_blank">
+                            Regístrate aquí
+                        </a>
+                    </p>
+                    <p style="margin-top: 12px;">
+                        <a href="#" id="forgotPasswordLink" style="font-size: 12px;">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </p>
+                    <div class="stripe-decoration"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para recuperar contraseña -->
+    <div id="forgotPasswordModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-key"></i> Recuperar Contraseña</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Ingresa tu nombre de usuario o email y te enviaremos instrucciones para restablecer tu contraseña.</p>
+                <input type="text" id="resetEmail" class="form-control" placeholder="Usuario o Email" style="margin-top: 16px;">
+                <div id="resetMessage" style="margin-top: 12px; font-size: 12px;"></div>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-primary" onclick="sendResetLink()">Enviar</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-stripe"></div>
+        <div class="footer-text">© 2026 Polla Mundialista DGA LEGAL - "No solo litigamos resultados, también los pronosticamos." ⚖️⚽️</div>
+    </footer>
+
+    <style>
+        .modal {
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: var(--ec-dark);
+            border: 1px solid var(--ec-yellow);
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
+        }
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            color: var(--ec-yellow);
+        }
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.5);
+            font-size: 28px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .modal-close:hover {
+            color: var(--ec-yellow);
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .modal-body p {
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .modal-buttons {
+            padding: 16px 24px 24px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+        .modal-btn-primary {
+            background: var(--ec-yellow);
+            color: var(--ec-dark);
+        }
+        .modal-btn-primary:hover {
+            transform: scale(1.02);
+        }
+        .modal-btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        .modal-btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+        }
+    </style>
+
+    <script>
+        // Mostrar toast
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type}`;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Mostrar alerta en el formulario
+        function showAlert(message, type = 'danger') {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i class="fas fa-${type === 'danger' ? 'exclamation-triangle' : 'check-circle'}"></i> ${message}
+                </div>
+            `;
+            setTimeout(() => {
+                const alertDiv = alertContainer.querySelector('.alert');
+                if (alertDiv) {
+                    alertDiv.style.opacity = '0';
+                    setTimeout(() => {
+                        alertContainer.innerHTML = '';
+                    }, 300);
+                }
+            }, 5000);
+        }
+
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = document.querySelector('.toggle-password i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.classList.remove('fa-eye');
+                toggleBtn.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.classList.remove('fa-eye-slash');
+                toggleBtn.classList.add('fa-eye');
+            }
+        }
+
+        // Recordar usuario en localStorage
+        const rememberCheckbox = document.getElementById('remember');
+        const usernameInput = document.getElementById('username');
+        
+        // Cargar usuario guardado
+        if (localStorage.getItem('rememberedUser')) {
+            usernameInput.value = localStorage.getItem('rememberedUser');
+            if (rememberCheckbox) rememberCheckbox.checked = true;
+        }
+        
+        // ---------- MODIFICACIÓN: ahora permite @, ., -, _ además de letras/números ----------
+        usernameInput.addEventListener('input', function() {
+            // Permitir: letras (mayúsc/minúsc), números, @, punto, guión, guion bajo
+            this.value = this.value.replace(/[^a-zA-Z0-9@._-]/g, '');
+        });
+        
+        // Validación en envío (sin restricción excesiva)
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const username = usernameInput.value.trim();
+            if (username.length < 3) {
+                e.preventDefault();
+                showAlert('El nombre de usuario debe tener al menos 3 caracteres', 'danger');
+                return;
+            }
+            
+            const password = document.getElementById('password').value;
+            if (password.length < 1) {
+                e.preventDefault();
+                showAlert('Por favor ingresa tu contraseña', 'danger');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('loginBtn');
+            submitBtn.innerHTML = '<div class="spinner"></div> Iniciando...';
+            submitBtn.disabled = true;
+            
+            if (rememberCheckbox && rememberCheckbox.checked) {
+                localStorage.setItem('rememberedUser', username);
+            } else {
+                localStorage.removeItem('rememberedUser');
+            }
+        });
+        
+        // Modal para recuperar contraseña
+        const modal = document.getElementById('forgotPasswordModal');
+        
+        document.getElementById('forgotPasswordLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            modal.style.display = 'flex';
+        });
+        
+        function closeModal() {
+            modal.style.display = 'none';
+            document.getElementById('resetEmail').value = '';
+            document.getElementById('resetMessage').innerHTML = '';
+        }
+        
+        async function sendResetLink() {
+            const emailOrUser = document.getElementById('resetEmail').value.trim();
+            const messageDiv = document.getElementById('resetMessage');
+            
+            if (!emailOrUser) {
+                messageDiv.innerHTML = '<span style="color: #ff6b6b;">⚠️ Por favor ingresa tu usuario o email</span>';
+                return;
+            }
+            
+            messageDiv.innerHTML = '<span style="color: var(--ec-yellow);"><i class="fas fa-spinner fa-spin"></i> Enviando...</span>';
+            
+            try {
+                const response = await fetch('/api/recuperar-contrasena', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email_or_user: emailOrUser })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    messageDiv.innerHTML = '<span style="color: #90EE90;">✅ ' + (data.message || 'Se han enviado instrucciones a tu email') + '</span>';
+                    setTimeout(() => {
+                        closeModal();
+                    }, 3000);
+                } else {
+                    messageDiv.innerHTML = '<span style="color: #ff6b6b;">❌ ' + (data.message || 'Error al enviar instrucciones') + '</span>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.innerHTML = '<span style="color: #ff6b6b;">❌ Error de conexión. Contacta al administrador.</span>';
+            }
+        }
+        
+        // Cerrar modal con ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.style.display === 'flex') {
+                closeModal();
+            }
+        });
+        
+        // Cerrar modal al hacer clic fuera
+        window.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>

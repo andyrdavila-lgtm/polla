@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Cargar Resultados - Admin Polla Mundialista</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* ===== ESTILOS (MANTENIDOS) ===== */
+        :root {
+            --ec-yellow: #FFD100;
+            --ec-blue: #003580;
+            --ec-red: #CC0001;
+            --ec-dark: #001a40;
+            --ec-green: #1a6b1a;
+            --white: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Barlow', sans-serif;
+            background: var(--ec-dark);
+            color: var(--white);
+        }
+        .bg-canvas {
+            position: fixed; inset: 0; z-index: 0;
+            background: radial-gradient(ellipse at 20% 0%, rgba(0,53,128,0.6) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 100%, rgba(26,107,26,0.4) 0%, transparent 60%),
+                        var(--ec-dark);
+            pointer-events: none;
+        }
+        .bg-canvas::after {
+            content: '';
+            position: absolute; inset: 0;
+            background-image: radial-gradient(circle, rgba(255,209,0,0.06) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridDrift 25s linear infinite;
+        }
+        @keyframes gridDrift { to { background-position: 60px 60px; } }
+        .floater {
+            position: fixed; z-index: 0;
+            width: 320px; height: 320px;
+            border-radius: 50%; filter: blur(80px);
+            pointer-events: none; opacity: 0.18;
+            animation: floatBall 18s ease-in-out infinite;
+        }
+        .floater-1 { background: var(--ec-yellow); top: -80px; left: -80px; }
+        .floater-2 { background: var(--ec-blue); bottom: 10%; right: -100px; animation-delay: -6s; }
+        .floater-3 { background: var(--ec-red); top: 50%; left: 40%; animation-delay: -12s; width: 200px; height: 200px; }
+        @keyframes floatBall {
+            0%,100% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(30px,-40px) scale(1.1); }
+            66% { transform: translate(-20px,30px) scale(0.9); }
+        }
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(0,26,64,0.95);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,209,0,0.15);
+        }
+        .nav-container {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; height: 64px;
+            max-width: 1280px; margin: 0 auto;
+        }
+        .nav-brand {
+            display: flex; align-items: center; gap: 8px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 16px; font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+        }
+        .nav-brand .ball { font-size: 22px; animation: spin 4s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .menu-toggle {
+            display: none; flex-direction: column;
+            justify-content: space-between; width: 30px; height: 21px; cursor: pointer;
+        }
+        .menu-toggle span {
+            display: block; height: 3px; width: 100%;
+            background-color: var(--ec-yellow); border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        .menu-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+        .menu-toggle.active span:nth-child(2) { opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+        .nav-links {
+            display: flex; gap: 24px; list-style: none; transition: all 0.3s ease;
+        }
+        .nav-links a {
+            font-family: 'Barlow Condensed', sans-serif; font-size: 14px;
+            font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+            color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--ec-yellow); }
+        .nav-stripe {
+            height: 3px;
+            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            position: absolute; bottom: 0; left: 0; right: 0;
+        }
+        @media (max-width: 768px) {
+            .menu-toggle { display: flex; }
+            .nav-links {
+                position: fixed; top: 64px; left: -100%; width: 100%;
+                height: calc(100vh - 64px);
+                background: rgba(0,26,64,0.98); backdrop-filter: blur(20px);
+                flex-direction: column; align-items: center; justify-content: center;
+                gap: 32px; transition: left 0.3s ease; z-index: 999;
+            }
+            .nav-links.active { left: 0; }
+            .nav-links a { font-size: 18px; padding: 12px; }
+        }
+        .container {
+            position: relative; z-index: 1;
+            max-width: 1280px; margin: 0 auto;
+            padding: 80px 16px 40px;
+        }
+        .page-header { margin-bottom: 24px; }
+        .page-header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px; color: var(--white);
+        }
+        .page-header h1 i { color: var(--ec-yellow); margin-right: 12px; }
+        .page-header p {
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .alert {
+            padding: 12px 16px; border-radius: 12px; margin-bottom: 16px;
+            font-size: 14px; display: none;
+        }
+        .alert-success { background: rgba(26,107,26,0.2); border: 1px solid var(--ec-green); color: #90EE90; }
+        .alert-danger { background: rgba(204,0,1,0.2); border: 1px solid var(--ec-red); color: #ff6b6b; }
+        .alert-warning { background: rgba(255,209,0,0.2); border: 1px solid var(--ec-yellow); color: #FFD100; }
+
+        .filters-bar {
+            background: rgba(255,255,255,0.06); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
+            padding: 16px; margin-bottom: 24px;
+        }
+        .filters-row {
+            display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+        }
+        .filter-group {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(0,0,0,0.3); padding: 6px 12px; border-radius: 40px;
+        }
+        .filter-group label {
+            font-size: 11px; font-weight: 700; text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+        }
+        .filter-group select, .filter-group input {
+            background: transparent; border: none; color: var(--white);
+            font-size: 13px; padding: 6px 8px; outline: none;
+        }
+        .filter-group select option { background: var(--ec-dark); }
+        .reset-btn {
+            background: rgba(255,209,0,0.2); border: 1px solid var(--ec-yellow);
+            color: var(--ec-yellow); padding: 6px 16px; border-radius: 40px;
+            cursor: pointer; font-size: 12px; transition: all 0.3s;
+        }
+        .reset-btn:hover { background: var(--ec-yellow); color: var(--ec-dark); }
+
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+        }
+        .match-card {
+            background: rgba(255,255,255,0.06); backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
+            padding: 20px; transition: all 0.3s;
+        }
+        .match-card:hover { border-color: var(--ec-yellow); transform: translateY(-4px); }
+        .match-card.bloqueado { opacity: 0.7; border-color: var(--ec-red); }
+        .match-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 12px; margin-bottom: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .match-phase { font-size: 11px; font-weight: 700; color: var(--ec-yellow); text-transform: uppercase; }
+        .match-date { font-size: 11px; color: rgba(255,255,255,0.4); }
+        .match-teams {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 16px; margin-bottom: 20px;
+        }
+        .team { text-align: center; flex: 1; }
+        .team-flag { width: 60px; height: 60px; object-fit: contain; margin-bottom: 8px; }
+        .team-name { font-weight: 700; margin-bottom: 12px; }
+        .score-input {
+            width: 70px; text-align: center; font-size: 24px;
+            font-family: 'Bebas Neue', sans-serif;
+            background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px; padding: 8px; color: var(--ec-yellow);
+        }
+        .score-input:focus { outline: none; border-color: var(--ec-yellow); }
+        .vs { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: rgba(255,255,255,0.3); }
+        .penalty-section {
+            margin-top: 12px; padding-top: 8px;
+            border-top: 1px dashed rgba(255,159,67,0.3);
+            text-align: center;
+        }
+        .penalty-label { font-size: 10px; color: #ff9f43; margin-bottom: 6px; text-transform: uppercase; }
+        .penalty-input {
+            width: 55px; text-align: center; font-size: 18px;
+            background: rgba(0,0,0,0.5); border: 2px solid rgba(255,159,67,0.4);
+            border-radius: 12px; padding: 4px; color: #ff9f43;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+        .match-actions {
+            margin-top: 16px; text-align: center;
+            display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
+        }
+        .btn-save {
+            background: var(--ec-yellow); color: var(--ec-dark); border: none;
+            padding: 10px 24px; border-radius: 30px; font-weight: 700;
+            cursor: pointer; transition: transform 0.2s;
+        }
+        .btn-save:hover { transform: scale(1.05); }
+        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-bloqueo {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 16px; border-radius: 30px; font-weight: 600;
+            font-size: 11px; cursor: pointer; transition: all 0.2s; color: var(--white);
+        }
+        .btn-bloqueo.bloqueado { background: rgba(204,0,1,0.3); border-color: var(--ec-red); color: #ff6b6b; }
+        .btn-bloqueo:hover { transform: scale(1.02); }
+        .status-badge {
+            display: inline-block; padding: 4px 12px; border-radius: 20px;
+            font-size: 11px; font-weight: 700;
+        }
+        .status-pendiente { background: rgba(255,209,0,0.2); color: var(--ec-yellow); }
+        .status-finalizado { background: rgba(26,107,26,0.3); color: #4caf50; }
+        .status-bloqueado { background: rgba(204,0,1,0.3); color: #ff6b6b; }
+
+        .modal {
+            display: none; position: fixed; z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: var(--ec-dark); border: 1px solid var(--ec-yellow);
+            border-radius: 20px; padding: 24px; max-width: 400px; width: 90%;
+            text-align: center;
+        }
+        .modal-content h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px; color: var(--ec-yellow); margin-bottom: 16px;
+        }
+        .modal-content p { margin-bottom: 20px; color: rgba(255,255,255,0.7); }
+        .modal-buttons { display: flex; gap: 12px; justify-content: center; }
+        .modal-btn {
+            padding: 10px 20px; border-radius: 30px; border: none;
+            cursor: pointer; font-weight: 700;
+        }
+        .modal-btn-confirm { background: var(--ec-red); color: white; }
+        .modal-btn-cancel { background: rgba(255,255,255,0.2); color: white; }
+
+        footer {
+            background: rgba(0,0,0,0.5);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 20px; text-align: center; margin-top: 40px;
+        }
+        .footer-stripe {
+            height: 3px;
+            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            width: 80px; margin: 0 auto 12px;
+        }
+        .footer-text { font-size: 10px; color: rgba(255,255,255,0.35); }
+
+        @media (max-width: 768px) {
+            .matches-grid { grid-template-columns: 1fr; }
+            .team-flag { width: 45px; height: 45px; }
+            .score-input { width: 55px; font-size: 20px; }
+            .filters-row { flex-direction: column; align-items: stretch; }
+            .filter-group { justify-content: space-between; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        ::-webkit-scrollbar-thumb { background: var(--ec-yellow); border-radius: 3px; }
+
+        .toast-notification {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9); color: white;
+            padding: 12px 24px; border-radius: 50px;
+            font-size: 14px; z-index: 2000;
+            animation: fadeInUp 0.3s ease;
+        }
+        .toast-notification.success { background: var(--ec-green); border-left: 4px solid var(--ec-yellow); }
+        .toast-notification.error { background: var(--ec-red); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-canvas"></div>
+    <div class="floater floater-1"></div>
+    <div class="floater floater-2"></div>
+    <div class="floater floater-3"></div>
+
+    <nav>
+        <div class="nav-container">
+            <a class="nav-brand" href="{{ url_for('dashboard') }}">
+                <span class="ball">⚽</span> Polla Mundialista DGA 2026
+            </a>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span><span></span><span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('pronosticos') }}">Pronósticos</a></li>
+                <li><a href="{{ url_for('tabla_posiciones') }}">Tabla</a></li>
+                <li><a href="{{ url_for('perfil') }}">Perfil</a></li>
+                <li><a href="{{ url_for('admin_panel') }}" class="active">Admin</a></li>
+                <li><a href="{{ url_for('logout') }}" id="logoutBtn">Salir</a></li>
+            </ul>
+        </div>
+        <div class="nav-stripe"></div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-futbol"></i> CARGAR RESULTADOS</h1>
+            <p>Actualiza los resultados reales de los partidos del Mundial 2026. Los cambios afectan los puntos y la generación de cruces.</p>
+        </div>
+
+        <div id="alertMessage" class="alert"></div>
+
+        <div class="filters-bar">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <label><i class="fas fa-layer-group"></i> FASE:</label>
+                    <select id="faseFilter">
+                        <option value="">Todas</option>
+                        <option value="grupos">Fase de Grupos</option>
+                        <option value="R32">Octavos (R32)</option>
+                        <option value="R16">Dieciseisavos (R16)</option>
+                        <option value="QF">Cuartos (QF)</option>
+                        <option value="SF">Semifinales (SF)</option>
+                        <option value="3P">Tercer Puesto</option>
+                        <option value="FINAL">Final</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-tag"></i> GRUPO:</label>
+                    <select id="grupoFilter">
+                        <option value="">Todos</option>
+                        <option value="A">Grupo A</option>
+                        <option value="B">Grupo B</option>
+                        <option value="C">Grupo C</option>
+                        <option value="D">Grupo D</option>
+                        <option value="E">Grupo E</option>
+                        <option value="F">Grupo F</option>
+                        <option value="G">Grupo G</option>
+                        <option value="H">Grupo H</option>
+                        <option value="I">Grupo I</option>
+                        <option value="J">Grupo J</option>
+                        <option value="K">Grupo K</option>
+                        <option value="L">Grupo L</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-search"></i> BUSCAR:</label>
+                    <input type="text" id="searchFilter" placeholder="Equipo...">
+                </div>
+                <button class="reset-btn" id="resetFilters"><i class="fas fa-undo-alt"></i> Limpiar</button>
+            </div>
+        </div>
+
+        <div id="matchesContainer" class="matches-grid">
+            <div class="spinner" style="text-align:center; padding:40px;"><i class="fas fa-spinner fa-spin"></i> Cargando partidos...</div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-stripe"></div>
+        <div class="footer-text">© 2026 Polla Mundialista DGA LEGAL - Panel Administrador</div>
+    </footer>
+
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirmar</h3>
+            <p id="modalMessage">¿Estás seguro de realizar esta acción?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-confirm" id="modalConfirmBtn">Confirmar</button>
+                <button class="modal-btn modal-btn-cancel" id="modalCancelBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Menú hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+        }
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (menuToggle) menuToggle.classList.remove('active');
+                if (navLinks) navLinks.classList.remove('active');
+            });
+        });
+
+        // Variables
+        let allMatches = [];
+        let pendingAction = null;
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type}`;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-triangle' : 'info-circle'}"></i> ${message}`;
+            alertDiv.style.display = 'block';
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Cargar partidos desde la API
+        async function loadMatches() {
+            try {
+                const res = await fetch('/api/partidos');
+                if (!res.ok) throw new Error('Error al cargar partidos');
+                allMatches = await res.json();
+                applyFilters();
+            } catch (err) {
+                console.error(err);
+                document.getElementById('matchesContainer').innerHTML = '<div style="text-align:center; color:red;">Error al cargar los partidos</div>';
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function renderMatches(matches) {
+            if (!matches.length) {
+                document.getElementById('matchesContainer').innerHTML = '<div style="text-align:center; padding:40px;">No hay partidos con esos filtros</div>';
+                return;
+            }
+            const html = matches.map(m => {
+                const localNombre = m.local_nombre || 'Por definir';
+                const visitNombre = m.visitante_nombre || 'Por definir';
+                const faseLabel = m.fase === 'grupos' ? 'Fase de Grupos' : m.fase;
+                const grupoLabel = m.grupo ? `Grupo ${m.grupo}` : '';
+                const isFinalizado = m.estado === 'finalizado';
+                const isBloqueado = m.bloqueado_manual;
+                const esEliminatoria = (m.fase !== 'grupos');
+
+                return `
+                    <div class="match-card ${isBloqueado ? 'bloqueado' : ''}" data-id="${m.id}" data-fase="${m.fase}" data-grupo="${m.grupo || ''}" data-local="${localNombre.toLowerCase()}" data-visitante="${visitNombre.toLowerCase()}">
+                        <div class="match-header">
+                            <span class="match-phase">${faseLabel} ${grupoLabel ? `- ${grupoLabel}` : ''}</span>
+                            <span class="match-date">${new Date(m.fecha_hora).toLocaleString()}</span>
+                        </div>
+                        <div class="match-teams">
+                            <div class="team">
+                                <img src="${m.local_bandera}" class="team-flag" onerror="this.src='https://flagcdn.com/w80/default.png'">
+                                <div class="team-name">${escapeHtml(localNombre)}</div>
+                                <input type="number" class="score-input" id="local_${m.id}" value="${m.goles_local !== null ? m.goles_local : ''}" placeholder="0" min="0" step="1">
+                            </div>
+                            <div class="vs">VS</div>
+                            <div class="team">
+                                <img src="${m.visitante_bandera}" class="team-flag" onerror="this.src='https://flagcdn.com/w80/default.png'">
+                                <div class="team-name">${escapeHtml(visitNombre)}</div>
+                                <input type="number" class="score-input" id="visitante_${m.id}" value="${m.goles_visitante !== null ? m.goles_visitante : ''}" placeholder="0" min="0" step="1">
+                            </div>
+                        </div>
+                        ${esEliminatoria ? `
+                        <div class="penalty-section">
+                            <div class="penalty-label">⚡ Penales (solo si empate en 90')</div>
+                            <div style="display: flex; justify-content: center; gap: 12px;">
+                                <input type="number" class="penalty-input" id="pen_local_${m.id}" value="${m.penales_local !== null ? m.penales_local : ''}" placeholder="0" min="0" step="1">
+                                <span style="color:#ff9f43;">-</span>
+                                <input type="number" class="penalty-input" id="pen_visitante_${m.id}" value="${m.penales_visitante !== null ? m.penales_visitante : ''}" placeholder="0" min="0" step="1">
+                            </div>
+                        </div>
+                        ` : ''}
+                        <div class="match-actions">
+                            <div>
+                                ${isFinalizado ? '<span class="status-badge status-finalizado">✅ FINALIZADO</span>' : (isBloqueado ? '<span class="status-badge status-bloqueado">🔒 BLOQUEADO</span>' : '<span class="status-badge status-pendiente">⏳ PENDIENTE</span>')}
+                            </div>
+                            <button class="btn-save" onclick="guardarResultado(${m.id})" ${isFinalizado ? 'disabled' : ''}>
+                                <i class="fas fa-save"></i> GUARDAR
+                            </button>
+                            <button class="btn-bloqueo ${isBloqueado ? 'bloqueado' : ''}" onclick="toggleBloqueo(${m.id}, ${isBloqueado})">
+                                <i class="fas fa-lock"></i> ${isBloqueado ? 'DESBLOQUEAR' : 'BLOQUEAR'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('matchesContainer').innerHTML = html;
+        }
+
+        function applyFilters() {
+            const fase = document.getElementById('faseFilter').value;
+            const grupo = document.getElementById('grupoFilter').value;
+            const search = document.getElementById('searchFilter').value.toLowerCase();
+
+            let filtered = [...allMatches];
+            if (fase) filtered = filtered.filter(m => m.fase === fase);
+            if (grupo) filtered = filtered.filter(m => m.grupo === grupo);
+            if (search) filtered = filtered.filter(m =>
+                (m.local_nombre || '').toLowerCase().includes(search) ||
+                (m.visitante_nombre || '').toLowerCase().includes(search)
+            );
+            renderMatches(filtered);
+        }
+
+        async function guardarResultado(partidoId) {
+            const localInput = document.getElementById(`local_${partidoId}`);
+            const visitanteInput = document.getElementById(`visitante_${partidoId}`);
+            const penLocalInput = document.getElementById(`pen_local_${partidoId}`);
+            const penVisitanteInput = document.getElementById(`pen_visitante_${partidoId}`);
+
+            const golesLocal = localInput.value;
+            const golesVisitante = visitanteInput.value;
+            if (golesLocal === '' || golesVisitante === '') {
+                showAlert('⚠️ Ingresa ambos marcadores', 'warning');
+                return;
+            }
+            const localInt = parseInt(golesLocal);
+            const visitanteInt = parseInt(golesVisitante);
+            if (isNaN(localInt) || isNaN(visitanteInt) || localInt < 0 || visitanteInt < 0 || localInt > 30 || visitanteInt > 30) {
+                showAlert('⚠️ Marcador inválido (0-30)', 'warning');
+                return;
+            }
+            let penalesLocal = null, penalesVisitante = null;
+            if (penLocalInput && penVisitanteInput) {
+                if (penLocalInput.value !== '' && penVisitanteInput.value !== '') {
+                    penalesLocal = parseInt(penLocalInput.value);
+                    penalesVisitante = parseInt(penVisitanteInput.value);
+                    if (isNaN(penalesLocal) || isNaN(penalesVisitante) || penalesLocal < 0 || penalesVisitante < 0 || penalesLocal > 20 || penalesVisitante > 20) {
+                        showAlert('⚠️ Penales inválidos (0-20)', 'warning');
+                        return;
+                    }
+                }
+            }
+            const btn = event.currentTarget;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> GUARDANDO...';
+            btn.disabled = true;
+            try {
+                const res = await fetch('/api/admin/actualizar-resultado', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        partido_id: partidoId,
+                        goles_local: localInt,
+                        goles_visitante: visitanteInt,
+                        penales_local: penalesLocal,
+                        penales_visitante: penalesVisitante
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('✅ Resultado guardado. Puntos recalculados.', 'success');
+                    await loadMatches(); // recargar lista
+                } else {
+                    showAlert('❌ Error: ' + (data.error || data.message), 'danger');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                showAlert('❌ Error de conexión', 'danger');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function toggleBloqueo(partidoId, actualmenteBloqueado) {
+            const msg = actualmenteBloqueado
+                ? '¿Desbloquear este partido? Los usuarios podrán volver a pronosticar.'
+                : '¿Bloquear este partido? Los usuarios NO podrán modificar sus pronósticos.';
+            pendingAction = { type: 'bloqueo', partidoId: partidoId, desbloquear: actualmenteBloqueado };
+            document.getElementById('modalMessage').textContent = msg;
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+
+        async function executePendingAction() {
+            if (!pendingAction) return;
+            if (pendingAction.type === 'bloqueo') {
+                const { partidoId, desbloquear } = pendingAction;
+                try {
+                    const res = await fetch(`/api/admin/toggle-bloqueo-partido/${partidoId}`, { method: 'POST' });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast(desbloquear ? '✅ Partido desbloqueado' : '🔒 Partido bloqueado', 'success');
+                        await loadMatches();
+                    } else {
+                        showAlert('❌ Error: ' + (data.error || 'No se pudo cambiar'), 'danger');
+                    }
+                } catch (err) {
+                    showAlert('❌ Error de conexión', 'danger');
+                }
+            }
+            pendingAction = null;
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        function cancelAction() {
+            pendingAction = null;
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        // Event listeners
+        document.getElementById('faseFilter').addEventListener('change', applyFilters);
+        document.getElementById('grupoFilter').addEventListener('change', applyFilters);
+        document.getElementById('searchFilter').addEventListener('input', applyFilters);
+        document.getElementById('resetFilters').addEventListener('click', () => {
+            document.getElementById('faseFilter').value = '';
+            document.getElementById('grupoFilter').value = '';
+            document.getElementById('searchFilter').value = '';
+            applyFilters();
+            showToast('Filtros limpiados', 'success');
+        });
+        document.getElementById('modalConfirmBtn').addEventListener('click', executePendingAction);
+        document.getElementById('modalCancelBtn').addEventListener('click', cancelAction);
+        window.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('confirmModal')) cancelAction();
+        });
+        document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            fetch('/logout').then(() => window.location.href = "{{ url_for('login') }}");
+        });
+
+        // Iniciar
+        loadMatches();
+    </script>
+</body>
+</html>

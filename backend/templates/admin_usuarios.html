@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Gestionar Usuarios - Admin Polla Mundialista</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --ec-yellow: #FFD100;
+            --ec-blue: #003580;
+            --ec-red: #CC0001;
+            --ec-dark: #001a40;
+            --ec-green: #1a6b1a;
+            --white: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Barlow', sans-serif;
+            background: var(--ec-dark);
+            color: var(--white);
+        }
+        .bg-canvas { 
+            position: fixed; 
+            inset: 0; 
+            z-index: 0; 
+            background: radial-gradient(ellipse at 20% 0%, rgba(0,53,128,0.6) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 100%, rgba(26,107,26,0.4) 0%, transparent 60%),
+                        var(--ec-dark);
+            pointer-events: none;
+        }
+        
+        .bg-canvas::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255,209,0,0.06) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridDrift 25s linear infinite;
+        }
+        
+        @keyframes gridDrift {
+            to { background-position: 60px 60px; }
+        }
+        
+        /* Floating balls */
+        .floater {
+            position: fixed; z-index: 0;
+            width: 320px; height: 320px;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            opacity: 0.18;
+            animation: floatBall 18s ease-in-out infinite;
+        }
+        .floater-1 { background: var(--ec-yellow); top: -80px; left: -80px; }
+        .floater-2 { background: var(--ec-blue); bottom: 10%; right: -100px; animation-delay: -6s; }
+        .floater-3 { background: var(--ec-red); top: 50%; left: 40%; animation-delay: -12s; width: 200px; height: 200px; }
+        
+        @keyframes floatBall {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -40px) scale(1.1); }
+            66% { transform: translate(-20px, 30px) scale(0.9); }
+        }
+
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(0,26,64,0.95); backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,209,0,0.15);
+        }
+        .nav-container {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; height: 64px; max-width: 1280px; margin: 0 auto;
+        }
+        .nav-brand {
+            display: flex; align-items: center; gap: 8px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 16px; font-weight: 700; color: var(--white);
+            text-decoration: none;
+        }
+        .nav-brand .ball { font-size: 22px; animation: spin 4s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .menu-toggle {
+            display: none; flex-direction: column; justify-content: space-between;
+            width: 30px; height: 21px; cursor: pointer;
+        }
+        .menu-toggle span {
+            display: block; height: 3px; width: 100%;
+            background-color: var(--ec-yellow); border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        .menu-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+        .menu-toggle.active span:nth-child(2) { opacity: 0; }
+        .menu-toggle.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+        .nav-links { display: flex; gap: 24px; list-style: none; transition: all 0.3s ease; }
+        .nav-links a {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px; font-weight: 600; letter-spacing: 0.08em;
+            text-transform: uppercase; color: rgba(255,255,255,0.7);
+            text-decoration: none; transition: color 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--ec-yellow); }
+        .nav-stripe {
+            height: 3px;
+            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            position: absolute; bottom: 0; left: 0; right: 0;
+        }
+        @media (max-width: 768px) {
+            .menu-toggle { display: flex; }
+            .nav-links {
+                position: fixed; top: 64px; left: -100%; width: 100%;
+                height: calc(100vh - 64px); background: rgba(0,26,64,0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column; align-items: center; justify-content: center;
+                gap: 32px; transition: left 0.3s ease; z-index: 999;
+            }
+            .nav-links.active { left: 0; }
+            .nav-links a { font-size: 18px; padding: 12px; }
+        }
+        .container {
+            position: relative; z-index: 1; max-width: 1280px;
+            margin: 0 auto; padding: 80px 16px 40px;
+        }
+        .page-header { margin-bottom: 24px; }
+        .page-header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px; color: var(--white);
+        }
+        .page-header h1 i { color: var(--ec-yellow); margin-right: 12px; }
+        .page-header p {
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        /* Filtros de búsqueda */
+        .filters-bar {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        .filters-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,0,0,0.3);
+            padding: 6px 12px;
+            border-radius: 40px;
+        }
+        .filter-group label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+        }
+        .filter-group select, .filter-group input {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            font-size: 13px;
+            padding: 6px 8px;
+            outline: none;
+        }
+        .reset-btn {
+            background: rgba(255,209,0,0.2);
+            border: 1px solid var(--ec-yellow);
+            color: var(--ec-yellow);
+            padding: 6px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .reset-btn:hover {
+            background: var(--ec-yellow);
+            color: var(--ec-dark);
+        }
+        .contador {
+            margin-left: auto;
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+        }
+
+        /* Formulario de creación */
+        .create-user-card {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+        .create-user-card h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            color: var(--ec-yellow);
+            margin-bottom: 20px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 6px;
+        }
+        .form-group label i {
+            color: var(--ec-yellow);
+            margin-right: 6px;
+        }
+        .form-control {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: var(--white);
+            font-size: 14px;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--ec-yellow);
+        }
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        
+        /* Tabs para selector de avatar */
+        .avatar-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+        .avatar-tab {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.5);
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        .avatar-tab.active {
+            background: var(--ec-yellow);
+            color: var(--ec-dark);
+        }
+        .avatar-tab:hover:not(.active) {
+            background: rgba(255,255,255,0.1);
+        }
+        .avatar-preview {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .avatar-preview img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--ec-yellow);
+        }
+        .avatar-preview .avatar-placeholder {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 2px dashed rgba(255,255,255,0.3);
+        }
+        .btn-upload {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: var(--white);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-upload:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .url-input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        .url-input-group input {
+            flex: 1;
+            min-width: 200px;
+        }
+        .btn-test-url {
+            background: var(--ec-blue);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .btn-test-url:hover {
+            background: #004499;
+        }
+        .btn-create {
+            background: linear-gradient(135deg, var(--ec-green), #0d4d0d);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: white;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .btn-create:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, #0d4d0d, var(--ec-green));
+        }
+        .btn-create:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .table-container {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background: rgba(0,0,0,0.4);
+            padding: 16px;
+            text-align: left;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--ec-yellow);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            vertical-align: middle;
+        }
+        .user-avatar-small {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .badge-admin {
+            background: var(--ec-yellow);
+            color: var(--ec-dark);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .badge-user {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        .btn-delete {
+            background: rgba(204,0,1,0.2);
+            border: 1px solid var(--ec-red);
+            color: #ff6b6b;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .btn-delete:hover {
+            background: var(--ec-red);
+            color: white;
+        }
+        .btn-reset-password {
+            background: rgba(255,209,0,0.2);
+            border: 1px solid var(--ec-yellow);
+            color: var(--ec-yellow);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s;
+            margin-right: 8px;
+        }
+        .btn-reset-password:hover {
+            background: var(--ec-yellow);
+            color: var(--ec-dark);
+        }
+        
+        /* Alertas */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+        .alert-success {
+            background: rgba(26,107,26,0.2);
+            border: 1px solid var(--ec-green);
+            color: #90EE90;
+        }
+        .alert-danger {
+            background: rgba(204,0,1,0.2);
+            border: 1px solid var(--ec-red);
+            color: #ff6b6b;
+        }
+        .alert-warning {
+            background: rgba(255,209,0,0.2);
+            border: 1px solid var(--ec-yellow);
+            color: #FFD100;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: var(--ec-dark);
+            border: 1px solid var(--ec-yellow);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        .modal-content h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            color: var(--ec-yellow);
+            margin-bottom: 16px;
+        }
+        .modal-content p {
+            margin-bottom: 20px;
+            color: rgba(255,255,255,0.7);
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        .modal-btn-confirm {
+            background: var(--ec-red);
+            color: white;
+        }
+        .modal-btn-cancel {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        footer {
+            background: rgba(0,0,0,0.5); border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 20px; text-align: center; margin-top: 40px;
+        }
+        .footer-stripe {
+            height: 3px; background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            width: 80px; margin: 0 auto 12px;
+        }
+        .footer-text { font-size: 10px; color: rgba(255,255,255,0.35); }
+
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            z-index: 2000;
+            animation: fadeInUp 0.3s ease;
+        }
+        .toast-notification.success {
+            background: var(--ec-green);
+            border-left: 4px solid var(--ec-yellow);
+        }
+        .toast-notification.error {
+            background: var(--ec-red);
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .url-input-group {
+                flex-direction: column;
+            }
+            .btn-test-url {
+                width: 100%;
+            }
+            .filters-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .filter-group {
+                justify-content: space-between;
+            }
+            .contador {
+                margin-left: 0;
+                text-align: center;
+            }
+            th, td {
+                padding: 8px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-canvas"></div>
+    <div class="floater floater-1"></div>
+    <div class="floater floater-2"></div>
+    <div class="floater floater-3"></div>
+
+    <nav>
+        <div class="nav-container">
+            <a class="nav-brand" href="{{ url_for('dashboard') }}">
+                <span class="ball">⚽</span> Polla Mundialista DGA 2026
+            </a>
+            <div class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('pronosticos') }}">Pronósticos</a></li>
+                <li><a href="{{ url_for('tabla_posiciones') }}">Tabla</a></li>
+                <li><a href="{{ url_for('perfil') }}">Perfil</a></li>
+                <li><a href="{{ url_for('admin_panel') }}" class="active">Admin</a></li>
+                <li><a href="{{ url_for('logout') }}" id="logoutBtn">Salir</a></li>
+            </ul>
+        </div>
+        <div class="nav-stripe"></div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-users"></i> GESTIONAR USUARIOS</h1>
+            <p>Administra los participantes de la Polla Mundialista DGA 2026</p>
+        </div>
+
+        <!-- Alerta -->
+        <div id="alertMessage" class="alert"></div>
+
+        <!-- Filtros de búsqueda -->
+        <div class="filters-bar">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <label><i class="fas fa-search"></i> BUSCAR:</label>
+                    <input type="text" id="searchFilter" placeholder="Nombre o usuario...">
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-building"></i> ÁREA:</label>
+                    <select id="areaFilter">
+                        <option value="">Todas</option>
+                        <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
+                        <option value="BANCARIO FINANCIERO">BANCARIO FINANCIERO</option>
+                        <option value="CARTERA">CARTERA</option>
+                        <option value="FAMILIAR">FAMILIAR</option>
+                        <option value="DERECHO ADMINISTRATIVO">DERECHO ADMINISTRATIVO</option>
+                        <option value="CONSTITUCIONAL">CONSTITUCIONAL</option>
+                        <option value="FINANCIERO">FINANCIERO</option>
+                        <option value="CUENCA">CUENCA</option>
+                        <option value="GUAYAQUIL">GUAYAQUIL</option>
+                        <option value="LABORAL">LABORAL</option>
+                        <option value="INMOBILIARIO">INMOBILIARIO</option>
+                        <option value="PROPIEDAD INTELECTUAL">PROPIEDAD INTELECTUAL</option>
+                        <option value="REGULATORIO">REGULATORIO</option>
+                        <option value="RESOLUCIÓN DE CONFLICTOS">RESOLUCIÓN DE CONFLICTOS</option>
+                        <option value="SOCIETARIO">SOCIETARIO</option>
+                        <option value="SOCIO">SOCIO</option>
+                        <option value="TALENTO HUMANO">TALENTO HUMANO</option>
+                        <option value="TRIBUTARIO">TRIBUTARIO</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-user-tag"></i> ROL:</label>
+                    <select id="rolFilter">
+                        <option value="">Todos</option>
+                        <option value="admin">Administradores</option>
+                        <option value="user">Usuarios normales</option>
+                    </select>
+                </div>
+                <div class="reset-btn" id="resetFilters">
+                    <i class="fas fa-undo-alt"></i> Limpiar
+                </div>
+                <span class="contador" id="contadorUsuarios"></span>
+            </div>
+        </div>
+
+        <!-- Formulario para crear usuario -->
+        <div class="create-user-card">
+            <h2><i class="fas fa-user-plus"></i> CREAR NUEVO USUARIO</h2>
+            <form id="createUserForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> USUARIO *</label>
+                        <input type="text" class="form-control" id="username" required placeholder="Nombre de usuario">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> EMAIL *</label>
+                        <input type="email" class="form-control" id="email" required placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> CONTRASEÑA *</label>
+                        <input type="password" class="form-control" id="password" required placeholder="Mínimo 6 caracteres">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user-circle"></i> NOMBRE COMPLETO</label>
+                        <input type="text" class="form-control" id="nombre_completo" placeholder="Nombre y apellido">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-building"></i> ÁREA DE TRABAJO</label>
+                        <select class="form-control" id="area_trabajo">
+                            <option value="">Selecciona un área</option>
+                            <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
+                            <option value="BANCARIO FINANCIERO">BANCARIO FINANCIERO</option>
+                            <option value="CARTERA">CARTERA</option>
+                            <option value="FAMILIAR">FAMILIAR</option>
+                            <option value="DERECHO ADMINISTRATIVO">DERECHO ADMINISTRATIVO</option>
+                            <option value="CONSTITUCIONAL">CONSTITUCIONAL</option>
+                            <option value="FINANCIERO">FINANCIERO</option>
+                            <option value="CUENCA">CUENCA</option>
+                            <option value="GUAYAQUIL">GUAYAQUIL</option>
+                            <option value="LABORAL">LABORAL</option>
+                            <option value="INMOBILIARIO">INMOBILIARIO</option>
+                            <option value="PROPIEDAD INTELECTUAL">PROPIEDAD INTELECTUAL</option>
+                            <option value="REGULATORIO">REGULATORIO</option>
+                            <option value="RESOLUCIÓN DE CONFLICTOS">RESOLUCIÓN DE CONFLICTOS</option>
+                            <option value="SOCIETARIO">SOCIETARIO</option>
+                            <option value="SOCIO">SOCIO</option>
+                            <option value="TALENTO HUMANO">TALENTO HUMANO</option>
+                            <option value="TRIBUTARIO">TRIBUTARIO</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-camera"></i> FOTO DE PERFIL</label>
+                        
+                        <!-- Tabs para seleccionar método -->
+                        <div class="avatar-tabs">
+                            <button type="button" class="avatar-tab active" data-method="upload">
+                                <i class="fas fa-upload"></i> Subir archivo
+                            </button>
+                            <button type="button" class="avatar-tab" data-method="url">
+                                <i class="fas fa-link"></i> Usar URL
+                            </button>
+                        </div>
+                        
+                        <!-- Opción 1: Subir archivo -->
+                        <div id="uploadMethod" class="avatar-method">
+                            <div class="avatar-preview">
+                                <div id="avatarPreview" class="avatar-placeholder">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <button type="button" class="btn-upload" onclick="document.getElementById('avatarInput').click()">
+                                    <i class="fas fa-upload"></i> Subir foto
+                                </button>
+                                <input type="file" id="avatarInput" style="display: none" accept="image/jpeg,image/png,image/jpg,image/gif">
+                            </div>
+                            <small style="color: rgba(255,255,255,0.4); font-size: 10px;">Formatos: JPG, PNG, GIF. Máx 2MB</small>
+                        </div>
+                        
+                        <!-- Opción 2: URL externa -->
+                        <div id="urlMethod" class="avatar-method" style="display: none;">
+                            <div class="avatar-preview">
+                                <div id="urlAvatarPreview" class="avatar-placeholder">
+                                    <i class="fas fa-link"></i>
+                                </div>
+                                <div class="url-input-group">
+                                    <input type="text" id="avatarUrl" class="form-control" placeholder="https://ejemplo.com/imagen.jpg" style="flex:1;">
+                                    <button type="button" class="btn-test-url" onclick="testUrl()">
+                                        <i class="fas fa-eye"></i> Probar URL
+                                    </button>
+                                </div>
+                            </div>
+                            <small style="color: rgba(255,255,255,0.4); font-size: 10px;">
+                                <i class="fas fa-info-circle"></i> Puedes usar enlaces de SharePoint, Google Drive, Imgur, etc.
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user-tag"></i> ROL</label>
+                        <select class="form-control" id="es_admin">
+                            <option value="false">Usuario normal</option>
+                            <option value="true">Administrador</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn-create">
+                    <i class="fas fa-save"></i> CREAR USUARIO
+                </button>
+            </form>
+        </div>
+
+        <!-- Tabla de usuarios existentes -->
+        <div class="table-container">
+            <table id="usuariosTable">
+                <thead>
+                    <tr>
+                        <th>Avatar</th>
+                        <th>Usuario</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Área</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaBody">
+                    {% for usuario in usuarios %}
+                    <tr data-username="{{ usuario.username.lower() }}" data-nombre="{{ (usuario.nombre_completo or '').lower() }}" data-area="{{ usuario.area_trabajo or '' }}" data-rol="{{ 'admin' if usuario.es_admin else 'user' }}">
+                        <tr>
+                            <img src="{{ usuario.foto_perfil or 'https://ui-avatars.com/api/?background=FFD100&color=001a40&bold=true&size=35&rounded=true&name=' + usuario.username }}" 
+                                 class="user-avatar-small" 
+                                 onerror="this.src='https://ui-avatars.com/api/?background=FFD100&color=001a40&bold=true&size=35&rounded=true&name={{ usuario.username }}'">
+                        </td>
+                        <td><strong>{{ usuario.username }}</strong></td>
+                        <td>{{ usuario.nombre_completo or '-' }}</td>
+                        <td>{{ usuario.email or '-' }}</td>
+                        <td>{{ usuario.area_trabajo or '-' }}</td>
+                        <td>{% if usuario.es_admin %}<span class="badge-admin">ADMIN</span>{% else %}<span class="badge-user">Usuario</span>{% endif %}</td>
+                        <td>{% if usuario.activo %}✅ Activo{% else %}❌ Inactivo{% endif %}</td>
+                        <td>
+                            {% if not usuario.es_admin %}
+                            <button class="btn-reset-password" onclick="resetPassword({{ usuario.id }}, '{{ usuario.username }}')">
+                                <i class="fas fa-key"></i> Reset Pass
+                            </button>
+                            <button class="btn-delete" onclick="eliminarUsuario({{ usuario.id }}, '{{ usuario.username }}')">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                            {% else %}
+                            <span style="color:rgba(255,255,255,0.3);">Principal</span>
+                            {% endif %}
+                         </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirmar</h3>
+            <p id="modalMessage">¿Estás seguro de realizar esta acción?</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-confirm" id="modalConfirmBtn">Confirmar</button>
+                <button class="modal-btn modal-btn-cancel" id="modalCancelBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-stripe"></div>
+        <div class="footer-text">© 2026 Polla Mundialista DGA LEGAL - Panel Administrador</div>
+    </footer>
+
+    <script>
+        // Menú hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+        }
+        
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (menuToggle) menuToggle.classList.remove('active');
+                if (navLinks) navLinks.classList.remove('active');
+            });
+        });
+
+        // Variables para modal
+        let pendingAction = null;
+        let pendingParams = null;
+
+        // Mostrar alerta
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-triangle' : 'info-circle'}"></i> ${message}`;
+            alertDiv.style.display = 'block';
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Mostrar toast
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type}`;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Filtros de búsqueda
+        const searchFilter = document.getElementById('searchFilter');
+        const areaFilter = document.getElementById('areaFilter');
+        const rolFilter = document.getElementById('rolFilter');
+        const resetFiltersBtn = document.getElementById('resetFilters');
+        const tablaRows = document.querySelectorAll('#tablaBody tr');
+        const contadorSpan = document.getElementById('contadorUsuarios');
+
+        function aplicarFiltros() {
+            const searchTerm = searchFilter.value.toLowerCase();
+            const areaValue = areaFilter.value;
+            const rolValue = rolFilter.value;
+            
+            let visibleCount = 0;
+            
+            tablaRows.forEach(row => {
+                const username = row.getAttribute('data-username') || '';
+                const nombre = row.getAttribute('data-nombre') || '';
+                const area = row.getAttribute('data-area') || '';
+                const rol = row.getAttribute('data-rol') || '';
+                
+                let mostrar = true;
+                
+                if (searchTerm && !username.includes(searchTerm) && !nombre.includes(searchTerm)) {
+                    mostrar = false;
+                }
+                
+                if (areaValue && area !== areaValue) {
+                    mostrar = false;
+                }
+                
+                if (rolValue === 'admin' && rol !== 'admin') {
+                    mostrar = false;
+                }
+                if (rolValue === 'user' && rol !== 'user') {
+                    mostrar = false;
+                }
+                
+                row.style.display = mostrar ? '' : 'none';
+                if (mostrar) visibleCount++;
+            });
+            
+            contadorSpan.textContent = `Mostrando ${visibleCount} de ${tablaRows.length} usuarios`;
+        }
+
+        if (searchFilter) searchFilter.addEventListener('input', aplicarFiltros);
+        if (areaFilter) areaFilter.addEventListener('change', aplicarFiltros);
+        if (rolFilter) rolFilter.addEventListener('change', aplicarFiltros);
+        if (resetFiltersBtn) {
+            resetFiltersBtn.addEventListener('click', () => {
+                if (searchFilter) searchFilter.value = '';
+                if (areaFilter) areaFilter.value = '';
+                if (rolFilter) rolFilter.value = '';
+                aplicarFiltros();
+            });
+        }
+        
+        // Inicializar contador
+        aplicarFiltros();
+        
+        // Tabs para método de avatar
+        let selectedAvatar = null;
+        let currentMethod = 'upload';
+        let avatarUrlValue = '';
+        
+        const tabs = document.querySelectorAll('.avatar-tab');
+        const uploadMethod = document.getElementById('uploadMethod');
+        const urlMethod = document.getElementById('urlMethod');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentMethod = tab.dataset.method;
+                
+                if (currentMethod === 'upload') {
+                    uploadMethod.style.display = 'block';
+                    urlMethod.style.display = 'none';
+                } else {
+                    uploadMethod.style.display = 'none';
+                    urlMethod.style.display = 'block';
+                }
+            });
+        });
+        
+        // Previsualizar avatar subido
+        document.getElementById('avatarInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+                if (!allowedTypes.includes(file.type)) {
+                    showAlert('Formato no permitido. Use JPG, PNG o GIF', 'danger');
+                    this.value = '';
+                    return;
+                }
+                
+                if (file.size > 2 * 1024 * 1024) {
+                    showAlert('La imagen no puede superar los 2MB', 'danger');
+                    this.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('avatarPreview');
+                    preview.innerHTML = `<img src="${event.target.result}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;">`;
+                    selectedAvatar = file;
+                    avatarUrlValue = '';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Probar URL
+        window.testUrl = function() {
+            const url = document.getElementById('avatarUrl').value.trim();
+            if (!url) {
+                showAlert('Ingresa una URL válida', 'warning');
+                return;
+            }
+            
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                showAlert('La URL debe comenzar con http:// o https://', 'warning');
+                return;
+            }
+            
+            const preview = document.getElementById('urlAvatarPreview');
+            preview.innerHTML = `<img src="${url}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fas fa-exclamation-triangle\'></i>';">`;
+            avatarUrlValue = url;
+            selectedAvatar = null;
+            showAlert('URL cargada correctamente', 'success');
+        };
+        
+        // Crear usuario
+        document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const nombre_completo = document.getElementById('nombre_completo').value;
+            const area_trabajo = document.getElementById('area_trabajo').value;
+            const es_admin = document.getElementById('es_admin').value === 'true';
+            
+            if (!username || !email || !password) {
+                showAlert('Por favor completa los campos requeridos (*)', 'warning');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAlert('La contraseña debe tener al menos 6 caracteres', 'warning');
+                return;
+            }
+            
+            const submitBtn = document.querySelector('.btn-create');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> CREANDO...';
+            submitBtn.disabled = true;
+            
+            try {
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('email', email);
+                formData.append('password', password);
+                formData.append('nombre_completo', nombre_completo);
+                formData.append('area_trabajo', area_trabajo);
+                formData.append('es_admin', es_admin);
+                
+                const response = await fetch('/api/admin/crear-usuario', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    if (currentMethod === 'upload' && selectedAvatar) {
+                        const avatarFormData = new FormData();
+                        avatarFormData.append('avatar', selectedAvatar);
+                        avatarFormData.append('usuario_id', data.user_id);
+                        
+                        await fetch('/api/admin/subir-avatar-usuario', {
+                            method: 'POST',
+                            body: avatarFormData
+                        });
+                    }
+                    
+                    showToast('✅ Usuario creado exitosamente', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showAlert('❌ Error: ' + (data.message || 'Error al crear usuario'), 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('❌ Error de conexión con el servidor', 'danger');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Resetear contraseña
+        window.resetPassword = function(userId, username) {
+            const newPassword = prompt(`Ingrese la nueva contraseña para el usuario "${username}":\n\nMínimo 6 caracteres`);
+            
+            if (!newPassword) return;
+            
+            if (newPassword.length < 6) {
+                showAlert('La contraseña debe tener al menos 6 caracteres', 'warning');
+                return;
+            }
+            
+            pendingAction = { type: 'resetPassword', userId: userId, newPassword: newPassword };
+            document.getElementById('modalMessage').innerHTML = `¿Estás seguro de resetear la contraseña del usuario <strong>${username}</strong>?<br><br>La nueva contraseña será: <strong>${newPassword}</strong>`;
+            document.getElementById('confirmModal').style.display = 'flex';
+        };
+
+        // Eliminar usuario
+        window.eliminarUsuario = function(id, username) {
+            pendingAction = { type: 'delete', userId: id, username: username };
+            document.getElementById('modalMessage').innerHTML = `⚠️ ¿Estás seguro de eliminar al usuario <strong>${username}</strong>?<br><br>Esta acción no se puede deshacer y eliminará todos sus pronósticos.`;
+            document.getElementById('confirmModal').style.display = 'flex';
+        };
+
+        // Ejecutar acción pendiente
+        async function executePendingAction() {
+            if (!pendingAction) return;
+            
+            const modal = document.getElementById('confirmModal');
+            modal.style.display = 'none';
+            
+            if (pendingAction.type === 'delete') {
+                try {
+                    const response = await fetch(`/api/admin/eliminar-usuario/${pendingAction.userId}`, { method: 'DELETE' });
+                    const data = await response.json();
+                    if (data.success) {
+                        showToast(`✅ Usuario "${pendingAction.username}" eliminado correctamente`, 'success');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        showAlert('❌ Error: ' + (data.message || data.error || 'Error al eliminar usuario'), 'danger');
+                    }
+                } catch (error) {
+                    showAlert('❌ Error de conexión', 'danger');
+                }
+            } else if (pendingAction.type === 'resetPassword') {
+                try {
+                    const response = await fetch(`/api/admin/reset-password/${pendingAction.userId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ new_password: pendingAction.newPassword })
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        showToast(`✅ Contraseña restablecida correctamente para "${pendingAction.username}"`, 'success');
+                    } else {
+                        showAlert('❌ Error: ' + (data.message || 'Error al resetear contraseña'), 'danger');
+                    }
+                } catch (error) {
+                    showAlert('❌ Error de conexión', 'danger');
+                }
+            }
+            
+            pendingAction = null;
+        }
+
+        function cancelAction() {
+            pendingAction = null;
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        // Eventos del modal
+        document.getElementById('modalConfirmBtn')?.addEventListener('click', executePendingAction);
+        document.getElementById('modalCancelBtn')?.addEventListener('click', cancelAction);
+        
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('confirmModal');
+            if (e.target === modal) {
+                cancelAction();
+            }
+        });
+        
+        // Logout
+        document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            fetch('/logout')
+                .then(() => window.location.href = "{{ url_for('login') }}");
+        });
+    </script>
+</body>
+</html>

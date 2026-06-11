@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mundial 2026 - Horarios Ecuador</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde: #00A86B;
+    --amarillo: #FFD700;
+    --rojo: #CC0000;
+    --azul-oscuro: #001F3F;
+    --azul-medio: #003366;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--azul-oscuro);
+    color: white;
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%);
+    border-bottom: 4px solid var(--amarillo);
+    padding: 24px 20px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255,215,0,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -30px; right: -30px;
+    width: 160px; height: 160px;
+    background: radial-gradient(circle, rgba(0,168,107,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 5vw, 52px);
+    letter-spacing: 3px;
+    color: var(--amarillo);
+    text-shadow: 0 2px 12px rgba(255,215,0,0.3);
+    position: relative;
+    z-index: 1;
+  }
+  .subtitulo {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 6px;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .leyenda {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 12px 20px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+  }
+  .leyenda-item { display: flex; align-items: center; gap: 8px; }
+
+  .badge {
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 11px;
+  }
+  .badge-si  { background: rgba(0,168,107,0.25); color: #4DFFB2; border: 1px solid rgba(0,168,107,0.4); }
+  .badge-no  { background: rgba(204,0,0,0.2);    color: #FF6B6B; border: 1px solid rgba(204,0,0,0.35); }
+  .badge-fds { background: rgba(120,80,200,0.2); color: #C8A8FF; border: 1px solid rgba(150,100,220,0.35); }
+
+  .controls {
+    display: flex;
+    gap: 8px;
+    padding: 12px 20px;
+    background: rgba(0,0,0,0.2);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .controls label { font-size: 12px; color: rgba(255,255,255,0.5); margin-right: 4px; }
+  .btn-filter {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-filter:hover { border-color: var(--amarillo); color: var(--amarillo); }
+  .btn-filter.active { background: var(--amarillo); color: var(--azul-oscuro); border-color: var(--amarillo); font-weight: 700; }
+
+  .search-box {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.05);
+    color: white;
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    width: 180px;
+  }
+  .search-box::placeholder { color: rgba(255,255,255,0.3); }
+  .search-box:focus { border-color: var(--verde); }
+  .contador { margin-left: auto; font-size: 12px; color: rgba(255,255,255,0.4); }
+
+  .tabla-wrapper { overflow-x: auto; padding: 0 12px 40px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 680px;
+  }
+
+  thead tr {
+    background: rgba(255,215,0,0.12);
+    border-bottom: 2px solid var(--amarillo);
+  }
+  th {
+    padding: 12px 10px;
+    text-align: left;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    color: var(--amarillo);
+    white-space: nowrap;
+  }
+  th:first-child { text-align: center; width: 46px; }
+  th.center { text-align: center; }
+
+  .fecha-header td {
+    padding: 10px 10px 6px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.45);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    background: rgba(0,0,0,0.15);
+  }
+  .fase-header td {
+    padding: 14px 10px 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 3px;
+    color: var(--verde);
+    border-top: 2px solid rgba(0,168,107,0.3);
+    background: rgba(0,168,107,0.05);
+    text-align: center;
+  }
+
+  tbody tr { border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
+  tbody tr:not(.fecha-header):not(.fase-header):hover { background: rgba(255,255,255,0.05); }
+  tbody tr.oficina-si  { background: rgba(0,168,107,0.04); }
+  tbody tr.ecuador-partido { background: rgba(255,215,0,0.07); border-left: 3px solid var(--amarillo); }
+  /* fines de semana: tono morado muy sutil */
+  tbody tr.finde { background: rgba(100,60,180,0.07); }
+
+  td { padding: 9px 10px; vertical-align: middle; color: rgba(255,255,255,0.85); }
+  td:first-child { text-align: center; color: rgba(255,255,255,0.3); font-size: 11px; font-weight: 600; }
+
+  .partido-nombre { font-weight: 600; color: white; }
+  .partido-nombre .eq { color: var(--amarillo); }
+
+  .hora-ec {
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .hora-ec.manana  { color: #60B8FF; }
+  .hora-ec.tarde   { color: #FFD700; }
+  .hora-ec.noche   { color: #FF8C42; }
+  .hora-ec.madrugada { color: #CC8EFF; }
+
+  .oficina-badge { text-align: center; white-space: nowrap; }
+  .grupo-tag {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .sede-tag {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+  }
+
+  .hidden { display: none !important; }
+
+  footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  @media (max-width: 600px) {
+    .sede-tag { display: none; }
+    .grupo-tag { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚽ MUNDIAL FIFA 2026</h1>
+  <div class="subtitulo">HORARIOS EN ECUADOR (UTC−5) &nbsp;·&nbsp; OFICINA: LUN–VIE 09:00–19:00</div>
+</header>
+
+<div class="leyenda">
+  <div class="leyenda-item"><span class="badge badge-si">✔ Sí</span> En horario laboral (Lun–Vie, 09–19h)</div>
+  <div class="leyenda-item"><span class="badge badge-no">✘ No</span> Fuera de horario (hora)</div>
+  <div class="leyenda-item"><span class="badge badge-fds">Fin de semana</span> Sáb/Dom — no aplica oficina</div>
+  <div class="leyenda-item"><span style="color:var(--amarillo);font-weight:700">⭐</span> Partido de Ecuador</div>
+</div>
+
+<div class="controls">
+  <label>Filtrar:</label>
+  <button class="btn-filter active" onclick="filtrar('todos',this)">Todos (104)</button>
+  <button class="btn-filter" onclick="filtrar('oficina',this)">Solo en oficina</button>
+  <button class="btn-filter" onclick="filtrar('ecuador',this)">⭐ Ecuador</button>
+  <input type="text" class="search-box" id="buscador" placeholder="🔍 Buscar equipo..." oninput="buscar(this.value)">
+  <span class="contador" id="contador"></span>
+</div>
+
+<div class="tabla-wrapper">
+<table id="tabla-mundial">
+<thead>
+  <tr>
+    <th>#</th>
+    <th>PARTIDO</th>
+    <th class="center">GRUPO</th>
+    <th class="center">FECHA</th>
+    <th class="center">HORA EC</th>
+    <th>SEDE</th>
+    <th class="center">OFICINA</th>
+  </tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+
+<footer>
+  Horarios en UTC−5 (Ecuador). Hora ET (verano, UTC−4) → Hora EC = ET − 1h. Oficina: Lun–Vie 09:00–19:00. Sáb y Dom no cuentan como horario de oficina. Fuente: FIFA / Al Jazeera. Jun 2026.
+</footer>
+
+<script>
+// dia: "Jue","Vie","Lun","Mar","Mié" = semana | "Sáb","Dom" = finde
+// horaEC: hora en Ecuador UTC-5
+// eq: true = partido de Ecuador
+
+const FASES = {
+  "FASE DE GRUPOS": [
+    // --- Jue 11 junio ---
+    { n:1,  partido:"México vs Sudáfrica",          grupo:"A", fecha:"11/06", dia:"Jue", ec:"14:00", sede:"Ciudad de México", eq:false },
+    { n:2,  partido:"Corea del Sur vs Chequia",     grupo:"A", fecha:"11/06", dia:"Jue", ec:"21:00", sede:"Guadalajara",      eq:false },
+    // --- Vie 12 junio ---
+    { n:3,  partido:"Canadá vs Bosnia y Herz.",     grupo:"B", fecha:"12/06", dia:"Vie", ec:"14:00", sede:"Toronto",          eq:false },
+    { n:4,  partido:"EE.UU. vs Paraguay",           grupo:"D", fecha:"12/06", dia:"Vie", ec:"20:00", sede:"Los Ángeles",      eq:false },
+    // --- Sáb 13 junio ---
+    { n:5,  partido:"Catar vs Suiza",               grupo:"B", fecha:"13/06", dia:"Sáb", ec:"14:00", sede:"San Francisco",    eq:false },
+    { n:6,  partido:"Brasil vs Marruecos",          grupo:"C", fecha:"13/06", dia:"Sáb", ec:"17:00", sede:"Nueva York/NJ",    eq:false },
+    { n:7,  partido:"Haití vs Escocia",             grupo:"C", fecha:"13/06", dia:"Sáb", ec:"20:00", sede:"Boston",           eq:false },
+    { n:8,  partido:"Australia vs Turquía",         grupo:"D", fecha:"13/06", dia:"Sáb", ec:"23:00", sede:"Vancouver",        eq:false },
+    // --- Dom 14 junio ---
+    { n:9,  partido:"Alemania vs Curazao",          grupo:"E", fecha:"14/06", dia:"Dom", ec:"12:00", sede:"Houston",          eq:false },
+    { n:10, partido:"Países Bajos vs Japón",        grupo:"F", fecha:"14/06", dia:"Dom", ec:"15:00", sede:"Dallas",           eq:false },
+    { n:11, partido:"Costa de Marfil vs Ecuador",   grupo:"E", fecha:"14/06", dia:"Dom", ec:"18:00", sede:"Filadelfia",       eq:true  },
+    { n:12, partido:"Suecia vs Túnez",              grupo:"F", fecha:"14/06", dia:"Dom", ec:"21:00", sede:"Monterrey",        eq:false },
+    // --- Lun 15 junio ---
+    { n:13, partido:"España vs Cabo Verde",         grupo:"H", fecha:"15/06", dia:"Lun", ec:"11:00", sede:"Atlanta",          eq:false },
+    { n:14, partido:"Bélgica vs Egipto",            grupo:"G", fecha:"15/06", dia:"Lun", ec:"14:00", sede:"Vancouver",        eq:false },
+    { n:15, partido:"Arabia Saudí vs Uruguay",      grupo:"H", fecha:"15/06", dia:"Lun", ec:"17:00", sede:"Miami",            eq:false },
+    { n:16, partido:"Irán vs Nueva Zelanda",        grupo:"G", fecha:"15/06", dia:"Lun", ec:"20:00", sede:"Los Ángeles",      eq:false },
+    // --- Mar 16 junio ---
+    { n:17, partido:"Francia vs Senegal",           grupo:"I", fecha:"16/06", dia:"Mar", ec:"14:00", sede:"Nueva York/NJ",    eq:false },
+    { n:18, partido:"Irak vs Noruega",              grupo:"I", fecha:"16/06", dia:"Mar", ec:"17:00", sede:"Boston",           eq:false },
+    { n:19, partido:"Argentina vs Argelia",         grupo:"J", fecha:"16/06", dia:"Mar", ec:"20:00", sede:"Kansas City",      eq:false },
+    { n:20, partido:"Austria vs Jordania",          grupo:"J", fecha:"16/06", dia:"Mar", ec:"23:00", sede:"San Francisco",    eq:false },
+    // --- Mié 17 junio ---
+    { n:21, partido:"Portugal vs RD Congo",         grupo:"K", fecha:"17/06", dia:"Mié", ec:"12:00", sede:"Houston",          eq:false },
+    { n:22, partido:"Inglaterra vs Croacia",        grupo:"L", fecha:"17/06", dia:"Mié", ec:"15:00", sede:"Dallas",           eq:false },
+    { n:23, partido:"Ghana vs Panamá",              grupo:"L", fecha:"17/06", dia:"Mié", ec:"18:00", sede:"Toronto",          eq:false },
+    { n:24, partido:"Colombia vs Uzbekistán",       grupo:"K", fecha:"17/06", dia:"Mié", ec:"21:00", sede:"Ciudad de México", eq:false },
+    // --- Jue 18 junio ---
+    { n:25, partido:"Chequia vs Sudáfrica",         grupo:"A", fecha:"18/06", dia:"Jue", ec:"11:00", sede:"Atlanta",          eq:false },
+    { n:26, partido:"Suiza vs Bosnia y Herz.",      grupo:"B", fecha:"18/06", dia:"Jue", ec:"14:00", sede:"Los Ángeles",      eq:false },
+    { n:27, partido:"Canadá vs Catar",              grupo:"B", fecha:"18/06", dia:"Jue", ec:"17:00", sede:"Vancouver",        eq:false },
+    { n:28, partido:"México vs Corea del Sur",      grupo:"A", fecha:"18/06", dia:"Jue", ec:"20:00", sede:"Guadalajara",      eq:false },
+    // --- Vie 19 junio ---
+    { n:29, partido:"EE.UU. vs Australia",          grupo:"D", fecha:"19/06", dia:"Vie", ec:"14:00", sede:"Seattle",          eq:false },
+    { n:30, partido:"Escocia vs Marruecos",         grupo:"C", fecha:"19/06", dia:"Vie", ec:"17:00", sede:"Boston",           eq:false },
+    { n:31, partido:"Brasil vs Haití",              grupo:"C", fecha:"19/06", dia:"Vie", ec:"20:00", sede:"Filadelfia",       eq:false },
+    { n:32, partido:"Turquía vs Paraguay",          grupo:"D", fecha:"19/06", dia:"Vie", ec:"23:00", sede:"San Francisco",    eq:false },
+    // --- Sáb 20 junio ---
+    { n:33, partido:"Países Bajos vs TBD",          grupo:"F", fecha:"20/06", dia:"Sáb", ec:"12:00", sede:"Houston",          eq:false },
+    { n:34, partido:"Alemania vs Costa de Marfil",  grupo:"E", fecha:"20/06", dia:"Sáb", ec:"15:00", sede:"Toronto",          eq:false },
+    { n:35, partido:"Ecuador vs Curazao",           grupo:"E", fecha:"20/06", dia:"Sáb", ec:"19:00", sede:"Kansas City",      eq:true  },
+    { n:36, partido:"Túnez vs Japón",               grupo:"F", fecha:"20/06", dia:"Sáb", ec:"23:00", sede:"Monterrey",        eq:false },
+    // --- Dom 21 junio ---
+    { n:37, partido:"España vs Arabia Saudí",       grupo:"H", fecha:"21/06", dia:"Dom", ec:"11:00", sede:"Atlanta",          eq:false },
+    { n:38, partido:"Bélgica vs Irán",              grupo:"G", fecha:"21/06", dia:"Dom", ec:"14:00", sede:"Los Ángeles",      eq:false },
+    { n:39, partido:"Uruguay vs Cabo Verde",        grupo:"H", fecha:"21/06", dia:"Dom", ec:"17:00", sede:"Miami",            eq:false },
+    { n:40, partido:"Nueva Zelanda vs Egipto",      grupo:"G", fecha:"21/06", dia:"Dom", ec:"20:00", sede:"Vancouver",        eq:false },
+    // --- Lun 22 junio ---
+    { n:41, partido:"Argentina vs Austria",         grupo:"J", fecha:"22/06", dia:"Lun", ec:"12:00", sede:"Dallas",           eq:false },
+    { n:42, partido:"Francia vs Irak",              grupo:"I", fecha:"22/06", dia:"Lun", ec:"16:00", sede:"Filadelfia",       eq:false },
+    { n:43, partido:"Noruega vs Senegal",           grupo:"I", fecha:"22/06", dia:"Lun", ec:"19:00", sede:"Nueva York/NJ",    eq:false },
+    { n:44, partido:"Jordania vs Argelia",          grupo:"J", fecha:"22/06", dia:"Lun", ec:"22:00", sede:"San Francisco",    eq:false },
+    // --- Mar 23 junio ---
+    { n:45, partido:"Portugal vs Uzbekistán",       grupo:"K", fecha:"23/06", dia:"Mar", ec:"12:00", sede:"Houston",          eq:false },
+    { n:46, partido:"Inglaterra vs Ghana",          grupo:"L", fecha:"23/06", dia:"Mar", ec:"15:00", sede:"Boston",           eq:false },
+    { n:47, partido:"Panamá vs Croacia",            grupo:"L", fecha:"23/06", dia:"Mar", ec:"18:00", sede:"Toronto",          eq:false },
+    { n:48, partido:"Colombia vs TBD",              grupo:"K", fecha:"23/06", dia:"Mar", ec:"21:00", sede:"Guadalajara",      eq:false },
+    // --- Mié 24 junio ---
+    { n:49, partido:"Suiza vs Canadá",              grupo:"B", fecha:"24/06", dia:"Mié", ec:"14:00", sede:"Vancouver",        eq:false },
+    { n:50, partido:"Bosnia vs Catar",              grupo:"B", fecha:"24/06", dia:"Mié", ec:"14:00", sede:"Seattle",          eq:false },
+    { n:51, partido:"Escocia vs Brasil",            grupo:"C", fecha:"24/06", dia:"Mié", ec:"17:00", sede:"Miami",            eq:false },
+    { n:52, partido:"Marruecos vs Haití",           grupo:"C", fecha:"24/06", dia:"Mié", ec:"17:00", sede:"Atlanta",          eq:false },
+    { n:53, partido:"TBD vs México",                grupo:"A", fecha:"24/06", dia:"Mié", ec:"20:00", sede:"Ciudad de México", eq:false },
+    { n:54, partido:"Sudáfrica vs Corea del Sur",   grupo:"A", fecha:"24/06", dia:"Mié", ec:"20:00", sede:"Monterrey",        eq:false },
+    // --- Jue 25 junio ---
+    { n:55, partido:"Ecuador vs Alemania",          grupo:"E", fecha:"25/06", dia:"Jue", ec:"15:00", sede:"Nueva York/NJ",    eq:true  },
+    { n:56, partido:"Curazao vs Costa de Marfil",   grupo:"E", fecha:"25/06", dia:"Jue", ec:"15:00", sede:"Filadelfia",       eq:false },
+    { n:57, partido:"Japón vs TBD",                 grupo:"F", fecha:"25/06", dia:"Jue", ec:"18:00", sede:"Dallas",           eq:false },
+    { n:58, partido:"Túnez vs Países Bajos",        grupo:"F", fecha:"25/06", dia:"Jue", ec:"18:00", sede:"Kansas City",      eq:false },
+    { n:59, partido:"TBD vs EE.UU.",                grupo:"D", fecha:"25/06", dia:"Jue", ec:"21:00", sede:"Los Ángeles",      eq:false },
+    { n:60, partido:"Paraguay vs Australia",        grupo:"D", fecha:"25/06", dia:"Jue", ec:"21:00", sede:"San Francisco",    eq:false },
+    // --- Vie 26 junio ---
+    { n:61, partido:"Noruega vs Francia",           grupo:"I", fecha:"26/06", dia:"Vie", ec:"14:00", sede:"Boston",           eq:false },
+    { n:62, partido:"Senegal vs Irak",              grupo:"I", fecha:"26/06", dia:"Vie", ec:"14:00", sede:"Toronto",          eq:false },
+    { n:63, partido:"Cabo Verde vs Arabia Saudí",   grupo:"H", fecha:"26/06", dia:"Vie", ec:"19:00", sede:"Houston",          eq:false },
+    { n:64, partido:"Uruguay vs España",            grupo:"H", fecha:"26/06", dia:"Vie", ec:"19:00", sede:"Guadalajara",      eq:false },
+    { n:65, partido:"Egipto vs Irán",               grupo:"G", fecha:"26/06", dia:"Vie", ec:"22:00", sede:"Seattle",          eq:false },
+    { n:66, partido:"Nueva Zelanda vs Bélgica",     grupo:"G", fecha:"26/06", dia:"Vie", ec:"22:00", sede:"Vancouver",        eq:false },
+    // --- Sáb 27 junio ---
+    { n:67, partido:"Panamá vs Inglaterra",         grupo:"L", fecha:"27/06", dia:"Sáb", ec:"16:00", sede:"Nueva York/NJ",    eq:false },
+    { n:68, partido:"Croacia vs Ghana",             grupo:"L", fecha:"27/06", dia:"Sáb", ec:"16:00", sede:"Filadelfia",       eq:false },
+    { n:69, partido:"Colombia vs Portugal",         grupo:"K", fecha:"27/06", dia:"Sáb", ec:"18:30", sede:"Miami",            eq:false },
+    { n:70, partido:"TBD vs Uzbekistán",            grupo:"K", fecha:"27/06", dia:"Sáb", ec:"18:30", sede:"Atlanta",          eq:false },
+    { n:71, partido:"Argelia vs Austria",           grupo:"J", fecha:"27/06", dia:"Sáb", ec:"21:00", sede:"Kansas City",      eq:false },
+    { n:72, partido:"Jordania vs Argentina",        grupo:"J", fecha:"27/06", dia:"Sáb", ec:"21:00", sede:"Dallas",           eq:false },
+  ],
+  "RONDA DE 32 — OCTAVOS": [
+    // Dom 28
+    { n:73, partido:"Octavos R32-1",  grupo:"R32", fecha:"28/06", dia:"Dom", ec:"14:00", sede:"Los Ángeles",    eq:false },
+    // Lun 29
+    { n:74, partido:"Octavos R32-2",  grupo:"R32", fecha:"29/06", dia:"Lun", ec:"12:00", sede:"Houston",        eq:false },
+    { n:75, partido:"Octavos R32-3",  grupo:"R32", fecha:"29/06", dia:"Lun", ec:"15:30", sede:"Boston",         eq:false },
+    { n:76, partido:"Octavos R32-4",  grupo:"R32", fecha:"29/06", dia:"Lun", ec:"20:00", sede:"Monterrey",      eq:false },
+    // Mar 30
+    { n:77, partido:"Octavos R32-5",  grupo:"R32", fecha:"30/06", dia:"Mar", ec:"12:00", sede:"Dallas",         eq:false },
+    { n:78, partido:"Octavos R32-6",  grupo:"R32", fecha:"30/06", dia:"Mar", ec:"16:00", sede:"Nueva York/NJ",  eq:false },
+    { n:79, partido:"Octavos R32-7",  grupo:"R32", fecha:"30/06", dia:"Mar", ec:"20:00", sede:"Ciudad de México",eq:false},
+    // Mié 1 jul
+    { n:80, partido:"Octavos R32-8",  grupo:"R32", fecha:"01/07", dia:"Mié", ec:"11:00", sede:"Atlanta",        eq:false },
+    { n:81, partido:"Octavos R32-9",  grupo:"R32", fecha:"01/07", dia:"Mié", ec:"15:00", sede:"Seattle",        eq:false },
+    { n:82, partido:"Octavos R32-10", grupo:"R32", fecha:"01/07", dia:"Mié", ec:"19:00", sede:"San Francisco",  eq:false },
+    // Jue 2 jul
+    { n:83, partido:"Octavos R32-11", grupo:"R32", fecha:"02/07", dia:"Jue", ec:"14:00", sede:"Los Ángeles",    eq:false },
+    { n:84, partido:"Octavos R32-12", grupo:"R32", fecha:"02/07", dia:"Jue", ec:"18:00", sede:"Toronto",        eq:false },
+    { n:85, partido:"Octavos R32-13", grupo:"R32", fecha:"02/07", dia:"Jue", ec:"22:00", sede:"Vancouver",      eq:false },
+    // Vie 3 jul
+    { n:86, partido:"Octavos R32-14", grupo:"R32", fecha:"03/07", dia:"Vie", ec:"13:00", sede:"Dallas",         eq:false },
+    { n:87, partido:"Octavos R32-15", grupo:"R32", fecha:"03/07", dia:"Vie", ec:"17:00", sede:"Miami",          eq:false },
+    { n:88, partido:"Octavos R32-16", grupo:"R32", fecha:"03/07", dia:"Vie", ec:"20:30", sede:"Kansas City",    eq:false },
+  ],
+  "RONDA DE 16 — DIECISEISAVOS": [
+    // Sáb 4 jul
+    { n:89, partido:"Dieciseisavos R16-1", grupo:"R16", fecha:"04/07", dia:"Sáb", ec:"12:00", sede:"Houston",       eq:false },
+    { n:90, partido:"Dieciseisavos R16-2", grupo:"R16", fecha:"04/07", dia:"Sáb", ec:"16:00", sede:"Filadelfia",    eq:false },
+    // Dom 5 jul
+    { n:91, partido:"Dieciseisavos R16-3", grupo:"R16", fecha:"05/07", dia:"Dom", ec:"15:00", sede:"Nueva York/NJ", eq:false },
+    { n:92, partido:"Dieciseisavos R16-4", grupo:"R16", fecha:"05/07", dia:"Dom", ec:"19:00", sede:"Ciudad de México",eq:false},
+    // Lun 6 jul
+    { n:93, partido:"Dieciseisavos R16-5", grupo:"R16", fecha:"06/07", dia:"Lun", ec:"14:00", sede:"Dallas",        eq:false },
+    { n:94, partido:"Dieciseisavos R16-6", grupo:"R16", fecha:"06/07", dia:"Lun", ec:"19:00", sede:"Seattle",       eq:false },
+    // Mar 7 jul
+    { n:95, partido:"Dieciseisavos R16-7", grupo:"R16", fecha:"07/07", dia:"Mar", ec:"11:00", sede:"Atlanta",       eq:false },
+    { n:96, partido:"Dieciseisavos R16-8", grupo:"R16", fecha:"07/07", dia:"Mar", ec:"15:00", sede:"Vancouver",     eq:false },
+  ],
+  "CUARTOS DE FINAL": [
+    // Jue 9 jul
+    { n:97,  partido:"Cuartos QF-1", grupo:"QF", fecha:"09/07", dia:"Jue", ec:"15:00", sede:"Boston",       eq:false },
+    // Vie 10 jul
+    { n:98,  partido:"Cuartos QF-2", grupo:"QF", fecha:"10/07", dia:"Vie", ec:"14:00", sede:"Los Ángeles",  eq:false },
+    // Sáb 11 jul
+    { n:99,  partido:"Cuartos QF-3", grupo:"QF", fecha:"11/07", dia:"Sáb", ec:"16:00", sede:"Miami",        eq:false },
+    { n:100, partido:"Cuartos QF-4", grupo:"QF", fecha:"11/07", dia:"Sáb", ec:"20:00", sede:"Kansas City",  eq:false },
+  ],
+  "SEMIFINALES": [
+    // Mar 14 jul
+    { n:101, partido:"Semifinal 1", grupo:"SF", fecha:"14/07", dia:"Mar", ec:"14:00", sede:"Dallas",   eq:false },
+    // Mié 15 jul
+    { n:102, partido:"Semifinal 2", grupo:"SF", fecha:"15/07", dia:"Mié", ec:"14:00", sede:"Atlanta",  eq:false },
+  ],
+  "TERCER PUESTO Y FINAL": [
+    // Sáb 18 jul
+    { n:103, partido:"🥉 Tercer Puesto",  grupo:"3P", fecha:"18/07", dia:"Sáb", ec:"16:00", sede:"Miami",         eq:false },
+    // Dom 19 jul
+    { n:104, partido:"🏆 FINAL",          grupo:"🏆", fecha:"19/07", dia:"Dom", ec:"14:00", sede:"Nueva York/NJ", eq:false },
+  ]
+};
+
+const FINDE = ["Sáb","Dom"];
+
+function calcOficina(dia, horaStr) {
+  if (FINDE.includes(dia)) return 'fds'; // fin de semana → no aplica
+  const [h] = horaStr.split(':').map(Number);
+  const m = parseInt(horaStr.split(':')[1]);
+  const mins = h * 60 + m;
+  return (mins >= 9*60 && mins < 19*60) ? 'si' : 'no';
+}
+
+function claseHora(horaStr) {
+  const h = parseInt(horaStr.split(':')[0]);
+  if (h >= 5  && h < 12) return 'manana';
+  if (h >= 12 && h < 18) return 'tarde';
+  if (h >= 18 && h < 22) return 'noche';
+  return 'madrugada';
+}
+
+function badgeOficina(estado) {
+  if (estado === 'fds') return `<span class="badge badge-fds">Fin de semana</span>`;
+  if (estado === 'si')  return `<span class="badge badge-si">✔ Sí</span>`;
+  return                       `<span class="badge badge-no">✘ No</span>`;
+}
+
+function construirTabla() {
+  const tbody = document.getElementById('tbody');
+  let total = 0;
+
+  for (const [fase, partidos] of Object.entries(FASES)) {
+    const trFase = document.createElement('tr');
+    trFase.className = 'fase-header';
+    trFase.innerHTML = `<td colspan="7">◆ ${fase}</td>`;
+    tbody.appendChild(trFase);
+
+    let fechaActual = '';
+    for (const p of partidos) {
+      if (p.fecha !== fechaActual) {
+        fechaActual = p.fecha;
+        const trF = document.createElement('tr');
+        trF.className = 'fecha-header';
+        trF.setAttribute('data-fecha-header','1');
+        const esFinde = FINDE.includes(p.dia);
+        const label = esFinde ? `📅 ${p.fecha} ${p.dia} — fin de semana` : `📅 ${p.fecha} ${p.dia}`;
+        trF.innerHTML = `<td colspan="7">${label}</td>`;
+        tbody.appendChild(trF);
+      }
+
+      const oficina = calcOficina(p.dia, p.ec);
+      const esFinde = FINDE.includes(p.dia);
+
+      const tr = document.createElement('tr');
+      let rowClass = '';
+      if (p.eq) rowClass = 'ecuador-partido';
+      else if (esFinde) rowClass = 'finde';
+      else if (oficina === 'si') rowClass = 'oficina-si';
+      tr.className = rowClass;
+      tr.setAttribute('data-oficina', oficina === 'si' ? '1' : '0');
+      tr.setAttribute('data-ecuador', p.eq ? '1' : '0');
+      tr.setAttribute('data-partido', p.partido.toLowerCase());
+
+      const nombre = p.eq
+        ? `<span class="partido-nombre">⭐ <span class="eq">${p.partido}</span></span>`
+        : `<span class="partido-nombre">${p.partido}</span>`;
+
+      tr.innerHTML = `
+        <td>${p.n}</td>
+        <td>${nombre}</td>
+        <td><span class="grupo-tag">${p.grupo}</span></td>
+        <td style="text-align:center;font-size:12px;white-space:nowrap">${p.fecha}</td>
+        <td class="hora-ec ${claseHora(p.ec)}">${p.ec}</td>
+        <td class="sede-tag">${p.sede}</td>
+        <td class="oficina-badge">${badgeOficina(oficina)}</td>
+      `;
+      tbody.appendChild(tr);
+      total++;
+    }
+  }
+
+  document.querySelector('.btn-filter.active').textContent = `Todos (${total})`;
+  actualizarContador();
+}
+
+let filtroActivo = 'todos';
+let busquedaActiva = '';
+
+function filtrar(tipo, btn) {
+  filtroActivo = tipo;
+  document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  aplicarFiltros();
+}
+
+function buscar(val) {
+  busquedaActiva = val.toLowerCase();
+  aplicarFiltros();
+}
+
+function aplicarFiltros() {
+  const filas = document.querySelectorAll('#tbody tr:not(.fase-header):not(.fecha-header)');
+  let visible = 0;
+
+  filas.forEach(tr => {
+    const esOficina = tr.getAttribute('data-oficina') === '1';
+    const esEcuador = tr.getAttribute('data-ecuador') === '1';
+    const partido   = tr.getAttribute('data-partido') || '';
+
+    let mostrar = true;
+    if (filtroActivo === 'oficina' && !esOficina) mostrar = false;
+    if (filtroActivo === 'ecuador' && !esEcuador) mostrar = false;
+    if (busquedaActiva && !partido.includes(busquedaActiva)) mostrar = false;
+
+    tr.classList.toggle('hidden', !mostrar);
+    if (mostrar) visible++;
+  });
+
+  document.querySelectorAll('#tbody tr[data-fecha-header]').forEach(hf => {
+    let next = hf.nextElementSibling;
+    let hay = false;
+    while (next && !next.hasAttribute('data-fecha-header') && !next.classList.contains('fase-header')) {
+      if (!next.classList.contains('hidden')) { hay = true; break; }
+      next = next.nextElementSibling;
+    }
+    hf.classList.toggle('hidden', !hay);
+  });
+
+  document.querySelectorAll('#tbody tr.fase-header').forEach(hf => {
+    let next = hf.nextElementSibling;
+    let hay = false;
+    while (next && !next.classList.contains('fase-header')) {
+      if (!next.classList.contains('hidden') && !next.hasAttribute('data-fecha-header')) { hay = true; break; }
+      next = next.nextElementSibling;
+    }
+    hf.classList.toggle('hidden', !hay);
+  });
+
+  actualizarContador(visible);
+}
+
+function actualizarContador(n) {
+  const total = document.querySelectorAll('#tbody tr:not(.fase-header):not(.fecha-header)').length;
+  const m = n !== undefined ? n : total;
+  document.getElementById('contador').textContent = `Mostrando ${m} de ${total} partidos`;
+}
+
+construirTabla();
+</script>
+</body>
+</html>

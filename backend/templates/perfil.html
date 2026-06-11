@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Mi Perfil - Polla Mundialista DGA 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&family=Barlow+Condensed:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --ec-yellow: #FFD100;
+            --ec-blue:   #003580;
+            --ec-red:    #CC0001;
+            --ec-dark:   #001a40;
+            --ec-mid:    #002a66;
+            --ec-green:  #1a6b1a;
+            --white:     #ffffff;
+            --off-white: #f4f1e8;
+            --gold:      #c8920a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Barlow', sans-serif;
+            background: var(--ec-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(ellipse at 20% 0%, rgba(0,53,128,0.6) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 100%, rgba(26,107,26,0.4) 0%, transparent 60%),
+                        var(--ec-dark);
+            pointer-events: none;
+        }
+        
+        .bg-canvas::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255,209,0,0.06) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridDrift 25s linear infinite;
+        }
+        
+        @keyframes gridDrift {
+            to { background-position: 60px 60px; }
+        }
+
+        /* Floating balls */
+        .floater {
+            position: fixed;
+            z-index: 0;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            opacity: 0.18;
+            animation: floatBall 18s ease-in-out infinite;
+        }
+        
+        .floater-1 { background: var(--ec-yellow); top: -80px; left: -80px; animation-delay: 0s; }
+        .floater-2 { background: var(--ec-blue); bottom: 10%; right: -100px; animation-delay: -6s; }
+        .floater-3 { background: var(--ec-red); top: 50%; left: 40%; animation-delay: -12s; width: 200px; height: 200px; }
+        
+        @keyframes floatBall {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -40px) scale(1.1); }
+            66% { transform: translate(-20px, 30px) scale(0.9); }
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(0,26,64,0.95);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,209,0,0.15);
+        }
+        
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            height: 64px;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: var(--white);
+            text-decoration: none;
+            z-index: 1001;
+        }
+        
+        .nav-brand .ball {
+            font-size: 22px;
+            animation: spin 4s linear infinite;
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .menu-toggle span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--ec-yellow);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-toggle.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+        
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .menu-toggle.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--ec-yellow);
+        }
+        
+        .nav-stripe {
+            height: 3px;
+            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 64px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 64px);
+                background: rgba(0,26,64,0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 32px;
+                transition: left 0.3s ease;
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .nav-links a {
+                font-size: 18px;
+                padding: 12px;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 80px 16px 40px;
+        }
+
+        /* Profile Header */
+        .profile-header {
+            background: linear-gradient(135deg, rgba(0,26,64,0.9) 0%, rgba(0,53,128,0.7) 100%);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,209,0,0.3);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        
+        .profile-header:hover {
+            border-color: rgba(255,209,0,0.6);
+            transform: translateY(-2px);
+        }
+        
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--ec-yellow);
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        .edit-avatar-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: var(--ec-yellow);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .edit-avatar-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .user-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            letter-spacing: 0.04em;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+        
+        .user-info {
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        
+        .user-info i {
+            width: 24px;
+            color: var(--ec-yellow);
+        }
+        
+        .rank-badge {
+            background: linear-gradient(135deg, var(--ec-yellow), #ffaa00);
+            color: var(--ec-dark);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .rank-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px;
+            color: var(--ec-yellow);
+            margin-top: 10px;
+        }
+
+        /* Stats Cards */
+        .fifa-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card-fifa {
+            background: linear-gradient(135deg, rgba(0,26,64,0.9), rgba(0,53,128,0.7));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,209,0,0.2);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        
+        .stat-card-fifa:hover {
+            transform: translateY(-5px);
+            border-color: var(--ec-yellow);
+        }
+        
+        .stat-icon {
+            font-size: 32px;
+            color: var(--ec-yellow);
+            margin-bottom: 12px;
+        }
+        
+        .stat-value {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            color: var(--white);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+        
+        .stat-sub {
+            font-size: 10px;
+            color: var(--ec-yellow);
+            margin-top: 8px;
+        }
+        
+        .progress-bar-fifa {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            height: 6px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, var(--ec-yellow), #ffaa00);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        /* Cards generales */
+        .card {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .card-header {
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 12px 16px;
+        }
+        
+        .card-header h5 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            margin: 0;
+            color: var(--white);
+        }
+        
+        .card-header h5 i {
+            color: var(--ec-yellow);
+            margin-right: 8px;
+        }
+        
+        .card-body {
+            padding: 16px;
+        }
+
+        /* Logros */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        
+        .achievement-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .achievement-card.achieved {
+            border-color: var(--ec-yellow);
+            background: rgba(255,209,0,0.1);
+        }
+        
+        .achievement-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .achievement-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .achievement-icon.achieved {
+            color: var(--ec-yellow);
+        }
+        
+        .achievement-icon.locked {
+            color: rgba(255,255,255,0.2);
+        }
+        
+        .achievement-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+        
+        .achievement-desc {
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+        }
+        
+        .achievement-status {
+            margin-top: 8px;
+            font-size: 11px;
+        }
+        
+        .achievement-status.achieved {
+            color: var(--ec-yellow);
+        }
+        
+        .achievement-status.locked {
+            color: rgba(255,255,255,0.3);
+        }
+
+        /* Edit Section */
+        .edit-section {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 24px;
+            margin-top: 24px;
+        }
+        
+        .edit-section h4 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            color: var(--ec-yellow);
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 6px;
+            display: block;
+        }
+        
+        .form-control, .form-select {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: var(--white);
+            font-size: 14px;
+            width: 100%;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--ec-yellow);
+            background: rgba(255,255,255,0.15);
+        }
+        
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+        
+        .form-text {
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        
+        .btn-primary {
+            background: var(--ec-yellow);
+            color: var(--ec-dark);
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.02);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* Toast Notifications */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            z-index: 2000;
+            animation: fadeInUp 0.3s ease;
+        }
+        
+        .toast-notification.success {
+            background: var(--ec-green);
+            border-left: 4px solid var(--ec-yellow);
+        }
+        
+        .toast-notification.error {
+            background: var(--ec-red);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* Spinner */
+        .spinner-border {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            vertical-align: text-bottom;
+            border: 0.2em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border .75s linear infinite;
+        }
+        
+        @keyframes spinner-border {
+            to { transform: rotate(360deg); }
+        }
+        
+        .text-warning {
+            color: var(--ec-yellow);
+        }
+        
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            background: rgba(0,0,0,0.5);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 20px 16px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer-stripe {
+            height: 3px;
+            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            width: 80px;
+            margin: 0 auto 12px;
+            border-radius: 3px;
+        }
+        
+        .footer-text {
+            font-size: 10px;
+            color: rgba(255,255,255,0.35);
+        }
+
+        /* Grid Responsive */
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -8px;
+        }
+        
+        .col-md-3, .col-md-4, .col-md-6, .col-md-8, .col-12 {
+            padding: 0 8px;
+        }
+        
+        .col-md-3 { flex: 0 0 25%; max-width: 25%; }
+        .col-md-6 { flex: 0 0 50%; max-width: 50%; }
+        .col-md-8 { flex: 0 0 66.666%; max-width: 66.666%; }
+        .col-12 { flex: 0 0 100%; max-width: 100%; }
+        
+        .text-center { text-align: center; }
+        .text-md-start { text-align: left; }
+        .mb-3 { margin-bottom: 1rem; }
+        .mb-4 { margin-bottom: 1.5rem; }
+        .mt-3 { margin-top: 1rem; }
+        .mt-4 { margin-top: 1.5rem; }
+        .py-4 { padding: 1.5rem 0; }
+        
+        /* Alertas */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: rgba(26,107,26,0.2);
+            border: 1px solid var(--ec-green);
+            color: #90EE90;
+        }
+        
+        .alert-danger {
+            background: rgba(204,0,1,0.2);
+            border: 1px solid var(--ec-red);
+            color: #ff6b6b;
+        }
+        
+        @media (max-width: 768px) {
+            .fifa-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .achievements-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .profile-avatar {
+                width: 90px;
+                height: 90px;
+            }
+            
+            .user-name {
+                font-size: 24px;
+            }
+            
+            .rank-number {
+                font-size: 36px;
+            }
+            
+            .stat-value {
+                font-size: 28px;
+            }
+            
+            .col-md-3, .col-md-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+                margin-bottom: 1rem;
+            }
+            
+            .text-md-start {
+                text-align: center !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .fifa-stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .achievements-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--ec-yellow);
+            border-radius: 3px;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-canvas"></div>
+    <div class="floater floater-1"></div>
+    <div class="floater floater-2"></div>
+    <div class="floater floater-3"></div>
+
+    <nav>
+        <div class="nav-container">
+            <a class="nav-brand" href="{{ url_for('dashboard') }}">
+                <span class="ball">⚽</span> Polla Mundialista DGA 2026
+            </a>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('pronosticos') }}">Pronósticos</a></li>
+                <li><a href="{{ url_for('tabla_posiciones') }}">Tabla</a></li>
+                <li><a href="{{ url_for('perfil') }}" class="active">Mi Perfil</a></li>
+                {% if session.es_admin %}
+                <li><a href="{{ url_for('admin_panel') }}">Admin</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('logout') }}" id="logoutBtn">Salir</a></li>
+            </ul>
+        </div>
+        <div class="nav-stripe"></div>
+    </nav>
+
+    <div class="container">
+        <div class="profile-header fade-in">
+            <div class="row" style="align-items: center;">
+                <div class="col-md-3 text-center mb-3 mb-md-0">
+                    <div class="avatar-container">
+                        <img id="avatarImg" src="" alt="Avatar" class="profile-avatar">
+                        <div class="edit-avatar-btn" onclick="document.getElementById('avatarInput').click()">
+                            <i class="fas fa-camera" style="color: #001a40;"></i>
+                        </div>
+                        <input type="file" id="avatarInput" style="display: none" accept="image/jpeg,image/png,image/jpg,image/gif">
+                    </div>
+                </div>
+                <div class="col-md-6 text-center text-md-start">
+                    <h1 class="user-name" id="userName">Cargando...</h1>
+                    <p class="user-info"><i class="fas fa-user-tag"></i> @<span id="userUsername">username</span></p>
+                    <p class="user-info"><i class="fas fa-building"></i> <span id="userArea">-</span></p>
+                    <p class="user-info"><i class="fas fa-envelope"></i> <span id="userEmail">-</span></p>
+                    <p class="user-info"><i class="fas fa-calendar-alt"></i> Miembro desde: <span id="userSince">-</span></p>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="rank-badge">
+                        <i class="fas fa-chart-line"></i> RANKING
+                    </div>
+                    <div class="rank-number" id="userRank">#-</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="fifa-stats-grid">
+            <div class="stat-card-fifa">
+                <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="stat-value" id="totalPoints">0</div>
+                <div class="stat-label">PUNTOS TOTALES</div>
+                <div class="progress-bar-fifa">
+                    <div class="progress-fill" id="pointsProgress" style="width: 0%"></div>
+                </div>
+                <div class="stat-sub">Nivel en progreso</div>
+            </div>
+            <div class="stat-card-fifa">
+                <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                <div class="stat-value" id="avgPointsPerMatch">0</div>
+                <div class="stat-label">PROMEDIO POR PARTIDO</div>
+                <div class="stat-sub">Eficiencia</div>
+            </div>
+            <div class="stat-card-fifa">
+                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-value" id="exactResults">0</div>
+                <div class="stat-label">RESULTADOS EXACTOS</div>
+                <div class="stat-sub">Premio especial</div>
+            </div>
+            <div class="stat-card-fifa">
+                <div class="stat-icon"><i class="fas fa-bullseye"></i></div>
+                <div class="stat-value" id="successRate">0<span style="font-size:20px;">%</span></div>
+                <div class="stat-label">TASA DE ACIERTO</div>
+                <div class="stat-sub">Precisión</div>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-pie"></i> DISTRIBUCIÓN DE PUNTOS</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="pointsDistributionChart" height="220"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-line"></i> EVOLUCIÓN SEMANAL</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="weeklyEvolutionChart" height="220"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-medal"></i> LOGROS Y MEDALLAS</h5>
+            </div>
+            <div class="card-body" id="achievements">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-warning" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="edit-section">
+            <h4><i class="fas fa-edit"></i> EDITAR PERFIL</h4>
+            <div id="alertMessage" class="alert"></div>
+            <form id="editProfileForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">NOMBRE COMPLETO</label>
+                        <input type="text" class="form-control" id="editNombreCompleto" placeholder="Tu nombre completo">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">ÁREA DE TRABAJO</label>
+                        <select class="form-select" id="editAreaTrabajo">
+                            <option value="">Selecciona tu área</option>
+                            <option value="Legal">Legal</option>
+                            <option value="IT">Tecnología</option>
+                            <option value="Recursos Humanos">Recursos Humanos</option>
+                            <option value="Finanzas">Finanzas</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Operaciones">Operaciones</option>
+                            <option value="Otros">Otros</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">EMAIL</label>
+                        <input type="email" class="form-control" id="editEmail" placeholder="tu@email.com">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn-primary" id="saveProfileBtn">
+                            <i class="fas fa-save"></i> GUARDAR CAMBIOS
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- NUEVA SECCIÓN: CAMBIAR CONTRASEÑA -->
+        <div class="edit-section mt-4">
+            <h4><i class="fas fa-key"></i> CAMBIAR CONTRASEÑA</h4>
+            <div id="passwordAlert" class="alert"></div>
+            <form id="changePasswordForm">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">CONTRASEÑA ACTUAL</label>
+                        <input type="password" class="form-control" id="currentPassword" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">NUEVA CONTRASEÑA</label>
+                        <input type="password" class="form-control" id="newPassword" required minlength="6">
+                        <div class="form-text text-white-50">Mínimo 6 caracteres</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">CONFIRMAR NUEVA CONTRASEÑA</label>
+                        <input type="password" class="form-control" id="confirmNewPassword" required>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn-primary" id="changePasswordBtn">
+                            <i class="fas fa-save"></i> ACTUALIZAR CONTRASEÑA
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-stripe"></div>
+        <div class="footer-text">© 2026 Polla Mundialista DGA LEGAL - "No solo litigamos resultados, también los pronosticamos." ⚖️⚽️</div>
+    </footer>
+
+    <script>
+        // Menú hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+        }
+        
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (menuToggle) menuToggle.classList.remove('active');
+                if (navLinks) navLinks.classList.remove('active');
+            });
+        });
+        
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type}`;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+        
+        // Variables globales
+        let currentUser = null;
+        let pointsDistChart = null;
+        let weeklyChart = null;
+        
+        // Función para mostrar alertas
+        function showAlert(message, type, container = 'alertMessage') {
+            const alertDiv = document.getElementById(container);
+            if (!alertDiv) return;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i> ${message}`;
+            alertDiv.style.display = 'block';
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Verificar autenticación
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/verificar-sesion');
+                const data = await response.json();
+                if (!data.autenticado) {
+                    window.location.href = "{{ url_for('login') }}";
+                } else {
+                    currentUser = data.usuario;
+                    await loadProfile();
+                }
+            } catch (error) {
+                console.error('Error checking auth:', error);
+                window.location.href = "{{ url_for('login') }}";
+            }
+        }
+        
+        // Cargar perfil
+        async function loadProfile() {
+            try {
+                // Mostrar avatar
+                if (currentUser.foto_perfil && currentUser.foto_perfil !== '/static/avatars/default_avatar.png') {
+                    const avatarUrl = currentUser.foto_perfil + '?v=' + new Date().getTime();
+                    document.getElementById('avatarImg').src = avatarUrl;
+                } else {
+                    const defaultAvatar = `https://ui-avatars.com/api/?background=FFD100&color=001a40&bold=true&size=120&rounded=true&name=${encodeURIComponent(currentUser.username)}`;
+                    document.getElementById('avatarImg').src = defaultAvatar;
+                }
+                
+                const response = await fetch('/api/tabla-posiciones');
+                const tabla = await response.json();
+                
+                const userStats = tabla.find(u => u.username === currentUser?.username);
+                
+                if (userStats) {
+                    document.getElementById('userName').textContent = userStats.nombre_completo || currentUser.username;
+                    document.getElementById('userUsername').textContent = currentUser.username;
+                    document.getElementById('userArea').textContent = userStats.area_trabajo || 'No especificado';
+                    document.getElementById('userEmail').textContent = currentUser.email || '-';
+                    document.getElementById('userSince').textContent = new Date(currentUser.fecha_registro || Date.now()).toLocaleDateString('es-ES');
+                    
+                    const totalPoints = userStats.puntos_totales || 0;
+                    const exactResults = userStats.resultados_exactos || 0;
+                    const totalPredictions = 48;
+                    const avgPointsPerMatch = totalPredictions > 0 ? (totalPoints / totalPredictions).toFixed(1) : 0;
+                    const successRate = totalPredictions > 0 ? (exactResults / totalPredictions * 100).toFixed(1) : 0;
+                    
+                    document.getElementById('totalPoints').textContent = totalPoints;
+                    document.getElementById('exactResults').textContent = exactResults;
+                    document.getElementById('avgPointsPerMatch').textContent = avgPointsPerMatch;
+                    document.getElementById('successRate').innerHTML = successRate + '<span style="font-size:20px;">%</span>';
+                    
+                    const maxPossible = 800;
+                    const progressPercent = (totalPoints / maxPossible * 100);
+                    document.getElementById('pointsProgress').style.width = `${Math.min(progressPercent, 100)}%`;
+                    
+                    const userPos = userStats.posicion || (tabla.findIndex(u => u.username === currentUser?.username) + 1);
+                    document.getElementById('userRank').textContent = `#${userPos}`;
+                    
+                    document.getElementById('editNombreCompleto').value = userStats.nombre_completo || '';
+                    document.getElementById('editAreaTrabajo').value = userStats.area_trabajo || '';
+                    document.getElementById('editEmail').value = currentUser.email || '';
+                    
+                    createCharts(userStats);
+                    loadAchievements(userStats, userPos);
+                } else {
+                    console.error('Usuario no encontrado');
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showAlert('Error al cargar el perfil', 'danger');
+            }
+        }
+        
+        function createCharts(stats) {
+            const puntosFaseGrupos = stats.puntos_fase_grupos || 0;
+            const puntosEliminatorias = stats.puntos_eliminatorias || 0;
+            const puntosEspeciales = stats.puntos_especiales || 0;
+            const totalPoints = stats.puntos_totales || 0;
+            
+            const ctx1 = document.getElementById('pointsDistributionChart').getContext('2d');
+            if (pointsDistChart) pointsDistChart.destroy();
+            pointsDistChart = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Fase de Grupos', 'Eliminatorias', 'Pronósticos Especiales'],
+                    datasets: [{
+                        data: [puntosFaseGrupos, puntosEliminatorias, puntosEspeciales],
+                        backgroundColor: ['#FFD100', '#003580', '#CC0001'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#ffffff', font: { size: 10 } } }
+                    }
+                }
+            });
+            
+            const ctx2 = document.getElementById('weeklyEvolutionChart').getContext('2d');
+            if (weeklyChart) weeklyChart.destroy();
+            weeklyChart = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4', 'Actual'],
+                    datasets: [{
+                        label: 'Tus Puntos',
+                        data: [0, Math.floor(totalPoints * 0.25), Math.floor(totalPoints * 0.5), Math.floor(totalPoints * 0.75), totalPoints],
+                        borderColor: '#FFD100',
+                        backgroundColor: 'rgba(255, 209, 0, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#ffffff', font: { size: 10 } } }
+                    },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#ffffff' } },
+                        x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#ffffff' } }
+                    }
+                }
+            });
+        }
+        
+        function loadAchievements(stats, userRank) {
+            const totalPoints = stats.puntos_totales || 0;
+            const exactResults = stats.resultados_exactos || 0;
+            
+            const achievements = [
+                { icon: 'fa-chart-line', title: 'PRIMER PUNTO', desc: 'Obtuviste tu primer punto', achieved: totalPoints > 0, medal: '🥉' },
+                { icon: 'fa-check-double', title: 'RESULTADO EXACTO', desc: 'Acertaste un resultado exacto', achieved: exactResults > 0, medal: '🎯' },
+                { icon: 'fa-trophy', title: 'TOP 10', desc: 'Estar entre los 10 mejores', achieved: userRank <= 10, medal: '🏆' },
+                { icon: 'fa-star', title: '100 PUNTOS', desc: 'Alcanzar los 100 puntos', achieved: totalPoints >= 100, medal: '⭐' },
+                { icon: 'fa-crown', title: 'LÍDER', desc: 'Ser el líder de la tabla', achieved: userRank === 1, medal: '👑' },
+                { icon: 'fa-bullseye', title: 'PRECISIÓN', desc: '5 o más resultados exactos', achieved: exactResults >= 5, medal: '🎯' }
+            ];
+            
+            let html = '<div class="achievements-grid">';
+            achievements.forEach(ach => {
+                html += `
+                    <div class="achievement-card ${ach.achieved ? 'achieved' : ''}">
+                        <div class="achievement-icon ${ach.achieved ? 'achieved' : 'locked'}">
+                            ${ach.medal} <i class="fas ${ach.icon}"></i>
+                        </div>
+                        <div class="achievement-title">${ach.title}</div>
+                        <div class="achievement-desc">${ach.desc}</div>
+                        <div class="achievement-status ${ach.achieved ? 'achieved' : 'locked'}">
+                            ${ach.achieved ? '<i class="fas fa-check-circle"></i> DESBLOQUEADO' : '<i class="fas fa-lock"></i> BLOQUEADO'}
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            document.getElementById('achievements').innerHTML = html;
+        }
+        
+        // Editar perfil
+        document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('saveProfileBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> GUARDANDO...';
+            submitBtn.disabled = true;
+            
+            const updatedData = {
+                nombre_completo: document.getElementById('editNombreCompleto').value,
+                area_trabajo: document.getElementById('editAreaTrabajo').value,
+                email: document.getElementById('editEmail').value
+            };
+            
+            try {
+                const response = await fetch('/api/perfil/actualizar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedData)
+                });
+                
+                if (response.ok) {
+                    showToast('✅ Perfil actualizado exitosamente', 'success');
+                    if (updatedData.nombre_completo) {
+                        document.querySelector('.user-name').textContent = updatedData.nombre_completo;
+                    }
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    const error = await response.json();
+                    showAlert('❌ Error: ' + (error.error || 'Error al actualizar el perfil'), 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('❌ Error de conexión al servidor', 'danger');
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Subir avatar
+        document.getElementById('avatarInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                showAlert('❌ Formato no permitido. Use JPG, PNG o GIF', 'danger');
+                return;
+            }
+            
+            if (file.size > 2 * 1024 * 1024) {
+                showAlert('❌ La imagen no puede superar los 2MB', 'danger');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('avatar', file);
+            
+            const editBtn = document.querySelector('.edit-avatar-btn');
+            const originalIcon = editBtn.innerHTML;
+            editBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            try {
+                const response = await fetch('/api/subir-avatar', { method: 'POST', body: formData });
+                const data = await response.json();
+                
+                if (data.success && data.avatar_url) {
+                    document.getElementById('avatarImg').src = data.avatar_url + '?v=' + new Date().getTime();
+                    showToast('✅ Foto de perfil actualizada correctamente', 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showAlert('❌ Error: ' + (data.error || 'Error al subir la imagen'), 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('❌ Error de conexión al servidor', 'danger');
+            } finally {
+                editBtn.innerHTML = originalIcon;
+                document.getElementById('avatarInput').value = '';
+            }
+        });
+        
+        // ========== NUEVA FUNCIONALIDAD: CAMBIAR CONTRASEÑA ==========
+        document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (newPassword !== confirmNewPassword) {
+                showAlert('❌ Las nuevas contraseñas no coinciden', 'danger', 'passwordAlert');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                showAlert('❌ La nueva contraseña debe tener al menos 6 caracteres', 'danger', 'passwordAlert');
+                return;
+            }
+            
+            const btn = document.getElementById('changePasswordBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> VERIFICANDO...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/perfil/cambiar-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword
+                    })
+                });
+                
+                const data = await response.json();
+                if (response.ok && data.success) {
+                    showToast('✅ Contraseña actualizada correctamente', 'success');
+                    document.getElementById('changePasswordForm').reset();
+                    // Opcional: ofrecer cerrar sesión para usar la nueva contraseña
+                    setTimeout(() => {
+                        if (confirm('La contraseña se cambió exitosamente. ¿Desea cerrar sesión para usar la nueva contraseña?')) {
+                            window.location.href = "{{ url_for('logout') }}";
+                        }
+                    }, 1500);
+                } else {
+                    showAlert('❌ ' + (data.error || 'Error al cambiar contraseña'), 'danger', 'passwordAlert');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('❌ Error de conexión al servidor', 'danger', 'passwordAlert');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+        
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            fetch('/logout').then(() => window.location.href = "{{ url_for('login') }}");
+        });
+        
+        // Inicializar
+        checkAuth();
+    </script>
+</body>
+</html>

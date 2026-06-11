@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Horarios - Polla Mundialista DGA 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&family=Barlow+Condensed:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --ec-yellow: #FFD100;
+            --ec-blue:   #003580;
+            --ec-red:    #CC0001;
+            --ec-dark:   #001a40;
+            --ec-mid:    #002a66;
+            --ec-green:  #1a6b1a;
+            --white:     #ffffff;
+            --off-white: #f4f1e8;
+            --gold:      #c8920a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Barlow', sans-serif;
+            background: var(--ec-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(ellipse at 20% 0%, rgba(0,53,128,0.6) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 100%, rgba(26,107,26,0.4) 0%, transparent 60%),
+                        var(--ec-dark);
+            pointer-events: none;
+        }
+        
+        .bg-canvas::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255,209,0,0.06) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridDrift 25s linear infinite;
+        }
+        
+        @keyframes gridDrift {
+            to { background-position: 60px 60px; }
+        }
+
+        /* Floating balls */
+        .floater {
+            position: fixed;
+            z-index: 0;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            opacity: 0.18;
+            animation: floatBall 18s ease-in-out infinite;
+        }
+        
+        .floater-1 { background: var(--ec-yellow); top: -80px; left: -80px; animation-delay: 0s; }
+        .floater-2 { background: var(--ec-blue); bottom: 10%; right: -100px; animation-delay: -6s; }
+        .floater-3 { background: var(--ec-red); top: 50%; left: 40%; animation-delay: -12s; width: 200px; height: 200px; }
+        
+        @keyframes floatBall {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -40px) scale(1.1); }
+            66% { transform: translate(-20px, 30px) scale(0.9); }
+        }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(0,26,64,0.95);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,209,0,0.15);
+        }
+        
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            height: 64px;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: var(--white);
+            text-decoration: none;
+            z-index: 1001;
+        }
+        
+        .nav-brand .ball {
+            font-size: 22px;
+            animation: spin 4s linear infinite;
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .menu-toggle span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--ec-yellow);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-toggle.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+        
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .menu-toggle.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--ec-yellow);
+        }
+        
+        .nav-stripe {
+            height: 3px;
+            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 64px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 64px);
+                background: rgba(0,26,64,0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 32px;
+                transition: left 0.3s ease;
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .nav-links a {
+                font-size: 18px;
+                padding: 12px;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 80px 16px 40px;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+        
+        .page-header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+        
+        .page-header h1 i {
+            color: var(--ec-yellow);
+            margin-right: 12px;
+        }
+        
+        .page-header p {
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--ec-yellow);
+        }
+        
+        .stat-card i {
+            font-size: 32px;
+            color: var(--ec-yellow);
+            margin-bottom: 12px;
+        }
+        
+        .stat-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            color: var(--white);
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Filters */
+        .filters-bar {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .filters-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,0,0,0.3);
+            padding: 6px 12px;
+            border-radius: 40px;
+        }
+        
+        .filter-group label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .filter-group select, .filter-group input {
+            background: transparent;
+            border: none;
+            color: var(--white);
+            font-size: 13px;
+            padding: 6px 8px;
+            outline: none;
+        }
+        
+        .filter-group select option {
+            background: var(--ec-dark);
+        }
+        
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .reset-btn {
+            background: rgba(255,209,0,0.2);
+            border: 1px solid var(--ec-yellow);
+            color: var(--ec-yellow);
+            padding: 6px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .reset-btn:hover {
+            background: var(--ec-yellow);
+            color: var(--ec-dark);
+        }
+
+        /* Tabla de Horarios */
+        .tabla-container {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            overflow-x: auto;
+        }
+        
+        .horarios-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .horarios-table th {
+            background: rgba(0,0,0,0.4);
+            padding: 16px;
+            text-align: left;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ec-yellow);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .horarios-table td {
+            padding: 14px 16px;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .horarios-table tr {
+            transition: background 0.2s;
+        }
+        
+        .horarios-table tr:hover {
+            background: rgba(255,209,0,0.08);
+        }
+        
+        .horarios-table .ecuador-row {
+            background: rgba(255,209,0,0.12);
+            border-left: 3px solid var(--ec-yellow);
+            position: relative;
+        }
+        
+        .horarios-table .ecuador-row::before {
+            content: '⭐';
+            position: absolute;
+            left: -20px;
+            color: var(--ec-yellow);
+            font-size: 12px;
+        }
+        
+        .team-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .team-flag-small {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+        }
+        
+        .vs-cell {
+            text-align: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 14px;
+            color: var(--ec-yellow);
+            font-weight: bold;
+        }
+        
+        .group-badge {
+            background: rgba(255,209,0,0.15);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-block;
+        }
+        
+        .status-finalizado {
+            color: var(--ec-green);
+            font-weight: 600;
+        }
+        
+        .status-pendiente {
+            color: var(--ec-yellow);
+            font-weight: 600;
+        }
+        
+        .status-bloqueado {
+            color: var(--ec-red);
+            font-weight: 600;
+        }
+        
+        .sede-text {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .resultado-text {
+            color: var(--ec-yellow);
+            font-weight: bold;
+            margin-left: 10px;
+            font-size: 13px;
+        }
+
+        /* Paginación */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .page-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--white);
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+        
+        .page-btn:hover {
+            background: rgba(255,209,0,0.2);
+            border-color: var(--ec-yellow);
+        }
+        
+        .page-btn.active {
+            background: var(--ec-yellow);
+            color: var(--ec-dark);
+            border-color: var(--ec-yellow);
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Toast Notifications */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            z-index: 2000;
+            animation: fadeInUp 0.3s ease;
+        }
+        
+        .toast-notification.success {
+            background: var(--ec-green);
+            border-left: 4px solid var(--ec-yellow);
+        }
+        
+        .toast-notification.error {
+            background: var(--ec-red);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            background: rgba(0,0,0,0.5);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 20px 16px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer-stripe {
+            height: 3px;
+            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            width: 80px;
+            margin: 0 auto 12px;
+            border-radius: 3px;
+        }
+        
+        .footer-text {
+            font-size: 10px;
+            color: rgba(255,255,255,0.35);
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,209,0,0.2);
+            border-top-color: var(--ec-yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--ec-yellow);
+            border-radius: 3px;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .team-cell {
+                gap: 6px;
+            }
+            
+            .team-flag-small {
+                width: 25px;
+                height: 25px;
+            }
+            
+            .horarios-table th, .horarios-table td {
+                padding: 10px 8px;
+                font-size: 11px;
+            }
+            
+            .resultado-text {
+                font-size: 10px;
+                margin-left: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-canvas"></div>
+    <div class="floater floater-1"></div>
+    <div class="floater floater-2"></div>
+    <div class="floater floater-3"></div>
+
+    <nav>
+        <div class="nav-container">
+            <a class="nav-brand" href="{{ url_for('dashboard') }}">
+                <span class="ball">⚽</span> Polla Mundialista DGA 2026
+            </a>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('pronosticos') }}">Pronósticos</a></li>
+                <li><a href="{{ url_for('tabla_posiciones') }}">Tabla</a></li>
+                <li><a href="{{ url_for('perfil') }}">Mi Perfil</a></li>
+                <li><a href="{{ url_for('horarios') }}" class="active">Horarios</a></li>
+                {% if session.es_admin %}
+                <li><a href="{{ url_for('admin_panel') }}">Admin</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('logout') }}" id="logoutBtn">Salir</a></li>
+            </ul>
+        </div>
+        <div class="nav-stripe"></div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header fade-in">
+            <h1><i class="fas fa-calendar-alt"></i> HORARIOS DEL MUNDIAL 2026</h1>
+            <p>Todos los partidos del torneo con horarios en Ecuador (UTC-5)</p>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-futbol"></i>
+                <div class="stat-number" id="totalMatches">0</div>
+                <div class="stat-label">Total Partidos</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-flag-checkered"></i>
+                <div class="stat-number" id="totalGrupos">0</div>
+                <div class="stat-label">Fase Grupos</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-trophy"></i>
+                <div class="stat-number" id="totalEliminatoria">0</div>
+                <div class="stat-label">Eliminación</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-star"></i>
+                <div class="stat-number" id="totalEcuador">0</div>
+                <div class="stat-label">Partidos Ecuador</div>
+            </div>
+        </div>
+        
+        <div class="filters-bar">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <label><i class="fas fa-layer-group"></i> FASE:</label>
+                    <select id="faseFilter">
+                        <option value="">Todas</option>
+                        <option value="grupos">Fase de Grupos</option>
+                        <option value="eliminatoria">Eliminación Directa</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label><i class="fas fa-search"></i> BUSCAR:</label>
+                    <input type="text" id="searchFilter" placeholder="Equipo..." class="search-input">
+                </div>
+                <div class="reset-btn" id="resetFilters">
+                    <i class="fas fa-undo-alt"></i> Limpiar
+                </div>
+            </div>
+        </div>
+        
+        <div class="tabla-container">
+            <table class="horarios-table" id="horariosTable">
+                <thead>
+                    <tr>
+                        <th>FECHA</th>
+                        <th>HORA (EC)</th>
+                        <th>PARTIDO</th>
+                        <th>GRUPO/FASE</th>
+                        <th>SEDE</th>
+                        <th>ESTADO</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaBody">
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px;">
+                            <div class="spinner"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+    <footer>
+        <div class="footer-stripe"></div>
+        <div class="footer-text">© 2026 Polla Mundialista DGA LEGAL - "No solo litigamos resultados, también los pronosticamos." ⚖️⚽️</div>
+    </footer>
+
+    <script>
+        // Menú hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+        }
+        
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (menuToggle) menuToggle.classList.remove('active');
+                if (navLinks) navLinks.classList.remove('active');
+            });
+        });
+        
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast-notification ${type}`;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+        
+        let allMatches = [];
+        let filteredMatches = [];
+        let currentPage = 1;
+        let itemsPerPage = 20;
+        
+        async function loadMatches() {
+            try {
+                const response = await fetch('/api/partidos');
+                const data = await response.json();
+                allMatches = Array.isArray(data) ? data : (data.data || []);
+                filteredMatches = [...allMatches];
+                currentPage = 1;
+                updateStats();
+                renderTable();
+            } catch (error) {
+                console.error('Error loading matches:', error);
+                document.getElementById('tablaBody').innerHTML = `
+                    <tr><td colspan="6" style="text-align: center; padding: 40px; color: #ff6b6b;">
+                        Error al cargar los partidos
+                    </td><td style="display: none;"></td><td style="display: none;"></td><td style="display: none;"></td><td style="display: none;"></td><td style="display: none;"></td>
+                    </tr>
+                `;
+                document.getElementById('pagination').innerHTML = '';
+            }
+        }
+        
+        function updateStats() {
+            const total = allMatches.length;
+            const grupos = allMatches.filter(m => m.fase === 'grupos').length;
+            const eliminatoria = allMatches.filter(m => m.fase === 'eliminatoria').length;
+            const ecuador = allMatches.filter(m => m.local_nombre === 'Ecuador' || m.visitante_nombre === 'Ecuador').length;
+            
+            document.getElementById('totalMatches').textContent = total;
+            document.getElementById('totalGrupos').textContent = grupos;
+            document.getElementById('totalEliminatoria').textContent = eliminatoria;
+            document.getElementById('totalEcuador').textContent = ecuador;
+        }
+        
+        function getSedeDisplay(match) {
+            if (match.local_nombre === 'Ecuador' || match.visitante_nombre === 'Ecuador') {
+                return '⭐ Estados Unidos';
+            }
+            
+            const sedeMap = {
+                'R32': 'Octavos de Final',
+                'R16': 'Dieciseisavos',
+                'QF': 'Cuartos de Final',
+                'SF': 'Semifinal',
+                '🏆': 'Final'
+            };
+            
+            if (match.grupo && sedeMap[match.grupo]) {
+                return sedeMap[match.grupo];
+            }
+            
+            if (match.grupo && match.grupo.match(/^[A-H]$/)) {
+                return 'Sede por definir';
+            }
+            
+            return match.sede || 'Por definir';
+        }
+        
+        function renderTable() {
+            const tbody = document.getElementById('tablaBody');
+            const paginationDiv = document.getElementById('pagination');
+            
+            if (!filteredMatches || filteredMatches.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">No hay partidos disponibles</td><td style="display: none;"></td><td style="display: none;"></td><td style="display: none;"></td><td style="display: none;"></td></tr>';
+                paginationDiv.innerHTML = '';
+                return;
+            }
+            
+            // Paginación
+            const totalPages = Math.ceil(filteredMatches.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const currentMatches = filteredMatches.slice(startIndex, endIndex);
+            
+            let html = '';
+            currentMatches.forEach(match => {
+                const isEcuador = match.local_nombre === 'Ecuador' || match.visitante_nombre === 'Ecuador';
+                const fecha = new Date(match.fecha_hora);
+                const fechaStr = fecha.toLocaleDateString('es-ES');
+                const horaStr = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const grupoDisplay = match.grupo ? `Grupo ${match.grupo}` : (match.fase === 'grupos' ? 'Fase Grupos' : 'Eliminatoria');
+                
+                let estadoClass = 'status-pendiente';
+                let estadoText = '⏳ Pendiente';
+                
+                if (match.estado === 'finalizado') {
+                    estadoClass = 'status-finalizado';
+                    estadoText = '✅ Finalizado';
+                } else if (match.bloqueado_manual) {
+                    estadoClass = 'status-bloqueado';
+                    estadoText = '🔒 Bloqueado';
+                }
+                
+                const resultado = (match.goles_local !== null && match.goles_local !== undefined && 
+                                   match.goles_visitante !== null && match.goles_visitante !== undefined)
+                                   ? `${match.goles_local} - ${match.goles_visitante}` : '';
+                
+                const localBandera = match.local_bandera || 'https://flagcdn.com/w80/default.png';
+                const visitanteBandera = match.visitante_bandera || 'https://flagcdn.com/w80/default.png';
+                const localNombre = match.local_nombre || '?';
+                const visitanteNombre = match.visitante_nombre || '?';
+                
+                html += `
+                    <tr class="${isEcuador ? 'ecuador-row' : ''}">
+                        <td>${fechaStr}</td>
+                        <td>${horaStr}</td>
+                        <td>
+                            <div class="team-cell">
+                                <img src="${localBandera}" class="team-flag-small" onerror="this.src='https://flagcdn.com/w80/default.png'">
+                                <span>${localNombre}</span>
+                                <span class="vs-cell">vs</span>
+                                <img src="${visitanteBandera}" class="team-flag-small" onerror="this.src='https://flagcdn.com/w80/default.png'">
+                                <span>${visitanteNombre}</span>
+                                ${resultado ? `<span class="resultado-text">(${resultado})</span>` : ''}
+                            </div>
+                        </td>
+                        <td><span class="group-badge">${grupoDisplay}</span></td>
+                        <td><span class="sede-text">${getSedeDisplay(match)}</span></td>
+                        <td class="${estadoClass}">${estadoText}</td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+            
+            // Generar paginación
+            if (totalPages > 1) {
+                let paginationHtml = '';
+                paginationHtml += `<button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹ Anterior</button>`;
+                
+                const maxVisible = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+                let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+                
+                if (endPage - startPage + 1 < maxVisible) {
+                    startPage = Math.max(1, endPage - maxVisible + 1);
+                }
+                
+                if (startPage > 1) {
+                    paginationHtml += `<button class="page-btn" onclick="changePage(1)">1</button>`;
+                    if (startPage > 2) paginationHtml += `<span style="color: rgba(255,255,255,0.3); padding: 0 8px;">...</span>`;
+                }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                    paginationHtml += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+                }
+                
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) paginationHtml += `<span style="color: rgba(255,255,255,0.3); padding: 0 8px;">...</span>`;
+                    paginationHtml += `<button class="page-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+                }
+                
+                paginationHtml += `<button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>Siguiente ›</button>`;
+                paginationDiv.innerHTML = paginationHtml;
+            } else {
+                paginationDiv.innerHTML = '';
+            }
+        }
+        
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredMatches.length / itemsPerPage);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderTable();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function applyFilters() {
+            const faseFilter = document.getElementById('faseFilter').value;
+            const searchTerm = document.getElementById('searchFilter').value.toLowerCase();
+            
+            let filtered = [...allMatches];
+            
+            if (faseFilter) {
+                filtered = filtered.filter(m => m.fase === faseFilter);
+            }
+            
+            if (searchTerm) {
+                filtered = filtered.filter(m => 
+                    (m.local_nombre && m.local_nombre.toLowerCase().includes(searchTerm)) ||
+                    (m.visitante_nombre && m.visitante_nombre.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            filteredMatches = filtered;
+            currentPage = 1;
+            renderTable();
+        }
+        
+        // Eventos
+        const faseFilter = document.getElementById('faseFilter');
+        const searchFilter = document.getElementById('searchFilter');
+        const resetBtn = document.getElementById('resetFilters');
+        
+        if (faseFilter) faseFilter.addEventListener('change', applyFilters);
+        if (searchFilter) searchFilter.addEventListener('input', applyFilters);
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                if (faseFilter) faseFilter.value = '';
+                if (searchFilter) searchFilter.value = '';
+                applyFilters();
+                showToast('✅ Filtros limpiados', 'success');
+            });
+        }
+        
+        // Logout
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                fetch('/logout').then(() => window.location.href = "{{ url_for('login') }}");
+            });
+        }
+        
+        // Inicializar
+        loadMatches();
+    </script>
+</body>
+</html>

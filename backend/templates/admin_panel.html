@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Panel Admin - Polla Mundialista DGA 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&family=Barlow+Condensed:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --ec-yellow: #FFD100;
+            --ec-blue:   #003580;
+            --ec-red:    #CC0001;
+            --ec-dark:   #001a40;
+            --ec-mid:    #002a66;
+            --ec-green:  #1a6b1a;
+            --white:     #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Barlow', sans-serif;
+            background: var(--ec-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(ellipse at 20% 0%, rgba(0,53,128,0.6) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 100%, rgba(26,107,26,0.4) 0%, transparent 60%),
+                        var(--ec-dark);
+            pointer-events: none;
+        }
+        
+        .bg-canvas::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255,209,0,0.06) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridDrift 25s linear infinite;
+        }
+        
+        @keyframes gridDrift {
+            to { background-position: 60px 60px; }
+        }
+
+        .floater {
+            position: fixed;
+            z-index: 0;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            opacity: 0.18;
+            animation: floatBall 18s ease-in-out infinite;
+        }
+        
+        .floater-1 { background: var(--ec-yellow); top: -80px; left: -80px; animation-delay: 0s; }
+        .floater-2 { background: var(--ec-blue); bottom: 10%; right: -100px; animation-delay: -6s; }
+        .floater-3 { background: var(--ec-red); top: 50%; left: 40%; animation-delay: -12s; width: 200px; height: 200px; }
+        
+        @keyframes floatBall {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -40px) scale(1.1); }
+            66% { transform: translate(-20px, 30px) scale(0.9); }
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(0,26,64,0.95);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,209,0,0.15);
+        }
+        
+        .nav-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            height: 64px;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: var(--white);
+            text-decoration: none;
+            z-index: 1001;
+        }
+        
+        .nav-brand .ball {
+            font-size: 22px;
+            animation: spin 4s linear infinite;
+            display: inline-block;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        
+        .menu-toggle span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: var(--ec-yellow);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-toggle.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+        
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .menu-toggle.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
+        
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--ec-yellow);
+        }
+        
+        .nav-stripe {
+            height: 3px;
+            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 64px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 64px);
+                background: rgba(0,26,64,0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 32px;
+                transition: left 0.3s ease;
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .nav-links a {
+                font-size: 18px;
+                padding: 12px;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 80px 16px 40px;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+        
+        .page-header h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+        
+        .page-header h1 i {
+            color: var(--ec-yellow);
+            margin-right: 12px;
+        }
+        
+        .page-header p {
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--ec-yellow);
+        }
+        
+        .stat-number {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            color: var(--ec-yellow);
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .admin-card {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .admin-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--ec-yellow);
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .admin-card i {
+            font-size: 48px;
+            color: var(--ec-yellow);
+            margin-bottom: 16px;
+        }
+        
+        .admin-card h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+        
+        .admin-card p {
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+        }
+
+        /* Sección de Backup */
+        .backup-section {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .backup-section h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            color: var(--ec-yellow);
+            margin-bottom: 20px;
+        }
+        
+        .backup-section h3 i {
+            margin-right: 10px;
+        }
+        
+        .backup-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-backup {
+            background: linear-gradient(135deg, var(--ec-green), #0d4d0d);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: white;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-backup:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, #0d4d0d, var(--ec-green));
+        }
+        
+        .btn-restore {
+            background: linear-gradient(135deg, var(--ec-blue), #002a66);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: white;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .btn-restore:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, #002a66, var(--ec-blue));
+        }
+        
+        .file-input-label {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--ec-blue), #002a66);
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: white;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-input-label:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, #002a66, var(--ec-blue));
+        }
+        
+        .file-input-label i {
+            margin-right: 8px;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+
+        /* Sección de Crear Partido */
+        .create-match-section {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .create-match-section h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            color: var(--ec-yellow);
+            margin-bottom: 20px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 6px;
+        }
+        
+        .form-group label i {
+            color: var(--ec-yellow);
+            margin-right: 6px;
+        }
+        
+        .form-control, .form-select {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: var(--white);
+            font-size: 14px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--ec-yellow);
+        }
+        
+        .btn-create-match {
+            background: var(--ec-yellow);
+            color: var(--ec-dark);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .btn-create-match:hover {
+            transform: scale(1.02);
+        }
+
+        .top-list {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 24px;
+        }
+        
+        .top-list h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            color: var(--ec-yellow);
+            margin-bottom: 20px;
+        }
+        
+        .top-list h3 i {
+            margin-right: 10px;
+        }
+        
+        .top-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        
+        .top-item:last-child {
+            border-bottom: none;
+        }
+        
+        .top-rank {
+            font-weight: bold;
+            color: var(--ec-yellow);
+            font-size: 16px;
+        }
+        
+        .top-name {
+            color: var(--white);
+            font-size: 14px;
+        }
+        
+        .top-points {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            color: var(--ec-yellow);
+        }
+
+        .btn-recalcular {
+            background: linear-gradient(135deg, var(--ec-green), #0d4d0d);
+            border: none;
+            border-radius: 12px;
+            padding: 14px 24px;
+            color: white;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .btn-recalcular:hover {
+            transform: scale(1.02);
+            background: linear-gradient(135deg, #0d4d0d, var(--ec-green));
+        }
+
+        /* Alertas */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: rgba(26,107,26,0.2);
+            border: 1px solid var(--ec-green);
+            color: #90EE90;
+        }
+        
+        .alert-danger {
+            background: rgba(204,0,1,0.2);
+            border: 1px solid var(--ec-red);
+            color: #ff6b6b;
+        }
+        
+        .alert-warning {
+            background: rgba(255,209,0,0.2);
+            border: 1px solid var(--ec-yellow);
+            color: #FFD100;
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            background: rgba(0,0,0,0.5);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 20px 16px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer-stripe {
+            height: 3px;
+            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            width: 80px;
+            margin: 0 auto 12px;
+            border-radius: 3px;
+        }
+        
+        .footer-text {
+            font-size: 10px;
+            color: rgba(255,255,255,0.35);
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,209,0,0.2);
+            border-top-color: var(--ec-yellow);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .admin-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-number {
+                font-size: 28px;
+            }
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--ec-yellow);
+            border-radius: 3px;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-canvas"></div>
+    <div class="floater floater-1"></div>
+    <div class="floater floater-2"></div>
+    <div class="floater floater-3"></div>
+
+    <nav>
+        <div class="nav-container">
+            <a class="nav-brand" href="{{ url_for('dashboard') }}">
+                <span class="ball">⚽</span> Polla Mundialista DGA 2026
+            </a>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('pronosticos') }}">Pronósticos</a></li>
+                <li><a href="{{ url_for('tabla_posiciones') }}">Tabla</a></li>
+                <li><a href="{{ url_for('perfil') }}">Mi Perfil</a></li>
+                <li><a href="{{ url_for('admin_panel') }}" class="active">Admin</a></li>
+                <li><a href="{{ url_for('logout') }}" id="logoutBtn">Salir</a></li>
+            </ul>
+        </div>
+        <div class="nav-stripe"></div>
+    </nav>
+
+    <div class="container fade-in">
+        <div class="page-header">
+            <h1><i class="fas fa-user-shield"></i> PANEL ADMINISTRADOR</h1>
+            <p>Gestión completa de la Polla Mundialista DGA 2026</p>
+        </div>
+
+        <!-- Alerta -->
+        <div id="alertMessage" class="alert"></div>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalUsuarios">0</div>
+                <div class="stat-label">Usuarios</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalPartidos">0</div>
+                <div class="stat-label">Partidos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="partidosFinalizados">0</div>
+                <div class="stat-label">Finalizados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalPronosticos">0</div>
+                <div class="stat-label">Pronósticos</div>
+            </div>
+        </div>
+
+        <div class="admin-grid">
+            <a href="{{ url_for('admin_partidos') }}" class="admin-card">
+                <i class="fas fa-futbol"></i>
+                <h3>Cargar Resultados</h3>
+                <p>Actualizar resultados de partidos</p>
+            </a>
+            <a href="{{ url_for('admin_usuarios') }}" class="admin-card">
+                <i class="fas fa-users"></i>
+                <h3>Gestionar Usuarios</h3>
+                <p>Ver y administrar participantes</p>
+            </a>
+        </div>
+
+        <!-- Sección de Backup/Restauración -->
+        <div class="backup-section">
+            <h3><i class="fas fa-database"></i> BACKUP / RESTAURACIÓN</h3>
+            <div class="backup-buttons">
+                <button class="btn-backup" id="backupBtn">
+                    <i class="fas fa-download"></i> DESCARGAR BACKUP
+                </button>
+                <label class="file-input-label" for="restoreFile">
+                    <i class="fas fa-upload"></i> RESTAURAR BACKUP
+                </label>
+                <input type="file" id="restoreFile" accept=".zip">
+            </div>
+            <small style="color: rgba(255,255,255,0.4); margin-top: 12px; display: block;">
+                <i class="fas fa-info-circle"></i> El backup incluye: usuarios, selecciones, partidos, pronósticos y puntuaciones.
+                La restauración reemplazará todos los datos actuales.
+            </small>
+        </div>
+
+        <!-- Sección de Crear Partido -->
+        <div class="create-match-section">
+            <h3><i class="fas fa-plus-circle"></i> CREAR NUEVO PARTIDO</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label><i class="fas fa-layer-group"></i> FASE</label>
+                    <select id="fasePartido" class="form-select">
+                        <option value="grupos">Fase de Grupos</option>
+                        <option value="eliminatoria">Eliminación Directa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> GRUPO (opcional)</label>
+                    <input type="text" id="grupoPartido" class="form-control" placeholder="Ej: A, B, C...">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-flag"></i> EQUIPO LOCAL</label>
+                    <select id="localPartido" class="form-select">
+                        <option value="">Selecciona equipo local</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-flag"></i> EQUIPO VISITANTE</label>
+                    <select id="visitantePartido" class="form-select">
+                        <option value="">Selecciona equipo visitante</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-calendar"></i> FECHA Y HORA</label>
+                    <input type="datetime-local" id="fechaPartido" class="form-control">
+                </div>
+            </div>
+            <button class="btn-create-match" id="createMatchBtn">
+                <i class="fas fa-save"></i> CREAR PARTIDO
+            </button>
+        </div>
+
+        <div class="top-list">
+            <h3><i class="fas fa-trophy"></i> TOP 5 PARTICIPANTES</h3>
+            <div id="topUsuarios">
+                <div class="spinner"></div>
+            </div>
+        </div>
+
+        <button class="btn-recalcular" id="recalcularBtn">
+            <i class="fas fa-calculator"></i> RECALCULAR TODOS LOS PUNTOS
+        </button>
+    </div>
+
+    <footer>
+        <div class="footer-stripe"></div>
+        <div class="footer-text">© 2026 Polla Mundialista DGA LEGAL - Panel Administrador</div>
+    </footer>
+
+    <script>
+        // Menú hamburguesa
+        const menuToggle = document.getElementById('menuToggle');
+        const navLinks = document.getElementById('navLinks');
+        
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+        }
+        
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (menuToggle) menuToggle.classList.remove('active');
+                if (navLinks) navLinks.classList.remove('active');
+            });
+        });
+
+        // Mostrar alerta
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-triangle' : 'info-circle'}"></i> ${message}`;
+            alertDiv.style.display = 'block';
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Cargar equipos para los selects
+        async function loadTeams() {
+            try {
+                const response = await fetch('/api/selecciones');
+                const teams = await response.json();
+                
+                const localSelect = document.getElementById('localPartido');
+                const visitanteSelect = document.getElementById('visitantePartido');
+                
+                localSelect.innerHTML = '<option value="">Selecciona equipo local</option>';
+                visitanteSelect.innerHTML = '<option value="">Selecciona equipo visitante</option>';
+                
+                teams.forEach(team => {
+                    localSelect.innerHTML += `<option value="${team.id}">${team.nombre}</option>`;
+                    visitanteSelect.innerHTML += `<option value="${team.id}">${team.nombre}</option>`;
+                });
+            } catch (error) {
+                console.error('Error loading teams:', error);
+            }
+        }
+
+        // Cargar estadísticas
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/admin/estadisticas');
+                const data = await response.json();
+                
+                document.getElementById('totalUsuarios').textContent = data.total_usuarios || 0;
+                document.getElementById('totalPartidos').textContent = data.total_partidos || 0;
+                document.getElementById('partidosFinalizados').textContent = data.partidos_finalizados || 0;
+                document.getElementById('totalPronosticos').textContent = data.total_pronosticos || 0;
+                
+                let topHtml = '';
+                if (data.top_usuarios && data.top_usuarios.length > 0) {
+                    data.top_usuarios.forEach((user, idx) => {
+                        const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '📊';
+                        topHtml += `
+                            <div class="top-item">
+                                <span class="top-rank">${medal} #${idx + 1}</span>
+                                <span class="top-name">${user.nombre_completo || user.username}</span>
+                                <span class="top-points">${user.puntos_totales} pts</span>
+                            </div>
+                        `;
+                    });
+                } else {
+                    topHtml = '<div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.5);">No hay participantes aún</div>';
+                }
+                document.getElementById('topUsuarios').innerHTML = topHtml;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                document.getElementById('topUsuarios').innerHTML = '<div style="text-align: center; padding: 20px; color: #ff6b6b;">Error al cargar estadísticas</div>';
+            }
+        }
+        
+        // Recalcular puntos
+        async function recalcularPuntos() {
+            if (confirm('⚠️ ¿Estás seguro de recalcular TODOS los puntos?\n\nEsta acción recalculará las puntuaciones de todos los usuarios basándose en los resultados actuales.\n\nNo se puede deshacer.')) {
+                const btn = document.getElementById('recalcularBtn');
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> RECALCULANDO...';
+                btn.disabled = true;
+                
+                try {
+                    const response = await fetch('/api/admin/recalcular-puntos', { method: 'POST' });
+                    const data = await response.json();
+                    if (data.success) {
+                        showAlert('✅ Puntos recalculados correctamente', 'success');
+                        loadStats();
+                    } else {
+                        showAlert('❌ Error al recalcular puntos: ' + (data.message || 'Error desconocido'), 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showAlert('❌ Error de conexión al recalcular puntos', 'danger');
+                } finally {
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                }
+            }
+        }
+        
+        // Backup
+        async function downloadBackup() {
+            try {
+                const response = await fetch('/api/admin/backup');
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `backup_${new Date().toISOString().slice(0,19).replace(/:/g, '-')}.zip`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    showAlert('✅ Backup descargado correctamente', 'success');
+                } else {
+                    showAlert('❌ Error al generar backup', 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('❌ Error de conexión al generar backup', 'danger');
+            }
+        }
+        
+        // Restaurar backup
+        async function restoreBackup(file) {
+            const formData = new FormData();
+            formData.append('backup_file', file);
+            
+            const confirmRestore = confirm('⚠️ RESTAURACIÓN COMPLETA ⚠️\n\nEsta acción reemplazará TODOS los datos actuales (usuarios, partidos, pronósticos, puntuaciones) por los datos del backup.\n\nEsta operación NO se puede deshacer.\n\n¿Estás absolutamente seguro?');
+            if (!confirmRestore) return;
+            
+            try {
+                const response = await fetch('/api/admin/restore', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showAlert('✅ Base de datos restaurada correctamente. Recargando página...', 'success');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                } else {
+                    showAlert('❌ Error al restaurar: ' + (data.error || data.message || 'Error desconocido'), 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('❌ Error de conexión al restaurar backup', 'danger');
+            }
+        }
+        
+        // Crear partido
+        async function createMatch() {
+            const fase = document.getElementById('fasePartido').value;
+            const grupo = document.getElementById('grupoPartido').value;
+            const localId = document.getElementById('localPartido').value;
+            const visitanteId = document.getElementById('visitantePartido').value;
+            const fechaHora = document.getElementById('fechaPartido').value;
+            
+            if (!localId || !visitanteId || !fechaHora) {
+                showAlert('⚠️ Por favor completa todos los campos requeridos', 'warning');
+                return;
+            }
+            
+            if (localId === visitanteId) {
+                showAlert('⚠️ El equipo local y visitante no pueden ser el mismo', 'warning');
+                return;
+            }
+            
+            const btn = document.getElementById('createMatchBtn');
+            const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> CREANDO...';
+            btn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/admin/crear-partido', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        fase: fase,
+                        grupo: grupo,
+                        seleccion_local_id: parseInt(localId),
+                        seleccion_visitante_id: parseInt(visitanteId),
+                        fecha_hora: fechaHora.replace('T', ' ') + ':00'
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    showAlert('✅ Partido creado correctamente', 'success');
+                    document.getElementById('grupoPartido').value = '';
+                    document.getElementById('localPartido').value = '';
+                    document.getElementById('visitantePartido').value = '';
+                    document.getElementById('fechaPartido').value = '';
+                    loadStats();
+                } else {
+                    showAlert('❌ Error: ' + (data.error || data.message || 'Error al crear partido'), 'danger');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('❌ Error de conexión al crear partido', 'danger');
+            } finally {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            }
+        }
+        
+        // Logout
+        document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            fetch('/logout')
+                .then(() => window.location.href = "{{ url_for('login') }}");
+        });
+        
+        // Eventos
+        document.getElementById('recalcularBtn').addEventListener('click', recalcularPuntos);
+        document.getElementById('backupBtn').addEventListener('click', downloadBackup);
+        document.getElementById('createMatchBtn').addEventListener('click', createMatch);
+        
+        document.getElementById('restoreFile').addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                restoreBackup(e.target.files[0]);
+                e.target.value = '';
+            }
+        });
+        
+        // Inicializar
+        loadTeams();
+        loadStats();
+        
+        // Actualizar cada 30 segundos
+        setInterval(loadStats, 30000);
+    </script>
+</body>
+</html>

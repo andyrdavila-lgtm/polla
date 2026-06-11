@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual de Usuario – Polla Mundialista DGA 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&family=Barlow+Condensed:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFD100;
+    --blue:   #003580;
+    --red:    #CC0001;
+    --dark:   #001a40;
+    --mid:    #002a66;
+    --green:  #1a6b1a;
+    --white:  #ffffff;
+    --card-bg: rgba(0,42,102,0.6);
+    --border:  rgba(255,209,0,0.2);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--dark);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .cover {
+    background: linear-gradient(135deg, #001a40 0%, #003580 50%, #001a40 100%);
+    border-bottom: 4px solid var(--yellow);
+    padding: 60px 24px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(255,209,0,0.07) 1px, transparent 1px);
+    background-size: 48px 48px;
+    animation: drift 30s linear infinite;
+  }
+  @keyframes drift { to { background-position: 48px 48px; } }
+  .cover-stripe {
+    height: 5px;
+    background: linear-gradient(90deg, var(--yellow) 33%, var(--blue) 33% 66%, var(--red) 66%);
+    width: 120px;
+    margin: 0 auto 24px;
+    border-radius: 4px;
+  }
+  .cover h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    letter-spacing: 0.05em;
+    color: var(--yellow);
+    position: relative;
+  }
+  .cover p {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: rgba(255,255,255,0.6);
+    position: relative;
+  }
+  .ball-spin {
+    font-size: 3rem;
+    display: inline-block;
+    animation: spin 5s linear infinite;
+    position: relative;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: flex;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 16px;
+    gap: 24px;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 24px;
+    align-self: flex-start;
+    padding: 24px 0;
+  }
+  .sidebar-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    padding: 0 16px;
+    margin-bottom: 10px;
+  }
+  .sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    text-decoration: none;
+    color: rgba(255,255,255,0.65);
+    font-size: 0.88rem;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    border-radius: 0 8px 8px 0;
+  }
+  .sidebar a:hover, .sidebar a.active {
+    color: var(--yellow);
+    border-left-color: var(--yellow);
+    background: rgba(255,209,0,0.07);
+  }
+  .sidebar a .icon { font-size: 1rem; width: 18px; text-align: center; }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    flex: 1;
+    padding: 32px 0;
+    min-width: 0;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 56px;
+    animation: fadeUp 0.5s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,209,0,0.12);
+    border: 1px solid rgba(255,209,0,0.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--yellow);
+    margin-bottom: 10px;
+  }
+  .section h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+  .section > p.lead {
+    color: rgba(255,255,255,0.55);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+    max-width: 640px;
+  }
+  hr.section-rule {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 24px;
+  }
+
+  /* ── SCREEN MOCKUP ── */
+  .mockup {
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .mockup-bar {
+    background: rgba(0,26,64,0.98);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mockup-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .mockup-dot.r { background: #ff5f57; }
+  .mockup-dot.y { background: #febc2e; }
+  .mockup-dot.g { background: #28c840; }
+  .mockup-url {
+    flex: 1;
+    margin-left: 8px;
+    background: rgba(255,255,255,0.07);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    font-family: monospace;
+  }
+  .mockup-body { padding: 20px; }
+
+  /* ── SCREEN RENDERINGS ── */
+
+  /* Login screen */
+  .screen-login {
+    background: linear-gradient(135deg, #001a40, #002a66);
+    border-radius: 10px;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+  .screen-login .ball-icon { font-size: 2.5rem; animation: spin 5s linear infinite; display: inline-block; }
+  .screen-login h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--white); letter-spacing: 0.05em; }
+  .screen-login .field { width: 100%; }
+  .screen-login .field label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.45); display: block; margin-bottom: 5px; }
+  .screen-login .field .inp {
+    width: 100%; padding: 12px 14px; background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
+    color: var(--white); font-size: 14px; font-family: 'Barlow', sans-serif;
+  }
+  .screen-login .inp.highlight { border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(255,209,0,0.15); }
+  .screen-login .btn-login {
+    width: 100%; padding: 14px; background: var(--yellow); border-radius: 12px;
+    border: none; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
+    letter-spacing: 0.05em; color: var(--dark); cursor: pointer;
+  }
+  .screen-login .remember {
+    width: 100%; display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: rgba(255,255,255,0.5);
+  }
+  .screen-login .forgot { font-size: 12px; color: rgba(255,209,0,0.7); text-decoration: underline; }
+
+  /* Nav bar */
+  .mock-nav {
+    background: rgba(0,26,64,0.98);
+    border-bottom: 1px solid rgba(255,209,0,0.2);
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    height: 52px;
+    gap: 0;
+    border-radius: 8px 8px 0 0;
+  }
+  .mock-nav .brand { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; color: var(--white); flex: 1; }
+  .mock-nav .nav-items { display: flex; gap: 4px; }
+  .mock-nav .nav-item { font-size: 11px; color: rgba(255,255,255,0.6); padding: 6px 10px; border-radius: 6px; }
+  .mock-nav .nav-item.act { color: var(--yellow); background: rgba(255,209,0,0.1); }
+
+  /* Dashboard screen */
+  .dash-stats {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .dash-stat {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+  .dash-stat .num { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--yellow); }
+  .dash-stat .lbl { font-size: 9px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.06em; }
+  .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .dash-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .dash-card .card-title { font-size: 11px; font-weight: 700; color: var(--yellow); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .chart-placeholder {
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    height: 80px;
+    display: flex;
+    align-items: flex-end;
+    padding: 8px;
+    gap: 4px;
+  }
+  .bar { background: rgba(255,209,0,0.6); border-radius: 3px 3px 0 0; flex: 1; }
+  .competitor-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .competitor-row .pos { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--yellow); width: 20px; }
+  .competitor-row .name { font-size: 12px; flex: 1; }
+  .competitor-row .pts { font-size: 11px; color: var(--yellow); font-weight: 700; }
+  .quick-actions { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
+  .quick-action {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+    font-size: 10px;
+    color: rgba(255,255,255,0.7);
+  }
+  .quick-action .ico { font-size: 1.2rem; margin-bottom: 5px; }
+  .champ-card {
+    background: linear-gradient(135deg, rgba(200,146,10,0.25), rgba(0,53,128,0.3));
+    border: 1px solid rgba(255,209,0,0.4);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 14px;
+  }
+  .champ-card .title { font-size: 11px; color: var(--yellow); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+  .team-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+  .team-chip { background: rgba(255,255,255,0.1); border-radius: 6px; padding: 5px 10px; font-size: 11px; cursor: pointer; border: 1px solid transparent; }
+  .team-chip.sel { border-color: var(--yellow); background: rgba(255,209,0,0.15); color: var(--yellow); }
+  .upcoming-match { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .team-name { font-size: 12px; flex: 1; text-align: right; }
+  .team-name.right { text-align: left; }
+  .vs { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: rgba(255,255,255,0.3); padding: 0 6px; }
+  .match-time { font-size: 10px; color: rgba(255,209,0,0.7); white-space: nowrap; }
+
+  /* Pronosticos screen */
+  .phase-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .phase-tab {
+    padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer;
+    background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.6); border: 1px solid transparent;
+  }
+  .phase-tab.active { background: var(--yellow); color: var(--dark); }
+  .match-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .match-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .flag { width: 24px; height: 16px; border-radius: 3px; display: inline-block; }
+  .flag.ec { background: linear-gradient(to right, #FFD100 33%, #003580 33% 66%, #CC0001 66%); }
+  .flag.arg { background: linear-gradient(to bottom, #74ACDF 33%, #fff 33% 66%, #74ACDF 66%); }
+  .flag.bra { background: #009739; border: 1px solid rgba(255,255,255,0.2); }
+  .flag.fr { background: linear-gradient(to right, #002395 33%, #fff 33% 66%, #ED2939 66%); }
+  .flag.ur { background: #fff; border: 1px solid rgba(0,0,0,0.1); }
+  .flag.pt { background: linear-gradient(to right, #006600 33%, #FF0000 33%); }
+  .match-teams { flex: 1; font-size: 13px; font-weight: 600; }
+  .match-phase-badge { font-size: 9px; color: rgba(255,209,0,0.7); text-transform: uppercase; letter-spacing: 0.08em; }
+  .pred-types { display: flex; gap: 6px; margin-bottom: 10px; }
+  .pred-type {
+    padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer;
+    background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5);
+  }
+  .pred-type.active { background: rgba(255,209,0,0.2); color: var(--yellow); border: 1px solid rgba(255,209,0,0.4); }
+  .score-inputs { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .score-inp {
+    width: 52px; height: 44px; background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
+    text-align: center; font-size: 1.3rem; font-weight: 700; color: var(--white);
+    font-family: 'Bebas Neue', sans-serif;
+  }
+  .score-inp.highlight { border-color: var(--yellow); background: rgba(255,209,0,0.1); }
+  .score-div { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; color: rgba(255,255,255,0.3); }
+  .btn-save {
+    background: var(--yellow); color: var(--dark); border: none;
+    padding: 8px 18px; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer;
+  }
+  .pts-badge {
+    display: inline-block; background: rgba(0,53,128,0.5); border: 1px solid rgba(255,209,0,0.3);
+    border-radius: 6px; padding: 3px 8px; font-size: 10px; color: var(--yellow);
+  }
+  .winner-select {
+    width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: var(--white);
+    font-size: 13px; font-family: 'Barlow', sans-serif; margin-bottom: 10px;
+  }
+  .penales-section {
+    background: rgba(255,159,67,0.1);
+    border: 1px solid rgba(255,159,67,0.3);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  .penales-label { font-size: 11px; color: #ff9f43; margin-bottom: 8px; font-weight: 600; }
+
+  /* Tabla screen */
+  .ranking-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .ranking-table th {
+    background: rgba(0,53,128,0.5);
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-size: 9px;
+    padding: 8px 10px;
+    text-align: left;
+  }
+  .ranking-table td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .ranking-table tr.me { background: rgba(255,209,0,0.08); }
+  .pos-badge {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem;
+  }
+  .pos-badge.gold { background: #FFD700; color: var(--dark); }
+  .pos-badge.silver { background: #C0C0C0; color: var(--dark); }
+  .pos-badge.bronze { background: #CD7F32; color: var(--white); }
+  .pos-badge.normal { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+  .avatar-circle {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; background: rgba(0,53,128,0.8);
+    color: var(--yellow); margin-right: 6px;
+  }
+  .pts-col { color: var(--yellow); font-family: 'Bebas Neue', sans-serif; font-size: 1rem; }
+
+  /* Historial screen */
+  .hist-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hist-score {
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    color: var(--yellow);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .hist-teams { flex: 1; font-size: 12px; }
+  .hist-phase { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 3px; }
+  .hist-date { font-size: 10px; color: rgba(255,255,255,0.4); white-space: nowrap; }
+  .my-pred { font-size: 10px; }
+  .my-pred.correct { color: #4caf50; }
+  .my-pred.wrong { color: #f44336; }
+  .my-pred.partial { color: var(--yellow); }
+
+  /* Perfil screen */
+  .profile-header {
+    background: linear-gradient(135deg, rgba(0,53,128,0.6), rgba(0,26,64,0.8));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .avatar-big {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--yellow), #c8920a);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--dark);
+    position: relative; flex-shrink: 0;
+  }
+  .camera-btn {
+    position: absolute; bottom: 0; right: 0;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--yellow); display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--dark);
+  }
+  .profile-info .name { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.04em; }
+  .profile-info .meta { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+  .rank-chip { background: rgba(255,209,0,0.15); border: 1px solid rgba(255,209,0,0.4); border-radius: 8px; padding: 6px 14px; text-align: center; margin-left: auto; }
+  .rank-chip .num { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--yellow); }
+  .rank-chip .lbl { font-size: 9px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.06em; }
+  .stats-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
+  .stat-f {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 10px;
+    text-align: center;
+  }
+  .stat-f .val { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--yellow); }
+  .stat-f .lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(255,255,255,0.45); }
+  .edit-form {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .edit-form h4 { font-size: 13px; font-weight: 700; color: var(--yellow); text-transform: uppercase; margin-bottom: 14px; letter-spacing: 0.06em; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .form-field label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.4); margin-bottom: 5px; }
+  .form-field .fi { 
+    width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
+    color: var(--white); font-size: 12px; font-family: 'Barlow', sans-serif;
+  }
+  .btn-save-profile {
+    background: linear-gradient(90deg, #1a6b1a, #2d9e2d);
+    color: #fff; border: none; padding: 10px 20px; border-radius: 10px;
+    font-weight: 700; font-size: 12px; cursor: pointer;
+  }
+  .achievements { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+  .achievement {
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .achievement .ico { font-size: 1.4rem; margin-bottom: 5px; }
+  .achievement .name { font-size: 10px; color: rgba(255,255,255,0.5); }
+  .achievement.earned { border-color: rgba(255,209,0,0.4); background: rgba(255,209,0,0.06); }
+  .achievement.earned .ico { filter: none; }
+  .achievement.locked { opacity: 0.4; }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .callout.tip { background: rgba(26,107,26,0.2); border: 1px solid rgba(26,107,26,0.4); }
+  .callout.warn { background: rgba(255,209,0,0.1); border: 1px solid rgba(255,209,0,0.35); }
+  .callout.info { background: rgba(0,53,128,0.3); border: 1px solid rgba(0,53,128,0.5); }
+  .callout.danger { background: rgba(204,0,1,0.15); border: 1px solid rgba(204,0,1,0.4); }
+  .callout .ci { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+  .callout p { font-size: 0.9rem; line-height: 1.5; color: rgba(255,255,255,0.85); }
+  .callout p strong { color: var(--white); }
+
+  /* ── STEPS ── */
+  .steps { counter-reset: step; }
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--yellow); color: var(--dark);
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .step-body h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+  .step-body p { font-size: 0.88rem; color: rgba(255,255,255,0.65); line-height: 1.55; }
+
+  /* ── POINTS TABLE ── */
+  .pts-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px; }
+  .pts-table th {
+    background: rgba(0,53,128,0.5);
+    padding: 10px 14px; text-align: left;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em;
+    color: rgba(255,255,255,0.6); border-bottom: 1px solid var(--border);
+  }
+  .pts-table td { padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .pts-table tr:hover td { background: rgba(255,255,255,0.03); }
+  .pts-table .pts { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--yellow); }
+  .pts-table .badge-verde { display: inline-block; background: rgba(26,107,26,0.4); border-radius: 4px; padding: 2px 8px; font-size: 11px; color: #90EE90; }
+  .pts-table .badge-azul  { display: inline-block; background: rgba(0,53,128,0.5); border-radius: 4px; padding: 2px 8px; font-size: 11px; color: #74ACDF; }
+  .pts-table .badge-rojo  { display: inline-block; background: rgba(204,0,1,0.3); border-radius: 4px; padding: 2px 8px; font-size: 11px; color: #ff9090; }
+
+  /* ── FAQ ── */
+  .faq-item { margin-bottom: 8px; }
+  .faq-q {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  .faq-q:hover { background: rgba(0,53,128,0.7); }
+  .faq-q .arrow { color: var(--yellow); font-size: 0.8rem; transition: transform 0.3s; }
+  .faq-a {
+    display: none;
+    background: rgba(0,26,64,0.5);
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 14px 16px;
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.6;
+  }
+  .faq-item.open .faq-a { display: block; }
+  .faq-item.open .faq-q { border-radius: 10px 10px 0 0; background: rgba(0,53,128,0.8); }
+  .faq-item.open .arrow { transform: rotate(90deg); }
+
+  /* ── GLOSARIO ── */
+  .glossary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .glos-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .glos-item .term { font-weight: 700; color: var(--yellow); font-size: 0.9rem; margin-bottom: 4px; }
+  .glos-item .def { font-size: 0.83rem; color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+  /* ── ANNOTATION ARROWS ── */
+  .annotated { position: relative; }
+  .annotation {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .annotation .bullet {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--yellow); color: var(--dark);
+    font-size: 10px; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .annotation p { font-size: 0.82rem; color: rgba(255,255,255,0.7); line-height: 1.5; padding-top: 2px; }
+  .annotations-list { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+
+  /* ── FOOTER ── */
+  .manual-footer {
+    background: rgba(0,0,0,0.4);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .footer-stripe {
+    height: 4px;
+    background: linear-gradient(90deg, var(--yellow) 33%, var(--blue) 33% 66%, var(--red) 66%);
+    width: 80px; margin: 0 auto 16px; border-radius: 4px;
+  }
+  .manual-footer p { font-size: 12px; color: rgba(255,255,255,0.3); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .dash-stats, .stats-4 { grid-template-columns: repeat(2,1fr); }
+    .quick-actions, .achievements { grid-template-columns: repeat(2,1fr); }
+    .glossary, .form-row { grid-template-columns: 1fr; }
+    .dash-grid { grid-template-columns: 1fr; }
+    .mock-nav .nav-items { display: none; }
+    .profile-header { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-stripe"></div>
+  <div class="ball-spin">⚽</div>
+  <h1>Manual de Usuario</h1>
+  <h1 style="color:white; font-size: clamp(1.2rem,3vw,2rem)">Polla Mundialista DGA 2026</h1>
+  <p style="margin-top:12px">Guía completa para participar, pronosticar y ganar · Versión para usuarios</p>
+</div>
+
+<!-- ÍNDICE DE CONTENIDO rápido -->
+<div style="background:rgba(0,26,64,0.7); border-bottom:1px solid rgba(255,209,0,0.15); padding:12px 24px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
+  <a href="#inicio" style="color:rgba(255,209,0,0.8); font-size:12px; text-decoration:none; display:flex;align-items:center;gap:5px">🔐 Inicio de sesión</a>
+  <a href="#dashboard" style="color:rgba(255,209,0,0.8); font-size:12px; text-decoration:none">📊 Dashboard</a>
+  <a href="#pronosticos" style="color:rgba(255,209,0,0.8); font-size:12px; text-decoration:none">📋 Pronósticos</a>
+  <a href="#tabla" style="color:rgba(255,209,0,0.8); font-size:12px; text-decoration:none">🏆 Tabla</a>
+  <a href="#historial" style="color:rgba(255,209,0,0.8); font-size:12px; text-decoration:none">📜 Historial</a>
+  <a href="#perfil" style="color:rgba(255,209,0,0.8); font-size:12px; text-decoration:none">👤 Mi Perfil</a>
+  <a href="#puntos" style="color:rgba(255,209,0,0.8); font-size:12px; text-decoration:none">🎯 Puntos</a>
+  <a href="#faq" style="color:rgba(255,209,0,0.8); font-size:12px; text-decoration:none">❓ FAQ</a>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR NAV -->
+  <nav class="sidebar">
+    <div class="sidebar-title">Contenido</div>
+    <a href="#inicio" class="active"><span class="icon">🔐</span> Iniciar Sesión</a>
+    <a href="#dashboard"><span class="icon">📊</span> Dashboard</a>
+    <a href="#pronosticos"><span class="icon">📋</span> Pronósticos</a>
+    <a href="#tabla"><span class="icon">🏆</span> Tabla Posiciones</a>
+    <a href="#historial"><span class="icon">📜</span> Historial</a>
+    <a href="#perfil"><span class="icon">👤</span> Mi Perfil</a>
+    <a href="#puntos"><span class="icon">🎯</span> Sistema de Puntos</a>
+    <a href="#faq"><span class="icon">❓</span> Preguntas Frecuentes</a>
+    <a href="#glosario"><span class="icon">📖</span> Glosario</a>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 1. INICIO DE SESIÓN -->
+    <!-- ═══════════════════════════════════════ -->
+    <section class="section" id="inicio">
+      <div class="section-badge">🔐 Sección 1</div>
+      <h2>Iniciar Sesión</h2>
+      <p class="lead">El primer paso para acceder a la Polla Mundialista es ingresar con las credenciales que el administrador te asignó.</p>
+      <hr class="section-rule">
+
+      <!-- MOCKUP LOGIN -->
+      <div class="mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div>
+          <div class="mockup-url">polladga2026.app / login</div>
+        </div>
+        <div class="mockup-body">
+          <div class="screen-login">
+            <div class="ball-icon">⚽</div>
+            <h3>POLLA MUNDIALISTA DGA 2026</h3>
+            <p style="font-size:12px;color:rgba(255,255,255,0.4)">Ingresa tus credenciales para continuar</p>
+            <div class="field">
+              <label>👤 Usuario</label>
+              <div class="inp highlight" style="padding:12px 14px; font-size:13px; border-radius:12px;">juan.perez</div>
+            </div>
+            <div class="field">
+              <label>🔒 Contraseña</label>
+              <div class="inp" style="padding:12px 14px; font-size:13px; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+                <span>••••••••</span><span style="color:rgba(255,255,255,0.4); font-size:11px">👁</span>
+              </div>
+            </div>
+            <div class="remember">
+              <div style="width:14px;height:14px;border:1px solid rgba(255,209,0,0.5);border-radius:3px;background:rgba(255,209,0,0.2);"></div>
+              Recordar mi usuario
+            </div>
+            <div class="btn-login">INGRESAR</div>            
+          </div>
+        </div>
+      </div>
+
+      <div class="annotations-list">
+        <div class="annotation"><div class="bullet">1</div><p><strong>Usuario:</strong> Escribe el nombre de usuario que te asignaron (puede ser tu correo corporativo o un usuario personalizado).</p></div>
+        <div class="annotation"><div class="bullet">2</div><p><strong>Contraseña:</strong> Ingresa tu clave. Usa el ícono del ojo 👁 para mostrar u ocultar los caracteres.</p></div>
+        <div class="annotation"><div class="bullet">3</div><p><strong>Recordar usuario:</strong> Activa esta casilla para que el sistema recuerde tu usuario la próxima vez.</p></div>
+        <div class="annotation"><div class="bullet">4</div><p><strong>Ingresar:</strong> Haz clic en el botón amarillo para entrar al sistema.</p></div>
+      </div>
+
+      <div class="callout tip">
+        <div class="ci">✅</div>
+        <p><strong>Consejo:</strong> El campo de usuario acepta letras, números, @, puntos y guiones. Si te aparece un error de "credenciales incorrectas", verifica que no tengas el Bloq Mayúsculas activado.</p>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 2. DASHBOARD -->
+    <!-- ═══════════════════════════════════════ -->
+    <section class="section" id="dashboard">
+      <div class="section-badge">📊 Sección 2</div>
+      <h2>Dashboard</h2>
+      <p class="lead">Tu página principal. Muestra un resumen de tu desempeño, los próximos partidos y el ranking de tus compañeros.</p>
+      <hr class="section-rule">
+
+      <!-- MOCKUP DASHBOARD -->
+      <div class="mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div>
+          <div class="mockup-url">polladga2026.app / dashboard</div>
+        </div>
+        <div class="mockup-body">
+          <!-- Nav -->
+          <div class="mock-nav" style="margin:-20px -20px 16px -20px; border-radius:0;">
+            <div class="brand">⚽ Polla Mundialista DGA 2026</div>
+            <div class="nav-items">
+              <div class="nav-item act">Dashboard</div>
+              <div class="nav-item">Pronósticos</div>
+              <div class="nav-item">Tabla</div>
+              <div class="nav-item">Historial</div>
+              <div class="nav-item">Mi Perfil</div>
+              <div class="nav-item" style="color:#ff6b6b">Salir</div>
+            </div>
+          </div>
+          <!-- Bienvenida -->
+          <p style="font-size:13px; color:rgba(255,255,255,0.6); margin-bottom:14px">Bienvenido, <strong>Juan Pérez</strong> 👋</p>
+          <!-- Stats -->
+          <div class="dash-stats">
+            <div class="dash-stat"><div class="num">47</div><div class="lbl">Posición</div></div>
+            <div class="dash-stat"><div class="num" style="color:#4caf50">128</div><div class="lbl">Pts Totales</div></div>
+            <div class="dash-stat"><div class="num">5</div><div class="lbl">Exactos</div></div>
+            <div class="dash-stat"><div class="num" style="color:#ff9f43">12</div><div class="lbl">Pendientes</div></div>
+          </div>
+          <!-- Charts & Top 5 -->
+          <div class="dash-grid">
+            <div class="dash-card">
+              <div class="card-title">📈 Tu Progreso</div>
+              <div class="chart-placeholder">
+                <div class="bar" style="height:30%"></div>
+                <div class="bar" style="height:45%"></div>
+                <div class="bar" style="height:60%"></div>
+                <div class="bar" style="height:55%"></div>
+                <div class="bar" style="height:75%"></div>
+                <div class="bar" style="height:80%"></div>
+                <div class="bar" style="height:95%"></div>
+              </div>
+            </div>
+            <div class="dash-card">
+              <div class="card-title">👥 Top 5 Competidores</div>
+              <div class="competitor-row"><span class="pos">1</span><span class="name">Carlos López</span><span class="pts">215 pts</span></div>
+              <div class="competitor-row"><span class="pos">2</span><span class="name">María Silva</span><span class="pts">198 pts</span></div>
+              <div class="competitor-row"><span class="pos">3</span><span class="name">Luis Torres</span><span class="pts">185 pts</span></div>
+              <div class="competitor-row"><span class="pos">4</span><span class="name">Ana García</span><span class="pts">172 pts</span></div>
+              <div class="competitor-row" style="border:none"><span class="pos">5</span><span class="name">Pedro Ruiz</span><span class="pts">160 pts</span></div>
+            </div>
+          </div>
+          <!-- Quick Actions -->
+          <div class="quick-actions">
+            <div class="quick-action"><div class="ico">📋</div>Hacer Pronósticos</div>
+            <div class="quick-action"><div class="ico">🏆</div>Ver Tabla</div>
+            <div class="quick-action"><div class="ico">👤</div>Mi Perfil</div>
+            <div class="quick-action"><div class="ico">📤</div>Compartir</div>
+          </div>
+          <!-- Champion prediction -->
+          <div class="champ-card">
+            <div class="title">🏆 Predice al CAMPEÓN del Mundo 2026 (única oportunidad)</div>
+            <div style="font-size:11px; color:rgba(255,209,0,0.7); margin-bottom:10px">⏳ Plazo máximo: 10 de junio de 2026, 23:30 hrs</div>
+            <div class="team-grid">
+              <div class="team-chip">🇧🇷 Brasil</div>
+              <div class="team-chip sel">🇦🇷 Argentina</div>
+              <div class="team-chip">🇫🇷 Francia</div>
+              <div class="team-chip">🇵🇹 Portugal</div>
+              <div class="team-chip">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra</div>
+              <div class="team-chip">🇩🇪 Alemania</div>
+            </div>
+          </div>
+          <!-- Próximos partidos -->
+          <div class="dash-card">
+            <div class="card-title">📅 Próximos Partidos</div>
+            <div class="upcoming-match"><span class="team-name">Ecuador 🇪🇨</span><span class="vs">VS</span><span class="team-name right">🇺🇾 Uruguay</span><span class="match-time">Hoy 18:00</span></div>
+            <div class="upcoming-match"><span class="team-name">Brasil 🇧🇷</span><span class="vs">VS</span><span class="team-name right">🇫🇷 Francia</span><span class="match-time">Mañana 20:00</span></div>
+            <div class="upcoming-match" style="border:none"><span class="team-name">Argentina 🇦🇷</span><span class="vs">VS</span><span class="team-name right">🇵🇹 Portugal</span><span class="match-time">Jun 12 15:00</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotations-list">
+        <div class="annotation"><div class="bullet">A</div><p><strong>Estadísticas rápidas:</strong> Muestra tu posición en el ranking, puntos acumulados, resultados exactos y pronósticos que aún no has completado.</p></div>
+        <div class="annotation"><div class="bullet">B</div><p><strong>Gráfico de progreso:</strong> Visualiza la evolución de tus puntos a lo largo del torneo semana a semana.</p></div>
+        <div class="annotation"><div class="bullet">C</div><p><strong>Top 5 competidores:</strong> Ve quiénes lideran la polla y cuántos puntos llevan. ¡Motívate a alcanzarlos!</p></div>
+        <div class="annotation"><div class="bullet">D</div><p><strong>Acciones rápidas:</strong> Botones directos para las secciones más usadas del sistema.</p></div>
+        <div class="annotation"><div class="bullet">E</div><p><strong>🏆 Predicción del Campeón:</strong> <strong style="color:#FFD100">Atención — solo se puede hacer UNA VEZ antes del 10 de junio.</strong> Selecciona el equipo que crees que ganará el Mundial. Esta elección es permanente e irreversible.</p></div>
+        <div class="annotation"><div class="bullet">F</div><p><strong>Próximos partidos:</strong> Lista de los encuentros más cercanos para que no olvides registrar tu pronóstico a tiempo.</p></div>
+      </div>
+
+      <div class="callout danger">
+        <div class="ci">🚨</div>
+        <p><strong>Importante — Predicción del Campeón:</strong> Una vez que selecciones y confirmes tu equipo campeón, <strong>NO se puede cambiar</strong>. El plazo vence el <strong>10 de junio de 2026 a las 23:30 hrs</strong>. ¡Piénsalo bien antes de confirmar!</p>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 3. PRONÓSTICOS -->
+    <!-- ═══════════════════════════════════════ -->
+    <section class="section" id="pronosticos">
+      <div class="section-badge">📋 Sección 3</div>
+      <h2>Pronósticos</h2>
+      <p class="lead">Aquí registras tus predicciones para cada partido. Es la sección más importante del sistema — entre más acertados, más puntos.</p>
+      <hr class="section-rule">
+
+      <!-- MOCKUP PRONOSTICOS -->
+      <div class="mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div>
+          <div class="mockup-url">polladga2026.app / pronosticos</div>
+        </div>
+        <div class="mockup-body">
+          <!-- Tabs de fase -->
+          <div class="phase-tabs">
+            <div class="phase-tab active">⚽ Fase de Grupos</div>
+            <div class="phase-tab">🥊 Eliminatorias</div>
+          </div>
+          <!-- Filtros -->
+          <div style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;">
+            <div class="inp" style="padding:8px 12px; font-size:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.5); flex:1; min-width:140px">🔍 Buscar equipo...</div>
+            <div class="inp" style="padding:8px 12px; font-size:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.5); min-width:140px">📂 Todos los grupos</div>
+          </div>
+
+          <!-- Partido 1: Marcador -->
+          <div class="match-card">
+            <div class="match-header">
+              <span class="flag ec"></span>
+              <div class="match-teams">Ecuador vs Uruguay</div>
+              <span class="flag ur" style="background:#fff; border:1px solid rgba(0,0,0,0.15)"></span>
+              <span class="match-phase-badge">GRUPO A</span>
+            </div>
+            <div class="pred-types">
+              <div class="pred-type">🏅 Ganador</div>
+              <div class="pred-type active">📊 Marcador</div>
+            </div>
+            <div class="score-inputs">
+              <span style="font-size:12px; color:rgba(255,255,255,0.6)">Ecuador</span>
+              <div class="score-inp highlight">2</div>
+              <div class="score-div">-</div>
+              <div class="score-inp">1</div>
+              <span style="font-size:12px; color:rgba(255,255,255,0.6)">Uruguay</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <span class="pts-badge">📊 Marcador exacto: 3 pts | Ganador: 1 pt</span>
+              <button class="btn-save">💾 Guardar</button>
+            </div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-top:8px">📅 10 jun 2026 · Grupo A</div>
+          </div>
+
+          <!-- Partido 2: Ganador -->
+          <div class="match-card">
+            <div class="match-header">
+              <span class="flag bra"></span>
+              <div class="match-teams">Brasil vs Francia</div>
+              <span class="flag fr"></span>
+              <span class="match-phase-badge">GRUPO B</span>
+            </div>
+            <div class="pred-types">
+              <div class="pred-type active">🏅 Ganador</div>
+              <div class="pred-type">📊 Marcador</div>
+            </div>
+            <select class="winner-select">
+              <option>Selecciona el ganador...</option>
+              <option>Brasil</option>
+              <option selected>Francia</option>
+              <option>Empate</option>
+            </select>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="pts-badge">🏅 Solo ganador: 1 pt</span>
+              <button class="btn-save">💾 Guardar</button>
+            </div>
+          </div>
+
+          <!-- Partido 3: Eliminatoria con penales -->
+          <div class="match-card">
+            <div class="match-header">
+              <span class="flag arg"></span>
+              <div class="match-teams">Argentina vs Portugal</div>
+              <span class="flag pt"></span>
+              <span class="match-phase-badge" style="color:#ff9f43">CUARTOS</span>
+            </div>
+            <div class="pred-types">
+              <div class="pred-type">🏅 Ganador</div>
+              <div class="pred-type active">📊 Marcador</div>
+              <div class="pred-type" style="color:#ff9f43; background:rgba(255,159,67,0.1)">🎯 Con Penales</div>
+            </div>
+            <div class="score-inputs">
+              <span style="font-size:12px; color:rgba(255,255,255,0.6)">Argentina</span>
+              <div class="score-inp">1</div>
+              <div class="score-div">-</div>
+              <div class="score-inp">1</div>
+              <span style="font-size:12px; color:rgba(255,255,255,0.6)">Portugal</span>
+            </div>
+            <div class="penales-section">
+              <div class="penales-label">⚡ Penales (solo si empataron en 90')</div>
+              <div class="score-inputs">
+                <div class="score-inp" style="border-color:#ff9f43">4</div>
+                <div class="score-div" style="color:#ff9f43">-</div>
+                <div class="score-inp">3</div>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="pts-badge">📊 Marcador exacto: 5 pts</span>
+              <button class="btn-save">💾 Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotations-list">
+        <div class="annotation"><div class="bullet">1</div><p><strong>Fase de Grupos / Eliminatorias:</strong> Usa estas pestañas para cambiar entre los partidos de fase de grupos y los partidos eliminatorios (octavos, cuartos, semis, final).</p></div>
+        <div class="annotation"><div class="bullet">2</div><p><strong>Filtros:</strong> Busca un equipo específico o filtra por grupo para encontrar rápidamente el partido que buscas.</p></div>
+        <div class="annotation"><div class="bullet">3</div><p><strong>Tipo de pronóstico:</strong> Para cada partido puedes elegir entre <em>Ganador</em> (más fácil, menos puntos) o <em>Marcador</em> (más difícil, más puntos). En eliminatorias también aparece la opción <em>Con Penales</em>.</p></div>
+        <div class="annotation"><div class="bullet">4</div><p><strong>Guardar:</strong> Siempre haz clic en "Guardar" después de ingresar tu pronóstico. Los cambios <strong>no se guardan automáticamente</strong>.</p></div>
+      </div>
+
+      <div class="callout warn">
+        <div class="ci">⚠️</div>
+        <p><strong>Límite de intentos:</strong> Cada partido tiene máximo <strong>2 intentos</strong> para guardar pronóstico. Una vez que hayas guardado 2 veces, ese partido queda bloqueado. ¡Piénsalo bien antes de guardar!</p>
+      </div>
+
+      <div class="callout info">
+        <div class="ci">ℹ️</div>
+        <p><strong>Bloqueo automático:</strong> Los pronósticos se cierran automáticamente cuando comienza el partido. Si el partido ya empezó o terminó, verás el campo bloqueado y no podrás modificarlo.</p>
+      </div>
+
+      <h3 style="font-size:1.1rem; color:var(--yellow); margin:24px 0 12px; font-family:'Bebas Neue',sans-serif; letter-spacing:0.04em;">Tipos de pronóstico paso a paso</h3>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:16px;">
+        <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:16px;">
+          <div style="font-size:1.2rem; margin-bottom:8px">🏅</div>
+          <div style="font-weight:700; font-size:0.9rem; margin-bottom:6px; color:var(--yellow)">GANADOR</div>
+          <div style="font-size:0.82rem; color:rgba(255,255,255,0.65); line-height:1.5">Selecciona en el menú desplegable quién gana el partido: equipo local, equipo visitante o empate. La opción más simple.</div>
+        </div>
+        <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:16px;">
+          <div style="font-size:1.2rem; margin-bottom:8px">📊</div>
+          <div style="font-weight:700; font-size:0.9rem; margin-bottom:6px; color:var(--yellow)">MARCADOR</div>
+          <div style="font-size:0.82rem; color:rgba(255,255,255,0.65); line-height:1.5">Ingresa el marcador exacto: los goles del equipo local (izquierda) y del visitante (derecha). Números enteros, mínimo 0.</div>
+        </div>
+        <div style="background:var(--card-bg); border:1px solid rgba(255,159,67,0.4); border-radius:12px; padding:16px;">
+          <div style="font-size:1.2rem; margin-bottom:8px">🎯</div>
+          <div style="font-weight:700; font-size:0.9rem; margin-bottom:6px; color:#ff9f43">CON PENALES</div>
+          <div style="font-size:0.82rem; color:rgba(255,255,255,0.65); line-height:1.5">Solo en eliminatorias. Ingresa el marcador en 90 minutos y, si hubo empate, también el resultado de los penales.</div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 4. TABLA DE POSICIONES -->
+    <!-- ═══════════════════════════════════════ -->
+    <section class="section" id="tabla">
+      <div class="section-badge">🏆 Sección 4</div>
+      <h2>Tabla de Posiciones</h2>
+      <p class="lead">El ranking completo de todos los participantes de la polla. Aquí puedes ver quién va liderando y compararte con tus compañeros.</p>
+      <hr class="section-rule">
+
+      <div class="mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div>
+          <div class="mockup-url">polladga2026.app / tabla-posiciones</div>
+        </div>
+        <div class="mockup-body">
+          <!-- Filtros -->
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:8px; margin-bottom:14px; align-items:end; flex-wrap:wrap;">
+            <div>
+              <div style="font-size:10px; text-transform:uppercase; letter-spacing:0.1em; color:rgba(255,255,255,0.4); margin-bottom:5px">🔍 Buscar</div>
+              <div class="inp" style="padding:8px 12px; font-size:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.5)">Nombre o usuario...</div>
+            </div>
+            <div>
+              <div style="font-size:10px; text-transform:uppercase; letter-spacing:0.1em; color:rgba(255,255,255,0.4); margin-bottom:5px">🏢 Área</div>
+              <div class="inp" style="padding:8px 12px; font-size:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.5)">Todas las áreas</div>
+            </div>
+            <div>
+              <div style="font-size:10px; text-transform:uppercase; letter-spacing:0.1em; color:rgba(255,255,255,0.4); margin-bottom:5px">🔢 Ordenar</div>
+              <div class="inp" style="padding:8px 12px; font-size:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.5)">Puntos Totales</div>
+            </div>
+            <button style="padding:8px 14px; background:rgba(0,53,128,0.6); border:1px solid rgba(0,53,128,0.8); border-radius:8px; color:var(--yellow); font-size:11px; font-weight:700; cursor:pointer">↺ ACTUALIZAR</button>
+          </div>
+          <!-- Tabla -->
+          <div style="overflow-x:auto">
+            <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>PARTICIPANTE</th>
+                  <th>ÁREA</th>
+                  <th>F. GRUPOS</th>
+                  <th>ELIM.</th>
+                  <th>ESPECIALES</th>
+                  <th>TOTAL</th>
+                  <th>EXACTOS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="pos-badge gold">1</span></td><td><span class="avatar-circle">CL</span>Carlos López</td><td>Legal</td><td>145</td><td>50</td><td>20</td><td class="pts-col">215</td><td>8</td></tr>
+                <tr><td><span class="pos-badge silver">2</span></td><td><span class="avatar-circle">MS</span>María Silva</td><td>RR.HH.</td><td>130</td><td>48</td><td>20</td><td class="pts-col">198</td><td>7</td></tr>
+                <tr><td><span class="pos-badge bronze">3</span></td><td><span class="avatar-circle">LT</span>Luis Torres</td><td>IT</td><td>120</td><td>45</td><td>20</td><td class="pts-col">185</td><td>6</td></tr>
+                <tr class="me"><td><span class="pos-badge normal">4</span></td><td><span class="avatar-circle" style="background:rgba(255,209,0,0.3);color:var(--yellow)">JP</span><strong>Juan Pérez</strong> <span style="font-size:9px;color:rgba(255,209,0,0.7)">(yo)</span></td><td>Legal</td><td>95</td><td>18</td><td>15</td><td class="pts-col">128</td><td>5</td></tr>
+                <tr><td><span class="pos-badge normal">5</span></td><td><span class="avatar-circle">AG</span>Ana García</td><td>Finanzas</td><td>110</td><td>42</td><td>20</td><td class="pts-col">172</td><td>4</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Stats bottom -->
+          <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:14px;">
+            <div class="dash-stat"><div class="num">48</div><div class="lbl">Participantes</div></div>
+            <div class="dash-stat"><div class="num">142</div><div class="lbl">Pts Promedio</div></div>
+            <div class="dash-stat"><div class="num">215</div><div class="lbl">Pts Máximo</div></div>
+            <div class="dash-stat"><div class="num">312</div><div class="lbl">Exactos Totales</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotations-list">
+        <div class="annotation"><div class="bullet">A</div><p><strong>Tu fila destacada:</strong> Tu posición aparece resaltada en dorado para que la identifiques fácilmente en medio del ranking.</p></div>
+        <div class="annotation"><div class="bullet">B</div><p><strong>Medallas del podio:</strong> Los tres primeros lugares tienen medallas 🥇🥈🥉 para identificarlos rápidamente.</p></div>
+        <div class="annotation"><div class="bullet">C</div><p><strong>Filtros:</strong> Puedes buscar a un compañero por nombre, filtrar por área de trabajo (Legal, IT, RR.HH., etc.) u ordenar el ranking por diferentes criterios.</p></div>
+        <div class="annotation"><div class="bullet">D</div><p><strong>Columnas de puntos:</strong> El total se desglosa en puntos de Fase de Grupos, Eliminatorias y Especiales (predicción del campeón).</p></div>
+        <div class="annotation"><div class="bullet">E</div><p><strong>Actualizar:</strong> Haz clic en "Actualizar" para obtener el ranking más reciente. La tabla se actualiza automáticamente cada lunes a las 09:00.</p></div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 5. HISTORIAL -->
+    <!-- ═══════════════════════════════════════ -->
+    <section class="section" id="historial">
+      <div class="section-badge">📜 Sección 5</div>
+      <h2>Historial de Partidos</h2>
+      <p class="lead">Consulta los resultados de todos los partidos ya finalizados y compara el resultado real con tu pronóstico para cada encuentro.</p>
+      <hr class="section-rule">
+
+      <div class="mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div>
+          <div class="mockup-url">polladga2026.app / historial</div>
+        </div>
+        <div class="mockup-body">
+          <!-- Stats -->
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px;">
+            <div class="dash-stat"><div class="num">24</div><div class="lbl">Partidos Finalizados</div></div>
+            <div class="dash-stat"><div class="num">2.7</div><div class="lbl">Goles por Partido</div></div>
+            <div class="dash-stat"><div class="num">65</div><div class="lbl">Goles Totales</div></div>
+          </div>
+          <!-- Busqueda -->
+          <div style="display:flex; gap:8px; margin-bottom:14px;">
+            <div class="inp" style="padding:8px 12px; font-size:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.5); flex:1">🔍 Buscar equipo...</div>
+            <button style="padding:8px 14px; background:rgba(0,53,128,0.6); border:1px solid rgba(0,53,128,0.8); border-radius:8px; color:var(--yellow); font-size:11px; font-weight:700">↺ ACTUALIZAR</button>
+          </div>
+          <!-- Cards partidos -->
+          <div class="hist-card">
+            <div>
+              <div style="font-size:11px; color:rgba(255,255,255,0.6)">🇪🇨 Ecuador vs 🇺🇾 Uruguay</div>
+              <div class="hist-phase">Grupo A · Jun 10, 2026</div>
+            </div>
+            <div class="hist-score">2 - 1</div>
+            <div>
+              <div class="my-pred correct">✅ Mi pronóstico: 2-1</div>
+              <div style="font-size:10px; color:#4caf50">+3 pts (marcador exacto)</div>
+            </div>
+          </div>
+          <div class="hist-card">
+            <div>
+              <div style="font-size:11px; color:rgba(255,255,255,0.6)">🇧🇷 Brasil vs 🇫🇷 Francia</div>
+              <div class="hist-phase">Grupo B · Jun 9, 2026</div>
+            </div>
+            <div class="hist-score">1 - 0</div>
+            <div>
+              <div class="my-pred partial">🟡 Mi pronóstico: Brasil gana</div>
+              <div style="font-size:10px; color:var(--yellow)">+1 pt (ganador correcto)</div>
+            </div>
+          </div>
+          <div class="hist-card">
+            <div>
+              <div style="font-size:11px; color:rgba(255,255,255,0.6)">🇦🇷 Argentina vs 🇵🇹 Portugal</div>
+              <div class="hist-phase">Grupo C · Jun 8, 2026</div>
+            </div>
+            <div class="hist-score">0 - 2</div>
+            <div>
+              <div class="my-pred wrong">❌ Mi pronóstico: 1-0</div>
+              <div style="font-size:10px; color:#f44336">+0 pts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotations-list">
+        <div class="annotation"><div class="bullet">A</div><p><strong>Resultado real:</strong> El marcador en amarillo muestra el resultado oficial del partido.</p></div>
+        <div class="annotation"><div class="bullet">B</div><p><strong>✅ Verde — Pronóstico exacto:</strong> Acertaste el marcador exacto. Máximos puntos.</p></div>
+        <div class="annotation"><div class="bullet">C</div><p><strong>🟡 Amarillo — Ganador correcto:</strong> Acertaste quién ganó pero no el marcador exacto.</p></div>
+        <div class="annotation"><div class="bullet">D</div><p><strong>❌ Rojo — Pronóstico incorrecto:</strong> No acertaste el resultado. Sin puntos en ese partido.</p></div>
+        <div class="annotation"><div class="bullet">E</div><p><strong>Búsqueda:</strong> Escribe el nombre de un equipo para filtrar y ver solo los partidos donde ese equipo participó.</p></div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 6. MI PERFIL -->
+    <!-- ═══════════════════════════════════════ -->
+    <section class="section" id="perfil">
+      <div class="section-badge">👤 Sección 6</div>
+      <h2>Mi Perfil</h2>
+      <p class="lead">Administra tu información personal, revisa tus estadísticas detalladas, tus logros y cambia tu contraseña.</p>
+      <hr class="section-rule">
+
+      <div class="mockup">
+        <div class="mockup-bar">
+          <div class="mockup-dot r"></div><div class="mockup-dot y"></div><div class="mockup-dot g"></div>
+          <div class="mockup-url">polladga2026.app / perfil</div>
+        </div>
+        <div class="mockup-body">
+          <!-- Header de perfil -->
+          <div class="profile-header">
+            <div class="avatar-big">JP<div class="camera-btn">📷</div></div>
+            <div class="profile-info">
+              <div class="name">JUAN PÉREZ</div>
+              <div class="meta">@juan.perez</div>
+              <div class="meta">🏢 Legal · ✉️ juan@dga.com</div>
+              <div class="meta">📅 Miembro desde: Ene 2026</div>
+            </div>
+            <div class="rank-chip">
+              <div class="num">#4</div>
+              <div class="lbl">RANKING</div>
+            </div>
+          </div>
+          <!-- Stats FIFA style -->
+          <div class="stats-4">
+            <div class="stat-f"><div class="val">128</div><div class="lbl">Puntos Totales</div></div>
+            <div class="stat-f"><div class="val">2.1</div><div class="lbl">Promedio/Partido</div></div>
+            <div class="stat-f"><div class="val">5</div><div class="lbl">Exactos</div></div>
+            <div class="stat-f"><div class="val">68<span style="font-size:12px">%</span></div><div class="lbl">Tasa Acierto</div></div>
+          </div>
+          <!-- Logros -->
+          <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:14px; margin-bottom:14px;">
+            <div style="font-size:11px; font-weight:700; color:var(--yellow); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px">🏅 Logros y Medallas</div>
+            <div class="achievements">
+              <div class="achievement earned"><div class="ico">⭐</div><div class="name">Primer Acierto</div></div>
+              <div class="achievement earned"><div class="ico">🎯</div><div class="name">5 Exactos</div></div>
+              <div class="achievement locked"><div class="ico">🔥</div><div class="name">Racha de 5</div></div>
+              <div class="achievement locked"><div class="ico">🏆</div><div class="name">Top 3</div></div>
+            </div>
+          </div>
+          <!-- Editar perfil -->
+          <div class="edit-form">
+            <h4>✏️ Editar Perfil</h4>
+            <div class="form-row">
+              <div class="form-field"><label>Nombre Completo</label><div class="fi">Juan Pérez Rodríguez</div></div>
+              <div class="form-field"><label>Área de Trabajo</label><div class="fi">Legal</div></div>
+            </div>
+            <div class="form-field" style="margin-bottom:10px"><label>Email</label><div class="fi">juan@dga.com</div></div>
+            <button class="btn-save-profile">💾 GUARDAR CAMBIOS</button>
+          </div>
+          <!-- Cambiar contraseña -->
+          <div class="edit-form">
+            <h4>🔑 Cambiar Contraseña</h4>
+            <div class="form-field" style="margin-bottom:10px"><label>Contraseña Actual</label><div class="fi">••••••••</div></div>
+            <div class="form-row">
+              <div class="form-field"><label>Nueva Contraseña</label><div class="fi">••••••••</div></div>
+              <div class="form-field"><label>Confirmar Nueva</label><div class="fi">••••••••</div></div>
+            </div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:10px">Mínimo 6 caracteres</div>
+            <button class="btn-save-profile">💾 ACTUALIZAR CONTRASEÑA</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="annotations-list">
+        <div class="annotation"><div class="bullet">A</div><p><strong>Foto de perfil:</strong> Haz clic en el ícono de cámara 📷 para subir una foto. Formatos permitidos: JPG, PNG, GIF.</p></div>
+        <div class="annotation"><div class="bullet">B</div><p><strong>Estadísticas detalladas:</strong> Ver tus puntos totales, promedio por partido, resultados exactos y tasa de acierto general.</p></div>
+        <div class="annotation"><div class="bullet">C</div><p><strong>Logros:</strong> Los logros en color están desbloqueados. Los grises aún no los has conseguido. ¡Sigue jugando para obtenerlos todos!</p></div>
+        <div class="annotation"><div class="bullet">D</div><p><strong>Editar perfil:</strong> Puedes actualizar tu nombre completo, área de trabajo y correo electrónico en cualquier momento.</p></div>
+        <div class="annotation"><div class="bullet">E</div><p><strong>Cambiar contraseña:</strong> Ingresa tu contraseña actual y luego escribe la nueva dos veces para confirmarla. Mínimo 6 caracteres.</p></div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 7. SISTEMA DE PUNTOS -->
+    <!-- ═══════════════════════════════════════ -->
+    <section class="section" id="puntos">
+      <div class="section-badge">🎯 Sección 7</div>
+      <h2>Sistema de Puntos</h2>
+      <p class="lead">Entiende exactamente cuántos puntos puedes ganar con cada tipo de pronóstico y en cada fase del torneo.</p>
+      <hr class="section-rule">
+
+      <table class="pts-table">
+        <thead>
+          <tr>
+            <th>Fase</th>
+            <th>Tipo de Pronóstico</th>
+            <th>Puntos</th>
+            <th>¿Cuándo aplica?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge-verde">Fase de Grupos</span></td>
+            <td>🏅 Ganador correcto</td>
+            <td class="pts">1 pt</td>
+            <td>Acertaste quién ganó (o si fue empate)</td>
+          </tr>
+          <tr>
+            <td><span class="badge-verde">Fase de Grupos</span></td>
+            <td>📊 Marcador exacto</td>
+            <td class="pts">3 pts</td>
+            <td>Acertaste el resultado exacto (ej. 2-1)</td>
+          </tr>
+          <tr>
+            <td><span class="badge-azul">Eliminatorias</span></td>
+            <td>🏅 Ganador correcto</td>
+            <td class="pts">2 pts</td>
+            <td>Acertaste quién pasa a la siguiente ronda</td>
+          </tr>
+          <tr>
+            <td><span class="badge-azul">Eliminatorias</span></td>
+            <td>📊 Marcador exacto</td>
+            <td class="pts">5 pts</td>
+            <td>Acertaste el marcador exacto en 90 min</td>
+          </tr>
+          <tr>
+            <td><span class="badge-rojo">Especial</span></td>
+            <td>🏆 Campeón del Mundo</td>
+            <td class="pts">20 pts</td>
+            <td>Si tu equipo seleccionado gana el Mundial</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout tip">
+        <div class="ci">💡</div>
+        <p><strong>Estrategia recomendada:</strong> Si confías en que conoces el marcador exacto, selecciona "Marcador" — el triple de puntos vale la pena. Si no estás seguro, elige "Ganador" para asegurar al menos 1 punto.</p>
+      </div>
+
+      <div class="callout info">
+        <div class="ci">ℹ️</div>
+        <p><strong>Penales en eliminatorias:</strong> Si un partido de eliminatorias termina en empate y va a penales, tu pronóstico de "Marcador exacto" solo cuenta el resultado de los 90 minutos. Si activaste la opción "Con Penales", también se evalúa el resultado de la tanda de penales.</p>
+      </div>
+
+      <h3 style="font-size:1rem; color:var(--yellow); margin:20px 0 10px; font-family:'Bebas Neue',sans-serif; letter-spacing:0.04em">Ejemplo de acumulación de puntos</h3>
+      <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:12px; padding:16px;">
+        <div style="font-size:12px; line-height:2; color:rgba(255,255,255,0.8)">
+          ✅ Acertaste marcador exacto en fase de grupos (×6) = <strong style="color:var(--yellow)">18 pts</strong><br>
+          🟡 Acertaste ganador en fase de grupos (×8) = <strong style="color:var(--yellow)">8 pts</strong><br>
+          ✅ Acertaste marcador exacto en eliminatorias (×4) = <strong style="color:var(--yellow)">20 pts</strong><br>
+          🟡 Acertaste ganador en eliminatorias (×5) = <strong style="color:var(--yellow)">10 pts</strong><br>
+          🏆 Campeón correcto = <strong style="color:var(--yellow)">20 pts</strong><br>
+          <hr style="border:none; border-top:1px solid rgba(255,255,255,0.1); margin:8px 0">
+          <strong style="font-size:14px">TOTAL: <span style="color:var(--yellow); font-family:'Bebas Neue',sans-serif; font-size:1.4rem">76 pts</span></strong>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 8. FAQ -->
+    <!-- ═══════════════════════════════════════ -->
+    <section class="section" id="faq">
+      <div class="section-badge">❓ Sección 8</div>
+      <h2>Preguntas Frecuentes</h2>
+      <p class="lead">Las dudas más comunes que tienen los participantes, ya resueltas.</p>
+      <hr class="section-rule">
+
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">¿Hasta cuándo puedo registrar mi pronóstico para un partido? <span class="arrow">▶</span></div>
+        <div class="faq-a">Puedes registrar o modificar tu pronóstico hasta el momento en que comienza el partido. Una vez que el juego empieza, el sistema bloquea automáticamente ese partido y ya no se pueden hacer cambios.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">¿Puedo cambiar mi pronóstico después de guardarlo? <span class="arrow">▶</span></div>
+        <div class="faq-a">Sí, pero ten en cuenta que cada partido tiene un máximo de <strong>2 intentos</strong>. Eso significa que puedes guardar y cambiar tu pronóstico una sola vez antes de que se bloquee definitivamente. Guarda con cuidado.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">¿Qué pasa si olvido hacer el pronóstico de un partido? <span class="arrow">▶</span></div>
+        <div class="faq-a">Si no registras un pronóstico antes de que comience el partido, ese partido no suma ni resta puntos. Los pronósticos pendientes se muestran en tu Dashboard como recordatorio.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">¿Puedo cambiar mi predicción del Campeón del Mundo? <span class="arrow">▶</span></div>
+        <div class="faq-a">No. La predicción del Campeón del Mundo es irreversible una vez confirmada. Solo tienes una oportunidad y debes hacerla antes del 10 de junio de 2026 a las 23:30 hrs. Reflexiona bien antes de confirmar.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">¿Con qué frecuencia se actualiza la tabla de posiciones? <span class="arrow">▶</span></div>
+        <div class="faq-a">La tabla oficial se actualiza cada lunes a las 09:00. Sin embargo, puedes ver el estado actualizado en tiempo real usando el botón "Actualizar" en la página de Tabla de Posiciones.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">¿Qué diferencia hay entre "Marcador exacto" y "Ganador correcto"? <span class="arrow">▶</span></div>
+        <div class="faq-a"><strong>Ganador correcto:</strong> Solo acertaste qué equipo gana (o si hay empate). Otorga 1 punto en grupos y 2 en eliminatorias.<br><br><strong>Marcador exacto:</strong> Acertaste el resultado exacto (ej. 3-1). Otorga 3 puntos en grupos y 5 en eliminatorias. Nota: si pronosticaste marcador exacto y el ganador fue correcto pero no el marcador, igual recibes los puntos del ganador.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">¿Cómo cambio mi foto de perfil? <span class="arrow">▶</span></div>
+        <div class="faq-a">Ve a <strong>Mi Perfil</strong> y haz clic en el ícono de cámara 📷 que aparece sobre tu avatar. Selecciona una imagen en formato JPG, PNG o GIF desde tu dispositivo. La foto se actualizará automáticamente.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">¿Cómo recupero mi contraseña si la olvidé? <span class="arrow">▶</span></div>
+        <div class="faq-a">En la pantalla de inicio de sesión, haz clic en "¿Olvidé mi contraseña?". Ingresa tu nombre de usuario o correo electrónico y el sistema te enviará instrucciones al email registrado. Si no recibes el correo en unos minutos, revisa la carpeta de spam o contacta al administrador.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">¿Puedo ver los pronósticos de otros participantes? <span class="arrow">▶</span></div>
+        <div class="faq-a">No puedes ver los pronósticos de otros participantes mientras el torneo esté en curso. Solo puedes ver tus propios pronósticos. Los resultados de todos se reflejan en la Tabla de Posiciones.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">¿Qué son los "resultados exactos" que aparecen en mi perfil? <span class="arrow">▶</span></div>
+        <div class="faq-a">Es el contador de partidos en los que acertaste el marcador exacto (no solo el ganador). Acumular muchos resultados exactos es un indicador de precisión y puede marcar la diferencia en el ranking.</div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════ -->
+    <!-- 9. GLOSARIO -->
+    <!-- ═══════════════════════════════════════ -->
+    <section class="section" id="glosario">
+      <div class="section-badge">📖 Sección 9</div>
+      <h2>Glosario</h2>
+      <p class="lead">Términos clave del sistema explicados de forma simple.</p>
+      <hr class="section-rule">
+
+      <div class="glossary">
+        <div class="glos-item"><div class="term">Polla</div><div class="def">Nombre tradicional en Latinoamérica para un torneo de pronósticos deportivos entre amigos o compañeros de trabajo.</div></div>
+        <div class="glos-item"><div class="term">Pronóstico</div><div class="def">Tu predicción sobre el resultado de un partido específico, registrada antes de que comience el juego.</div></div>
+        <div class="glos-item"><div class="term">Marcador Exacto</div><div class="def">Tipo de pronóstico en el que predices el resultado numérico preciso del partido (ej. 2-1). Mayor riesgo, mayor recompensa.</div></div>
+        <div class="glos-item"><div class="term">Ganador</div><div class="def">Tipo de pronóstico simplificado: solo predices qué equipo gana (o si empatan). Menor riesgo y menos puntos.</div></div>
+        <div class="glos-item"><div class="term">Intentos</div><div class="def">Número de veces que puedes guardar un pronóstico para un mismo partido. El límite es 2 intentos por partido.</div></div>
+        <div class="glos-item"><div class="term">Partido bloqueado</div><div class="def">Partido cuyo plazo para pronosticar ya venció (el juego comenzó o ya terminaste tus 2 intentos).</div></div>
+        <div class="glos-item"><div class="term">Fase de Grupos</div><div class="def">Primera etapa del Mundial donde los 48 equipos juegan en grupos. Los mejores pasan a la siguiente fase.</div></div>
+        <div class="glos-item"><div class="term">Eliminatorias</div><div class="def">Fase a partir de octavos de final. Un equipo pierde y queda eliminado del torneo.</div></div>
+        <div class="glos-item"><div class="term">Con Penales</div><div class="def">Opción de pronóstico disponible en eliminatorias cuando el partido puede terminar en empate y resolverse en tanda de penales.</div></div>
+        <div class="glos-item"><div class="term">Campeón del Mundo</div><div class="def">Predicción especial (una sola oportunidad, irreversible) sobre qué selección ganará el Mundial 2026. Vale 20 puntos.</div></div>
+        <div class="glos-item"><div class="term">Tasa de Acierto</div><div class="def">Porcentaje de partidos en los que acertaste el ganador o el marcador exacto, sobre el total de partidos pronosticados.</div></div>
+        <div class="glos-item"><div class="term">Logros</div><div class="def">Medallas digitales que se desbloquean al cumplir metas específicas, como conseguir 5 resultados exactos o entrar al Top 3.</div></div>
+      </div>
+    </section>
+
+    <!-- NAVIGATION BAR GUIDE -->
+    <section class="section" id="navegacion" style="margin-bottom:32px">
+      <div class="section-badge">🧭 Extra</div>
+      <h2>Guía de Navegación</h2>
+      <p class="lead">La barra de menú superior te permite moverte entre las secciones en todo momento.</p>
+      <hr class="section-rule">
+
+      <div class="mockup">
+        <div class="mockup-body" style="padding:12px 16px">
+          <div style="background:rgba(0,26,64,0.98); border-radius:8px; padding:0 16px; display:flex; align-items:center; height:52px; gap:0;">
+            <div style="font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:700; color:white; flex:1">⚽ Polla Mundialista DGA 2026</div>
+            <div style="display:flex; gap:0;">
+              <div style="font-size:11px; color:rgba(255,209,0,0.9); padding:6px 12px; background:rgba(255,209,0,0.1); border-radius:6px;">📊 Dashboard</div>
+              <div style="font-size:11px; color:rgba(255,255,255,0.6); padding:6px 12px;">📋 Pronósticos</div>
+              <div style="font-size:11px; color:rgba(255,255,255,0.6); padding:6px 12px;">🏆 Tabla</div>
+              <div style="font-size:11px; color:rgba(255,255,255,0.6); padding:6px 12px;">📜 Historial</div>
+              <div style="font-size:11px; color:rgba(255,255,255,0.6); padding:6px 12px;">👤 Mi Perfil</div>
+              <div style="font-size:11px; color:#ff6b6b; padding:6px 12px;">Salir</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px;">
+        <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:14px;">
+          <div style="font-weight:700; margin-bottom:6px">📊 Dashboard</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6)">Página de inicio con tu resumen, estadísticas y próximos partidos.</div>
+        </div>
+        <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:14px;">
+          <div style="font-weight:700; margin-bottom:6px">📋 Pronósticos</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6)">Registra y edita tus predicciones para todos los partidos del Mundial.</div>
+        </div>
+        <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:14px;">
+          <div style="font-weight:700; margin-bottom:6px">🏆 Tabla</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6)">Ranking completo de participantes ordenado por puntos acumulados.</div>
+        </div>
+        <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:14px;">
+          <div style="font-weight:700; margin-bottom:6px">📜 Historial</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6)">Resultados de partidos ya jugados y comparación con tus pronósticos.</div>
+        </div>
+        <div style="background:var(--card-bg); border:1px solid var(--border); border-radius:10px; padding:14px;">
+          <div style="font-weight:700; margin-bottom:6px">👤 Mi Perfil</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6)">Tus datos personales, estadísticas detalladas, logros y contraseña.</div>
+        </div>
+        <div style="background:rgba(204,0,1,0.15); border:1px solid rgba(204,0,1,0.3); border-radius:10px; padding:14px;">
+          <div style="font-weight:700; margin-bottom:6px; color:#ff6b6b">🚪 Salir</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.6)">Cierra tu sesión de forma segura. Siempre usa este botón al terminar.</div>
+        </div>
+      </div>
+
+      <div class="callout tip" style="margin-top:16px">
+        <div class="ci">📱</div>
+        <p><strong>En dispositivos móviles:</strong> La barra de navegación colapsa en un menú hamburguesa (☰). Toca ese ícono para desplegar las opciones de navegación.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<div class="manual-footer">
+  <div class="footer-stripe"></div>
+  <div class="ball-spin" style="font-size:1.5rem; margin-bottom:10px">⚽</div>
+  <p style="color:rgba(255,255,255,0.7); font-size:14px; margin-bottom:6px">Manual de Usuario · Polla Mundialista DGA 2026</p>
+  <p>© 2026 DGA LEGAL — "No solo litigamos resultados, también los pronosticamos." ⚖️⚽️</p>
+</div>
+
+<script>
+  function toggleFaq(item) {
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  }
+
+  // Sidebar active link on scroll
+  const sections = document.querySelectorAll('.section[id]');
+  const sidebarLinks = document.querySelectorAll('.sidebar a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - 80;
+      if (window.scrollY >= sectionTop) current = section.getAttribute('id');
+    });
+    sidebarLinks.forEach(link => {
+      link.classList.remove('active');
+      if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
