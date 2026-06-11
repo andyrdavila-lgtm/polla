@@ -15,11 +15,18 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'clave_secreta_polla_mundialista_2026'
 
 # ==================================================
-# CONFIGURACIÓN DE BASE DE DATOS POSTGRESQL
+# CONFIGURACIÓN DE BASE DE DATOS PARA RAILWAY
 # ==================================================
-DB_PASSWORD = '1111'
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if not DATABASE_URL:
+    # Fallback local
+    DATABASE_URL = 'postgresql://postgres:1111@localhost:5432/polla_mundialista'
+else:
+    # Railway requiere SSL
+    if '?' not in DATABASE_URL:
+        DATABASE_URL += '?sslmode=require'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://postgres:{DB_PASSWORD}@localhost:5432/polla_mundialista'
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Configuración para carga de archivos
@@ -393,18 +400,17 @@ def actualizar_puntos_totales_usuario(usuario_id):
             else:
                 puntos_especiales = 0
         else:
-            puntos_especiales = 0  # Aún no se decide
+            puntos_especiales = 0
         
         puntos_total.puntos_especiales = puntos_especiales
         puntos_total.puntos_totales = (puntos_grupos + puntos_eliminatorias + puntos_especiales)
         db.session.commit()
 
 # ==================================================
-# ACTUALIZACIÓN COMPLETA DE LA LLAVE ELIMINATORIA
+# ACTUALIZACIÓN DE LA LLAVE ELIMINATORIA
 # ==================================================
 
 def obtener_ganador(partido):
-    """Devuelve el objeto Seleccion ganador del partido, o None si no está finalizado."""
     if partido.estado != 'finalizado' or partido.goles_local is None:
         return None
     ganador = partido.ganador_real
@@ -415,25 +421,15 @@ def obtener_ganador(partido):
     return None
 
 def actualizar_ronda(origen_fase, destino_fase, num_partidos_destino):
-    """
-    Toma todos los partidos de origen_fase ordenados por fecha_hora,
-    los agrupa en parejas secuenciales, y para cada partido de destino_fase
-    (ordenados también por fecha_hora) asigna como local el ganador del
-    primer partido de la pareja y como visitante el ganador del segundo.
-    """
     partidos_origen = Partido.query.filter_by(fase=origen_fase).order_by(Partido.fecha_hora).all()
     partidos_destino = Partido.query.filter_by(fase=destino_fase).order_by(Partido.fecha_hora).all()
-
     if len(partidos_destino) != num_partidos_destino:
         print(f"⚠️ Advertencia: se esperaban {num_partidos_destino} partidos para {destino_fase}, pero hay {len(partidos_destino)}")
         return
-
-    # Agrupar origen en parejas
     parejas = [(partidos_origen[i], partidos_origen[i+1]) for i in range(0, len(partidos_origen), 2)]
     if len(parejas) != num_partidos_destino:
         print(f"⚠️ No se pueden formar {num_partidos_destino} parejas con {len(partidos_origen)} partidos de origen")
         return
-
     for idx, (partido_dest, (p1, p2)) in enumerate(zip(partidos_destino, parejas)):
         ganador1 = obtener_ganador(p1)
         ganador2 = obtener_ganador(p2)
@@ -444,23 +440,13 @@ def actualizar_ronda(origen_fase, destino_fase, num_partidos_destino):
                 partido_dest.seleccion_visitante_id = ganador2.id
             db.session.commit()
             print(f"✅ {destino_fase} partido {partido_dest.id}: {ganador1.nombre} vs {ganador2.nombre}")
-        else:
-            # Si algún ganador falta, se deja como estaba (posiblemente None)
-            pass
 
 def generar_partidos_eliminatoria():
-    """
-    Actualiza los partidos de octavos (R32) de forma incremental, usando la información
-    disponible de los grupos (aunque no estén todos finalizados).
-    """
     partidos_grupos = Partido.query.filter(Partido.fase == 'grupos').all()
     if not partidos_grupos:
         return
-
-    # Organizar datos por grupo
     grupos = 'ABCDEFGHIJKL'
     datos_grupos = {g: {} for g in grupos}
-
     for p in partidos_grupos:
         if not p.grupo or p.goles_local is None:
             continue
@@ -471,7 +457,6 @@ def generar_partidos_eliminatoria():
             datos_grupos[g][local.nombre] = datos_grupos[g].get(local.nombre, {'nombre': local.nombre, 'id': local.id, 'puntos': 0, 'dg': 0, 'gf': 0})
         if visit:
             datos_grupos[g][visit.nombre] = datos_grupos[g].get(visit.nombre, {'nombre': visit.nombre, 'id': visit.id, 'puntos': 0, 'dg': 0, 'gf': 0})
-
         gl, gv = p.goles_local, p.goles_visitante
         if gl > gv:
             datos_grupos[g][local.nombre]['puntos'] += 3
@@ -480,13 +465,10 @@ def generar_partidos_eliminatoria():
         else:
             datos_grupos[g][local.nombre]['puntos'] += 1
             datos_grupos[g][visit.nombre]['puntos'] += 1
-
         datos_grupos[g][local.nombre]['gf'] += gl
         datos_grupos[g][local.nombre]['dg'] += (gl - gv)
         datos_grupos[g][visit.nombre]['gf'] += gv
         datos_grupos[g][visit.nombre]['dg'] += (gv - gl)
-
-    # Calcular posiciones
     primeros, segundos, terceros = {}, {}, {}
     for g in grupos:
         equipos = list(datos_grupos[g].values())
@@ -497,12 +479,9 @@ def generar_partidos_eliminatoria():
             segundos[g] = equipos[1]
         if len(equipos) >= 3 and equipos[2]['puntos'] > 0:
             terceros[g] = equipos[2]
-
-    # Mejores 8 terceros
     terceros_con_datos = [(g, terceros[g]) for g in grupos if g in terceros]
     terceros_con_datos.sort(key=lambda x: (-x[1]['puntos'], -x[1]['dg'], -x[1]['gf']))
     mejores_terceros = {g: data for g, data in terceros_con_datos[:8]}
-
     def mejor_tercero(grupos_posibles):
         candidatos = []
         for g in grupos_posibles:
@@ -512,14 +491,10 @@ def generar_partidos_eliminatoria():
             return None
         candidatos.sort(key=lambda x: (-x[1]['puntos'], -x[1]['dg'], -x[1]['gf']))
         return candidatos[0][1]
-
-    # Obtener los partidos R32 ordenados por fecha
     partidos_R32 = Partido.query.filter_by(fase='R32').order_by(Partido.fecha_hora).all()
     if len(partidos_R32) != 16:
         print(f"⚠️ Se esperaban 16 partidos R32, pero hay {len(partidos_R32)}. No se actualiza.")
         return
-
-    # Orden de los cruces según el fixture oficial
     asignaciones_ordenadas = [
         (segundos.get('A'), segundos.get('B')),
         (primeros.get('E'), mejor_tercero(['A','B','C','D','F'])),
@@ -538,7 +513,6 @@ def generar_partidos_eliminatoria():
         (primeros.get('K'), mejor_tercero(['D','E','I','J','L'])),
         (segundos.get('D'), segundos.get('G')),
     ]
-
     for idx, (local_data, visit_data) in enumerate(asignaciones_ordenadas):
         partido = partidos_R32[idx]
         actualizado = False
@@ -551,34 +525,21 @@ def generar_partidos_eliminatoria():
         if actualizado:
             db.session.commit()
             print(f"✅ Partido R32 {partido.id}: {local_data['nombre'] if local_data else '?'} vs {visit_data['nombre'] if visit_data else '?'}")
-
     print("🏆 Eliminatoria R32 actualizada de forma incremental.")
 
 def actualizar_toda_eliminatoria():
-    """Actualiza toda la llave eliminatoria desde grupos hasta final."""
-    # 1. Actualizar R32 desde grupos
     generar_partidos_eliminatoria()
-    
-    # 2. R32 -> R16
     actualizar_ronda('R32', 'R16', 8)
-    
-    # 3. R16 -> QF
     actualizar_ronda('R16', 'QF', 4)
-    
-    # 4. QF -> SF
     actualizar_ronda('QF', 'SF', 2)
-    
-    # 5. SF -> Final y Tercer puesto
     sf_partidos = Partido.query.filter_by(fase='SF').order_by(Partido.fecha_hora).all()
     final = Partido.query.filter_by(fase='FINAL').first()
     tercero = Partido.query.filter_by(fase='3P').first()
-    
     if len(sf_partidos) == 2 and final and tercero:
         ganador1 = obtener_ganador(sf_partidos[0])
         ganador2 = obtener_ganador(sf_partidos[1])
         perdedor1 = sf_partidos[0].visitante if sf_partidos[0].ganador_real == 'local' else sf_partidos[0].local
         perdedor2 = sf_partidos[1].visitante if sf_partidos[1].ganador_real == 'local' else sf_partidos[1].local
-        
         if ganador1 and ganador2:
             if final.seleccion_local_id != ganador1.id:
                 final.seleccion_local_id = ganador1.id
@@ -586,7 +547,6 @@ def actualizar_toda_eliminatoria():
                 final.seleccion_visitante_id = ganador2.id
             db.session.commit()
             print(f"✅ FINAL: {ganador1.nombre} vs {ganador2.nombre}")
-        
         if perdedor1 and perdedor2:
             if tercero.seleccion_local_id != perdedor1.id:
                 tercero.seleccion_local_id = perdedor1.id
@@ -594,7 +554,6 @@ def actualizar_toda_eliminatoria():
                 tercero.seleccion_visitante_id = perdedor2.id
             db.session.commit()
             print(f"✅ TERCER PUESTO: {perdedor1.nombre} vs {perdedor2.nombre}")
-    
     print("🏆 Eliminatoria completa actualizada.")
 
 # ==================================================
@@ -644,8 +603,13 @@ def register():
         confirm_password = request.form.get('confirm_password')
         nombre_completo = request.form.get('nombre_completo')
         area_trabajo = request.form.get('area_trabajo')
-        if password != confirm_password:
+        
+        if not username or not email or not password:
+            error = 'Todos los campos son obligatorios'
+        elif password != confirm_password:
             error = 'Las contraseñas no coinciden'
+        elif len(password) < 6:
+            error = 'La contraseña debe tener al menos 6 caracteres'
         elif Usuario.query.filter_by(username=username).first():
             error = 'El nombre de usuario ya existe'
         elif Usuario.query.filter_by(email=email).first():
@@ -705,7 +669,6 @@ def horarios():
 
 @app.route('/api/premio')
 def api_premio():
-    # Excluir al usuario admin (es_admin = False)
     total_usuarios = Usuario.query.filter(Usuario.activo == True, Usuario.es_admin == False).count()
     premio_total = total_usuarios * 10
     primer_lugar = premio_total * 0.5
@@ -1199,7 +1162,6 @@ def api_certificado_campeon():
 @app.route('/api/areas-disponibles')
 def api_areas_disponibles():
     areas = db.session.query(Usuario.area_trabajo).filter(Usuario.area_trabajo != None).distinct().all()
-    # Limpieza básica desde el servidor también
     areas_clean = sorted(set([a[0].strip() for a in areas if a[0] and a[0].strip()]))
     return jsonify(areas_clean)
 
@@ -1293,7 +1255,6 @@ def api_actualizar_perfil():
         log_auditoria('UPDATE', 'usuario', usuario.id, f"Perfil actualizado: {', '.join(cambios)}")
     return jsonify({'success': True})
 
-# ========== NUEVO ENDPOINT: CAMBIAR CONTRASEÑA ==========
 @app.route('/api/perfil/cambiar-password', methods=['POST'])
 def api_cambiar_password():
     if 'user_id' not in session:
@@ -1316,7 +1277,6 @@ def api_cambiar_password():
     if not check_password_hash(usuario.password_hash, current_password):
         return jsonify({'error': 'Contraseña actual incorrecta'}), 401
     
-    # Opcional: evitar usar la misma contraseña
     if check_password_hash(usuario.password_hash, new_password):
         return jsonify({'error': 'La nueva contraseña debe ser diferente a la actual'}), 400
     
@@ -1353,7 +1313,7 @@ def api_subir_avatar():
     return jsonify({'error': 'Formato no permitido. Use JPG, PNG, GIF'}), 400
 
 # ==================================================
-# PDF
+# PDF DE PRONÓSTICOS
 # ==================================================
 
 @app.route('/api/mis-pronosticos-pdf')
@@ -1575,7 +1535,7 @@ def api_admin_actualizar_resultado():
 
     recalcular_puntos_partido(partido_id)
     
-    # Regenerar toda la eliminatoria (R32, R16, QF, SF, FINAL, 3P)
+    # Regenerar toda la eliminatoria
     actualizar_toda_eliminatoria()
     
     return jsonify({'success': True})
@@ -1729,14 +1689,14 @@ def admin_backup():
                      mimetype='application/zip')
 
 # ==================================================
-# INICIALIZACIÓN
+# INICIALIZACIÓN DE BASE DE DATOS
 # ==================================================
 
 def init_db():
     with app.app_context():
         db.create_all()
 
-        # Migraciones con text()
+        # Migraciones
         migraciones = [
             "ALTER TABLE pronosticos_partidos ADD COLUMN IF NOT EXISTS ganador VARCHAR(20)",
             "ALTER TABLE pronosticos_partidos ADD COLUMN IF NOT EXISTS tipo_pronostico VARCHAR(20) DEFAULT 'ganador'",
@@ -1755,7 +1715,7 @@ def init_db():
                 db.session.rollback()
                 print(f"⚠️ Migración omitida: {e}")
 
-        # Actualizar tipo_pronostico antiguos
+        # Actualizar tipo_pronostico
         try:
             db.session.execute(text("""
                 UPDATE pronosticos_partidos
@@ -1792,12 +1752,9 @@ def init_db():
             db.session.commit()
             print("✅ 48 selecciones insertadas")
 
-        # ==================================================
-        # INSERTAR / ACTUALIZAR LOS 104 PARTIDOS (siempre)
-        # ==================================================
+        # Insertar/actualizar los 104 partidos
         from datetime import datetime
 
-        # Lista completa de partidos de grupos (72) con nombres corregidos
         grupos_raw = [
             ("2026-06-11", "15:00", "México", "Sudáfrica", "A", "grupos"),
             ("2026-06-11", "22:00", "Corea del Sur", "República Checa", "A", "grupos"),
@@ -1873,7 +1830,6 @@ def init_db():
             ("2026-06-27", "22:00", "Jordania", "Argentina", "J", "grupos"),
         ]
 
-        # Lista de partidos de eliminatoria (32)
         elim_raw = [
             ("2026-06-28", "14:00", "R32"),
             ("2026-06-29", "12:00", "R32"),
@@ -1913,7 +1869,6 @@ def init_db():
             dt = datetime.strptime(f"{fecha_str} {hora_str}", "%Y-%m-%d %H:%M")
             local = Seleccion.query.filter_by(nombre=local_nombre).first() if local_nombre else None
             visit = Seleccion.query.filter_by(nombre=visit_nombre).first() if visit_nombre else None
-            
             partido = Partido.query.filter_by(fecha_hora=dt, fase=fase).first()
             if not partido:
                 partido = Partido(
@@ -1934,19 +1889,14 @@ def init_db():
                     partido.grupo = grupo
             return partido
 
-        # Insertar grupos
         for fecha_str, hora_str, local_n, visit_n, grupo, fase in grupos_raw:
             upsert_partido(fecha_str, hora_str, fase, grupo, local_n, visit_n)
-
-        # Insertar eliminatoria
         for fecha_str, hora_str, fase in elim_raw:
             upsert_partido(fecha_str, hora_str, fase, None, None, None)
 
         db.session.commit()
         print(f"✅ Partidos verificados/actualizados: {Partido.query.count()} en total")
 
-        # Actualizar eliminatoria completa después de cargar partidos
-        print("🔄 Actualizando eliminatoria completa al iniciar...")
         actualizar_toda_eliminatoria()
 
         # Crear usuario ADMIN si no existe
@@ -1981,9 +1931,7 @@ if __name__ == '__main__':
     print("🏆 POLLA MUNDIALISTA DGA LEGAL 2026")
     print("=" * 60)
     init_db()
-    print("\n" + "=" * 60)
-    print("📌 ACCESO AL SISTEMA")
-    print("   URL: http://localhost:5001")
-    print("   Usuario: ADMIN  |  Contraseña: admin123")
-    print("=" * 60 + "\n")
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    port = int(os.environ.get('PORT', 5001))
+    debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    print(f"\n📌 Servidor corriendo en puerto {port} (debug={debug_mode})")
+    app.run(debug=debug_mode, host='0.0.0.0', port=port)
