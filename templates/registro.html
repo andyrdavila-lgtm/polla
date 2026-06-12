@@ -346,8 +346,6 @@
           nombre_completo: nombre_completo
         })
       });
-      // El backend actual redirige al login después de registro exitoso (no devuelve JSON)
-      // Por lo tanto, si la respuesta es redirección (status 302 o 200 con html), asumimos éxito
       if (response.redirected || response.ok) {
         showAlert('✅ ¡Registro exitoso! Redirigiendo al login...', 'success');
         setTimeout(() => {
@@ -355,9 +353,8 @@
         }, 1500);
       } else {
         const text = await response.text();
-        // Si la página contiene un mensaje de error, lo extraemos (muy simple)
-        if (text.includes('error')) {
-          showAlert('Error al registrar. Intenta de nuevo.', 'danger');
+        if (text.includes('error') || text.includes('ya existe')) {
+          showAlert('Error al registrar. El usuario o email ya existen.', 'danger');
         } else {
           showAlert('Error inesperado', 'danger');
         }
