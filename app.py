@@ -574,6 +574,10 @@ def polla_mundialista_carrusel():
 def manual():
     return render_template('manual_usuario_polla_dga_2026.html')
 
+@app.route('/partidos')
+def partidos():
+    return render_template('partidos.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
