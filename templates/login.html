@@ -294,7 +294,7 @@
     color: #8bb5ff;
   }
 
-  /* MODAL */
+  /* MODAL RECUPERAR CONTRASEÑA */
   .modal-overlay {
     display: none;
     position: fixed;
@@ -480,7 +480,7 @@
         <a href="#" id="forgotLink">¿Olvidaste tu contraseña?</a>
       </div>
       <div class="footer-links">
-        <a href="https://forms.gle/jUFFNYxYd2NJDjKr9" target="_blank" id="registerLink">
+        <a href="{{ url_for('register') }}" id="registerLink">
           ✨ Regístrate aquí
         </a>
       </div>
@@ -545,7 +545,7 @@
     rememberCheck.checked = true;
   }
 
-  // Validación y envío del formulario (mejora UX)
+  // Validación y envío del formulario (fetch para UX)
   const loginForm = document.getElementById('loginForm');
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
