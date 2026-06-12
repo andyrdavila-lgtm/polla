@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Registro · Polla Mundialista 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --y:   #F5C400;
+    --b:   #0A2FA8;
+    --r:   #D0021B;
+    --dk:  #060D1F;
+    --mid: #0D1A3A;
+    --s1:  #111C38;
+    --s2:  #162040;
+    --brd: rgba(255,255,255,0.08);
+    --tx:  rgba(255,255,255,0.92);
+    --txm: rgba(255,255,255,0.55);
+    --txd: rgba(255,255,255,0.30);
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--dk);
+    color: var(--tx);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bg-wrap {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 55% 70% at 80% 20%, rgba(10,47,168,0.22) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 55% at 10% 85%, rgba(208,2,27,0.14) 0%, transparent 55%),
+                var(--dk);
+    pointer-events: none;
+  }
+  .bg-wrap::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(245,196,0,0.05) 1px, transparent 1px);
+    background-size: 52px 52px;
+    animation: gridDrift 30s linear infinite;
+  }
+  @keyframes gridDrift { to { background-position: 52px 52px; } }
+
+  .ec-stripe {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 3px;
+    background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
+  }
+
+  nav {
+    position: relative; z-index: 10;
+    display: flex; justify-content: center;
+    padding: 1.5rem 2rem 0;
+  }
+  .nav-logo {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 1rem; font-weight: 600;
+    color: var(--tx); text-decoration: none;
+    background: rgba(6,13,31,0.7);
+    backdrop-filter: blur(12px);
+    padding: 0.6rem 1.4rem;
+    border-radius: 60px;
+    border: 1px solid var(--brd);
+  }
+  .nav-ball { font-size: 1.2rem; animation: spin 5s linear infinite; display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .registro-container {
+    position: relative; z-index: 2;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem 3rem;
+  }
+
+  .registro-card {
+    background: var(--s1);
+    border: 1px solid var(--brd);
+    border-radius: 32px;
+    padding: 2.2rem 2rem;
+    width: 100%;
+    max-width: 520px;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .registro-card:hover {
+    border-color: rgba(245,196,0,0.35);
+    transform: translateY(-3px);
+  }
+
+  .registro-header {
+    text-align: center;
+    margin-bottom: 1.8rem;
+  }
+  .registro-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+  .registro-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.06em;
+    color: var(--y);
+  }
+  .registro-header p {
+    font-size: 0.8rem;
+    color: var(--txm);
+    margin-top: 0.3rem;
+  }
+
+  .form-group { margin-bottom: 1.3rem; }
+  .form-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--txm);
+    margin-bottom: 0.4rem;
+  }
+  .form-control {
+    width: 100%;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--brd);
+    border-radius: 16px;
+    padding: 0.85rem 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    color: var(--tx);
+    transition: all 0.2s;
+  }
+  .form-control:focus {
+    outline: none;
+    border-color: var(--y);
+    background: rgba(0,0,0,0.5);
+    box-shadow: 0 0 0 3px rgba(245,196,0,0.1);
+  }
+  .form-control::placeholder { color: var(--txd); }
+
+  .btn-registro {
+    width: 100%;
+    background: var(--y);
+    border: none;
+    border-radius: 60px;
+    padding: 0.9rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dk);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin: 1rem 0 1rem;
+  }
+  .btn-registro:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(245,196,0,0.35);
+  }
+
+  .text-center {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--txm);
+  }
+  .text-center a {
+    color: var(--y);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .text-center a:hover { text-decoration: underline; }
+
+  .alert {
+    padding: 0.8rem 1rem;
+    border-radius: 14px;
+    font-size: 0.8rem;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .alert-danger {
+    background: rgba(208,2,27,0.12);
+    border: 1px solid rgba(208,2,27,0.4);
+    color: #ff7a7a;
+  }
+  .alert-success {
+    background: rgba(10,47,168,0.12);
+    border: 1px solid rgba(10,47,168,0.3);
+    color: #8bb5ff;
+  }
+
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.7rem;
+    color: var(--txd);
+    border-top: 1px solid var(--brd);
+  }
+
+  @media (max-width: 550px) {
+    .registro-card { padding: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-wrap"></div>
+<div class="ec-stripe"></div>
+
+<nav>
+  <a class="nav-logo" href="{{ url_for('index') }}">
+    <span class="nav-ball">⚽</span> Polla Mundialista 2026
+  </a>
+</nav>
+
+<div class="registro-container">
+  <div class="registro-card">
+    <div class="registro-header">
+      <div class="registro-icon">📝</div>
+      <h2>CREAR CUENTA</h2>
+      <p>Regístrate para participar en la Polla Mundialista</p>
+    </div>
+
+    <div id="alertContainer"></div>
+
+    <form id="registroForm" method="POST" action="{{ url_for('registro') }}">
+      <div class="form-group">
+        <label class="form-label">👤 USUARIO *</label>
+        <input type="text" name="username" id="username" class="form-control" 
+               placeholder="Ej: juan.perez" required autofocus>
+      </div>
+      <div class="form-group">
+        <label class="form-label">📧 EMAIL *</label>
+        <input type="email" name="email" id="email" class="form-control" 
+               placeholder="juan@ejemplo.com" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">🔒 CONTRASEÑA *</label>
+        <input type="password" name="password" id="password" class="form-control" 
+               placeholder="Mínimo 6 caracteres" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">👤 NOMBRE COMPLETO</label>
+        <input type="text" name="nombre_completo" id="nombre_completo" class="form-control" 
+               placeholder="Tu nombre y apellido (opcional)">
+      </div>
+
+      <button type="submit" class="btn-registro" id="registerBtn">
+        ⚡ REGISTRARSE
+      </button>
+
+      <div class="text-center">
+        ¿Ya tienes cuenta? <a href="{{ url_for('login') }}">Inicia sesión aquí</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer>
+  © 2026 Polla Mundialista 2026 — Todos los derechos reservados
+</footer>
+
+<script>
+  const form = document.getElementById('registroForm');
+  const alertDiv = document.getElementById('alertContainer');
+
+  function showAlert(message, type = 'danger') {
+    alertDiv.innerHTML = `
+      <div class="alert alert-${type}">
+        <span>${type === 'danger' ? '⚠️' : '✅'}</span>
+        <span>${message}</span>
+      </div>
+    `;
+    setTimeout(() => { alertDiv.innerHTML = ''; }, 5000);
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const nombre_completo = document.getElementById('nombre_completo').value.trim();
+
+    if (username.length < 3) {
+      showAlert('El usuario debe tener al menos 3 caracteres', 'danger');
+      return;
+    }
+    if (!email.includes('@') || !email.includes('.')) {
+      showAlert('Ingresa un email válido', 'danger');
+      return;
+    }
+    if (password.length < 6) {
+      showAlert('La contraseña debe tener al menos 6 caracteres', 'danger');
+      return;
+    }
+
+    const btn = document.getElementById('registerBtn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span style="display:inline-block; width:1rem; height:1rem; border:2px solid rgba(0,0,0,0.2); border-top-color:#000; border-radius:50%; animation:spin 0.6s linear infinite;"></span> Registrando...';
+    btn.disabled = true;
+
+    try {
+      const response = await fetch('{{ url_for('registro') }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password, nombre_completo })
+      });
+      const data = await response.json();
+      if (data.success) {
+        showAlert('✅ ¡Registro exitoso! Redirigiendo al login...', 'success');
+        setTimeout(() => {
+          window.location.href = "{{ url_for('login') }}";
+        }, 2000);
+      } else {
+        showAlert(data.error || 'Error al registrar', 'danger');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    } catch (error) {
+      showAlert('Error de conexión. Intenta de nuevo.', 'danger');
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
