@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Dashboard - Polla Mundialista DGA 2026</title>
+    <title>Dashboard · Polla Mundialista 2026</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&family=Barlow+Condensed:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --ec-yellow: #FFD100;
-            --ec-blue:   #003580;
-            --ec-red:    #CC0001;
-            --ec-dark:   #001a40;
-            --ec-mid:    #002a66;
-            --ec-green:  #1a6b1a;
-            --white:     #ffffff;
-            --off-white: #f4f1e8;
-            --gold:      #c8920a;
-            --silver:    #a0a0a0;
-            --bronze:    #cd7f32;
+            --y:   #F5C400;
+            --b:   #0A2FA8;
+            --r:   #D0021B;
+            --dk:  #060D1F;
+            --mid: #0D1A3A;
+            --s1:  #111C38;
+            --s2:  #162040;
+            --brd: rgba(255,255,255,0.08);
+            --tx:  rgba(255,255,255,0.92);
+            --txm: rgba(255,255,255,0.55);
+            --txd: rgba(255,255,255,0.30);
+            --gold:   #c8920a;
+            --silver: #a0a0a0;
+            --bronze: #cd7f32;
         }
 
         * {
@@ -30,8 +33,9 @@
         }
 
         body {
-            font-family: 'Barlow', sans-serif;
-            background: var(--ec-dark);
+            font-family: 'Inter', sans-serif;
+            background: var(--dk);
+            color: var(--tx);
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
@@ -42,9 +46,9 @@
             position: fixed;
             inset: 0;
             z-index: 0;
-            background: radial-gradient(ellipse at 20% 0%, rgba(0,53,128,0.6) 0%, transparent 60%),
-                        radial-gradient(ellipse at 80% 100%, rgba(26,107,26,0.4) 0%, transparent 60%),
-                        var(--ec-dark);
+            background: radial-gradient(ellipse 55% 70% at 80% 20%, rgba(10,47,168,0.22) 0%, transparent 60%),
+                        radial-gradient(ellipse 40% 55% at 10% 85%, rgba(208,2,27,0.14) 0%, transparent 55%),
+                        var(--dk);
             pointer-events: none;
         }
         
@@ -52,31 +56,31 @@
             content: '';
             position: absolute;
             inset: 0;
-            background-image: radial-gradient(circle, rgba(255,209,0,0.06) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: gridDrift 25s linear infinite;
+            background-image: radial-gradient(circle, rgba(245,196,0,0.05) 1px, transparent 1px);
+            background-size: 52px 52px;
+            animation: gridDrift 30s linear infinite;
         }
         
         @keyframes gridDrift {
-            to { background-position: 60px 60px; }
+            to { background-position: 52px 52px; }
         }
 
-        /* Floating balls */
+        /* Floating balls (simplificadas, sin blur excesivo) */
         .floater {
             position: fixed;
             z-index: 0;
-            width: 320px;
-            height: 320px;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
-            filter: blur(80px);
+            filter: blur(60px);
             pointer-events: none;
-            opacity: 0.18;
+            opacity: 0.12;
             animation: floatBall 18s ease-in-out infinite;
         }
         
-        .floater-1 { background: var(--ec-yellow); top: -80px; left: -80px; animation-delay: 0s; }
-        .floater-2 { background: var(--ec-blue); bottom: 10%; right: -100px; animation-delay: -6s; }
-        .floater-3 { background: var(--ec-red); top: 50%; left: 40%; animation-delay: -12s; width: 200px; height: 200px; }
+        .floater-1 { background: var(--y); top: -80px; left: -80px; animation-delay: 0s; }
+        .floater-2 { background: var(--b); bottom: 10%; right: -100px; animation-delay: -6s; }
+        .floater-3 { background: var(--r); top: 50%; left: 40%; animation-delay: -12s; width: 180px; height: 180px; }
         
         @keyframes floatBall {
             0%, 100% { transform: translate(0, 0) scale(1); }
@@ -91,9 +95,9 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            background: rgba(0,26,64,0.95);
+            background: rgba(6,13,31,0.95);
             backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255,209,0,0.15);
+            border-bottom: 1px solid var(--brd);
         }
         
         .nav-container {
@@ -110,17 +114,17 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--tx);
             text-decoration: none;
             z-index: 1001;
         }
         
         .nav-brand .ball {
-            font-size: 22px;
+            font-size: 1.2rem;
             animation: spin 4s linear infinite;
             display: inline-block;
         }
@@ -143,7 +147,7 @@
             display: block;
             height: 3px;
             width: 100%;
-            background-color: var(--ec-yellow);
+            background-color: var(--y);
             border-radius: 3px;
             transition: all 0.3s ease;
         }
@@ -170,12 +174,12 @@
         }
         
         .nav-links a {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0.08em;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.7);
+            color: var(--txm);
             text-decoration: none;
             transition: color 0.3s;
             white-space: nowrap;
@@ -183,12 +187,12 @@
         
         .nav-links a:hover,
         .nav-links a.active {
-            color: var(--ec-yellow);
+            color: var(--y);
         }
         
         .nav-stripe {
             height: 3px;
-            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
             position: absolute;
             bottom: 0;
             left: 0;
@@ -206,7 +210,7 @@
                 left: -100%;
                 width: 100%;
                 height: calc(100vh - 64px);
-                background: rgba(0,26,64,0.98);
+                background: rgba(6,13,31,0.98);
                 backdrop-filter: blur(20px);
                 flex-direction: column;
                 align-items: center;
@@ -221,7 +225,7 @@
             }
             
             .nav-links a {
-                font-size: 18px;
+                font-size: 1rem;
                 padding: 12px;
             }
         }
@@ -235,9 +239,8 @@
         }
 
         .welcome-card {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,209,0,0.2);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 24px;
             padding: 24px 20px;
             margin-bottom: 24px;
@@ -245,7 +248,7 @@
         }
         
         .welcome-card:hover {
-            border-color: rgba(255,209,0,0.4);
+            border-color: rgba(245,196,0,0.4);
             transform: translateY(-4px);
         }
         
@@ -253,19 +256,19 @@
             font-family: 'Bebas Neue', sans-serif;
             font-size: 28px;
             letter-spacing: 0.04em;
-            color: var(--white);
+            color: var(--tx);
         }
         
         .welcome-card .lead {
-            color: rgba(255,255,255,0.7);
+            color: var(--txm);
             margin-bottom: 12px;
             font-size: 14px;
         }
         
         .alert-light {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: var(--white);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--brd);
+            color: var(--tx);
             font-size: 12px;
             padding: 10px;
             border-radius: 12px;
@@ -303,9 +306,8 @@
         }
         
         .stat-card {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 20px;
             padding: 16px 12px;
             text-align: center;
@@ -316,47 +318,46 @@
         
         .stat-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(255,209,0,0.4);
-            background: rgba(255,255,255,0.08);
+            border-color: rgba(245,196,0,0.4);
+            background: rgba(245,196,0,0.04);
         }
         
         .stat-number {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 36px;
             line-height: 1;
-            color: var(--ec-yellow);
+            color: var(--y);
             margin: 8px 0 4px;
         }
         
         .stat-card div:not(.stat-number) {
-            color: rgba(255,255,255,0.7);
+            color: var(--txm);
             font-size: 12px;
         }
         
         .stat-card small {
-            color: rgba(255,255,255,0.4);
+            color: var(--txd);
             font-size: 10px;
         }
         
         .stat-card i {
             font-size: 24px;
+            color: var(--y);
         }
 
-        /* NUEVA SECCIÓN PREMIOS */
+        /* SECCIÓN PREMIOS */
         .premio-section {
-            background: linear-gradient(135deg, rgba(0,53,128,0.4) 0%, rgba(0,26,64,0.8) 100%);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,209,0,0.4);
+            background: linear-gradient(135deg, rgba(10,47,168,0.2), rgba(6,13,31,0.8));
+            border: 1px solid rgba(245,196,0,0.3);
             border-radius: 28px;
             margin-bottom: 24px;
             padding: 20px;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
             transition: all 0.3s ease;
         }
         
         .premio-section:hover {
-            border-color: var(--ec-yellow);
-            box-shadow: 0 20px 35px -8px rgba(0,0,0,0.4);
+            border-color: var(--y);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
         }
         
         .premio-header {
@@ -368,22 +369,21 @@
             font-family: 'Bebas Neue', sans-serif;
             font-size: 28px;
             letter-spacing: 2px;
-            color: var(--ec-yellow);
-            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            color: var(--y);
         }
         
         .premio-header p {
-            color: rgba(255,255,255,0.8);
+            color: var(--txm);
             font-size: 14px;
         }
         
         .pozo-container {
             text-align: center;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
             border-radius: 60px;
             padding: 12px 24px;
             margin-bottom: 24px;
-            border: 1px solid rgba(255,209,0,0.5);
+            border: 1px solid rgba(245,196,0,0.5);
             display: inline-block;
             width: auto;
             margin-left: auto;
@@ -395,7 +395,7 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             font-weight: 600;
-            color: var(--ec-yellow);
+            color: var(--y);
         }
         
         .pozo-monto {
@@ -404,18 +404,13 @@
             font-weight: 700;
             color: white;
             line-height: 1;
-            text-shadow: 0 0 10px rgba(255,209,0,0.5);
-        }
-        
-        .pozo-monto span {
-            font-size: 24px;
-            vertical-align: super;
+            text-shadow: 0 0 10px rgba(245,196,0,0.5);
         }
         
         .participantes {
             font-size: 14px;
             margin-top: 5px;
-            color: rgba(255,255,255,0.6);
+            color: var(--txm);
         }
         
         .premio-grid {
@@ -429,29 +424,22 @@
         .premio-card {
             flex: 1;
             min-width: 160px;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
             border-radius: 24px;
             padding: 16px 12px;
             text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(4px);
+            transition: transform 0.3s;
+            border: 1px solid var(--brd);
         }
         
         .premio-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-6px);
             box-shadow: 0 15px 30px -12px rgba(0,0,0,0.5);
         }
         
-        .premio-card.oro {
-            border-top: 4px solid var(--gold);
-        }
-        .premio-card.plata {
-            border-top: 4px solid var(--silver);
-        }
-        .premio-card.bronce {
-            border-top: 4px solid var(--bronze);
-        }
+        .premio-card.oro { border-top: 4px solid var(--gold); }
+        .premio-card.plata { border-top: 4px solid var(--silver); }
+        .premio-card.bronce { border-top: 4px solid var(--bronze); }
         
         .premio-icon {
             font-size: 36px;
@@ -469,7 +457,7 @@
         }
         .premio-porcentaje {
             font-size: 13px;
-            color: var(--ec-yellow);
+            color: var(--y);
             margin: 8px 0;
         }
         .premio-monto {
@@ -478,15 +466,11 @@
             font-weight: bold;
             color: white;
         }
-        .premio-monto small {
-            font-size: 14px;
-            font-family: 'Barlow';
-        }
-        
+
         @keyframes pulse-glow {
-            0% { text-shadow: 0 0 0px rgba(255,209,0,0); }
-            50% { text-shadow: 0 0 12px rgba(255,209,0,0.8); }
-            100% { text-shadow: 0 0 0px rgba(255,209,0,0); }
+            0% { text-shadow: 0 0 0px rgba(245,196,0,0); }
+            50% { text-shadow: 0 0 12px rgba(245,196,0,0.8); }
+            100% { text-shadow: 0 0 0px rgba(245,196,0,0); }
         }
         
         .animate-number {
@@ -494,9 +478,8 @@
         }
 
         .card {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 20px;
             overflow: hidden;
             height: 100%;
@@ -504,17 +487,22 @@
         
         .card-header {
             background: rgba(0,0,0,0.3);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid var(--brd);
             padding: 12px 16px;
         }
         
         .card-header h5 {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             margin: 0;
-            color: var(--white);
+            color: var(--tx);
+        }
+        
+        .card-header h5 i {
+            color: var(--y);
+            margin-right: 8px;
         }
         
         .card-body {
@@ -522,8 +510,8 @@
         }
 
         .match-card {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 16px;
             padding: 12px;
             transition: transform 0.3s, border-color 0.3s;
@@ -533,8 +521,8 @@
         
         .match-card:hover {
             transform: translateY(-4px);
-            border-color: rgba(255,209,0,0.4);
-            background: rgba(255,255,255,0.08);
+            border-color: rgba(245,196,0,0.4);
+            background: rgba(245,196,0,0.04);
         }
         
         .match-card .team {
@@ -554,19 +542,19 @@
         .match-card .team small {
             font-size: 10px;
             font-weight: 600;
-            color: var(--white);
+            color: var(--tx);
             text-align: center;
         }
         
         .match-card .vs {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 16px;
-            color: var(--ec-yellow);
+            color: var(--y);
             padding: 0 8px;
         }
         
         .match-card .text-muted {
-            color: rgba(255,255,255,0.5) !important;
+            color: var(--txd) !important;
             font-size: 10px;
             display: block;
             margin-top: 10px;
@@ -574,9 +562,8 @@
         }
 
         .quick-action {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 16px;
             padding: 12px;
             transition: all 0.3s;
@@ -588,21 +575,22 @@
         
         .quick-action:hover {
             transform: translateX(4px);
-            border-color: rgba(255,209,0,0.4);
-            background: rgba(255,255,255,0.1);
+            border-color: rgba(245,196,0,0.4);
+            background: rgba(245,196,0,0.05);
         }
         
         .quick-action i {
             font-size: 24px;
+            color: var(--y);
         }
         
         .quick-action strong {
-            color: var(--white);
+            color: var(--tx);
             font-size: 14px;
         }
         
         .quick-action p {
-            color: rgba(255,255,255,0.5);
+            color: var(--txm);
             font-size: 11px;
             margin: 2px 0 0;
         }
@@ -634,7 +622,7 @@
         }
         
         .text-warning {
-            color: var(--ec-yellow);
+            color: var(--y);
         }
         
         .text-center {
@@ -686,7 +674,7 @@
             position: relative;
             z-index: 1;
             background: rgba(0,0,0,0.5);
-            border-top: 1px solid rgba(255,255,255,0.06);
+            border-top: 1px solid var(--brd);
             padding: 20px 16px;
             text-align: center;
             margin-top: 40px;
@@ -694,7 +682,7 @@
         
         .footer-stripe {
             height: 3px;
-            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
             width: 80px;
             margin: 0 auto 12px;
             border-radius: 3px;
@@ -702,7 +690,7 @@
         
         .footer-text {
             font-size: 10px;
-            color: rgba(255,255,255,0.35);
+            color: var(--txd);
         }
         
         .fade-in {
@@ -723,7 +711,7 @@
         }
         
         ::-webkit-scrollbar-thumb {
-            background: var(--ec-yellow);
+            background: var(--y);
             border-radius: 3px;
         }
 
@@ -742,12 +730,12 @@
         }
         
         .toast-notification.success {
-            background: var(--ec-green);
-            border-left: 4px solid var(--ec-yellow);
+            background: #1a6b1a;
+            border-left: 4px solid var(--y);
         }
         
         .toast-notification.error {
-            background: var(--ec-red);
+            background: var(--r);
         }
         
         @keyframes fadeInUp {
@@ -761,37 +749,38 @@
             }
         }
 
-        /* Estilos para la predicción de campeón */
+        /* Predicción campeón */
         .champion-prediction-card {
-            background: linear-gradient(135deg, rgba(0,53,128,0.2) 0%, rgba(0,26,64,0.6) 100%);
-            border: 1px solid rgba(255,209,0,0.3);
+            background: linear-gradient(135deg, rgba(10,47,168,0.2), rgba(6,13,31,0.6));
+            border: 1px solid rgba(245,196,0,0.3);
         }
         .champion-select {
-            background: rgba(0,0,0,0.4);
-            border: 1px solid var(--ec-yellow);
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--y);
             border-radius: 12px;
             padding: 10px 12px;
             color: white;
-            font-family: 'Barlow', sans-serif;
+            font-family: 'Inter', sans-serif;
             width: 100%;
             margin-top: 8px;
         }
         .champion-select option {
-            background: var(--ec-dark);
+            background: var(--dk);
             color: white;
         }
         .btn-champion {
-            background: var(--ec-yellow);
-            color: var(--ec-dark);
+            background: var(--y);
+            color: var(--dk);
             border: none;
             padding: 10px 20px;
             border-radius: 40px;
             font-weight: bold;
-            font-family: 'Barlow Condensed', sans-serif;
+            font-family: 'Inter', sans-serif;
             letter-spacing: 1px;
             transition: 0.2s;
             margin-top: 10px;
             width: 100%;
+            cursor: pointer;
         }
         .btn-champion:hover {
             background: #e6bc00;
@@ -802,15 +791,15 @@
             cursor: not-allowed;
         }
         .btn-certificate {
-            background: var(--ec-blue);
-            border: 1px solid var(--ec-yellow);
+            background: var(--b);
+            border: 1px solid var(--y);
             color: white;
         }
         .btn-certificate:hover {
-            background: var(--ec-mid);
+            background: #1e3a8a;
         }
         .deadline-badge {
-            background: rgba(204,0,1,0.8);
+            background: rgba(208,2,27,0.8);
             color: white;
             border-radius: 20px;
             padding: 4px 12px;
@@ -870,7 +859,7 @@
             }
             
             .card-header h5 {
-                font-size: 14px;
+                font-size: 0.8rem;
             }
             
             .premio-grid {
@@ -904,7 +893,7 @@
     <nav>
         <div class="nav-container">
             <a class="nav-brand" href="{{ url_for('dashboard') }}">
-                <span class="ball">⚽</span> Polla Mundialista DGA 2026
+                <span class="ball">⚽</span> Polla Mundialista 2026
             </a>
             <div class="menu-toggle" id="menuToggle">
                 <span></span>
@@ -937,39 +926,39 @@
                     </div>
                 </div>
                 <div style="flex: 1; text-align: center;">
-                    <i class="fas fa-trophy fa-3x" style="color: var(--ec-yellow);"></i>
+                    <i class="fas fa-trophy fa-3x" style="color: var(--y);"></i>
                 </div>
             </div>
         </div>
 
         <div class="grid-4">
             <div class="stat-card" onclick="window.location.href='{{ url_for('perfil') }}'">
-                <i class="fas fa-chart-line" style="color: var(--ec-yellow);"></i>
+                <i class="fas fa-chart-line"></i>
                 <div class="stat-number" id="totalPoints">0</div>
                 <div>Puntos Totales</div>
                 <small>Tu puntuación actual</small>
             </div>
             <div class="stat-card" onclick="window.location.href='{{ url_for('tabla_posiciones') }}'">
-                <i class="fas fa-ranking-star" style="color: var(--ec-yellow);"></i>
+                <i class="fas fa-ranking-star"></i>
                 <div class="stat-number" id="userRank">-</div>
                 <div>Posición</div>
                 <small>En la tabla general</small>
             </div>
             <div class="stat-card">
-                <i class="fas fa-check-circle" style="color: var(--ec-green);"></i>
+                <i class="fas fa-check-circle"></i>
                 <div class="stat-number" id="exactResults">0</div>
                 <div>Resultados Exactos</div>
                 <small>Premio especial</small>
             </div>
             <div class="stat-card">
-                <i class="fas fa-clock" style="color: var(--ec-yellow);"></i>
+                <i class="fas fa-clock"></i>
                 <div class="stat-number" id="pendingPredictions">0</div>
                 <div>Pronósticos Pendientes</div>
                 <small>Por realizar</small>
             </div>
         </div>
 
-        <!-- NUEVA SECCIÓN PREMIOS -->
+        <!-- SECCIÓN PREMIOS -->
         <div class="premio-section fade-in">
             <div class="premio-header">
                 <h2><i class="fas fa-sack-dollar"></i> POZO ACUMULADO <i class="fas fa-coins"></i></h2>               
@@ -1028,33 +1017,33 @@
         </div>
 
         <div style="margin-bottom: 24px;">
-            <h3 style="font-family: 'Bebas Neue', sans-serif; color: var(--ec-yellow); margin-bottom: 16px; font-size: 24px;">
+            <h3 style="font-family: 'Bebas Neue', sans-serif; color: var(--y); margin-bottom: 16px; font-size: 24px;">
                 <i class="fas fa-bolt"></i> Acciones Rápidas
             </h3>
             <div class="grid-4-actions">
                 <div class="quick-action" onclick="window.location.href='{{ url_for('pronosticos') }}'">
-                    <i class="fas fa-chart-line" style="color: var(--ec-yellow);"></i>
+                    <i class="fas fa-chart-line"></i>
                     <div>
                         <strong>Hacer Pronósticos</strong>
                         <p>Registra tus predicciones</p>
                     </div>
                 </div>
                 <div class="quick-action" onclick="window.location.href='{{ url_for('tabla_posiciones') }}'">
-                    <i class="fas fa-table" style="color: var(--ec-yellow);"></i>
+                    <i class="fas fa-table"></i>
                     <div>
                         <strong>Ver Tabla</strong>
                         <p>Consulta posiciones</p>
                     </div>
                 </div>
                 <div class="quick-action" onclick="window.location.href='{{ url_for('perfil') }}'">
-                    <i class="fas fa-user" style="color: var(--ec-yellow);"></i>
+                    <i class="fas fa-user"></i>
                     <div>
                         <strong>Mi Perfil</strong>
                         <p>Actualiza tus datos</p>
                     </div>
                 </div>
                 <div class="quick-action" id="shareBtn">
-                    <i class="fas fa-share-alt" style="color: var(--ec-yellow);"></i>
+                    <i class="fas fa-share-alt"></i>
                     <div>
                         <strong>Compartir</strong>
                         <p>Invita a compañeros</p>
@@ -1097,7 +1086,7 @@
 
     <footer>
         <div class="footer-stripe"></div>
-        <div class="footer-text">© 2026 Polla Mundialista DGA LEGAL - "No solo litigamos resultados, también los pronosticamos." ⚖️⚽️</div>
+        <div class="footer-text">© 2026 Polla Mundialista 2026 — Todos los derechos reservados</div>
     </footer>
 
     <script>
@@ -1254,17 +1243,17 @@
                         html += `
                             <div class="d-flex justify-content-between align-items-center mb-2 p-2" style="border-bottom: 1px solid rgba(255,255,255,0.1);">
                                 <div>
-                                    <strong style="color: var(--white); font-size: 14px;">${medal} ${user.nombre_completo || user.username}</strong>
+                                    <strong style="color: var(--tx); font-size: 14px;">${medal} ${user.nombre_completo || user.username}</strong>
                                 </div>
                                 <div>
-                                    <span class="badge" style="background: var(--ec-yellow); color: var(--ec-dark);">${user.puntos_totales} pts</span>
+                                    <span class="badge" style="background: var(--y); color: var(--dk);">${user.puntos_totales} pts</span>
                                 </div>
                             </div>
                         `;
                     });
                     document.getElementById('topUsers').innerHTML = html;
                 } else {
-                    document.getElementById('topUsers').innerHTML = '<div class="text-center py-4" style="color: rgba(255,255,255,0.5);">No hay participantes aún</div>';
+                    document.getElementById('topUsers').innerHTML = '<div class="text-center py-4" style="color: var(--txm);">No hay participantes aún</div>';
                 }
             } catch (error) {
                 console.error('Error loading top users:', error);
@@ -1279,7 +1268,7 @@
                 const upcoming = matches.filter(m => m.estado === 'pendiente').slice(0, 4);
                 
                 if (upcoming.length === 0) {
-                    document.getElementById('upcomingMatches').innerHTML = '<div class="text-center py-4" style="color: rgba(255,255,255,0.5);">No hay partidos programados aún</div>';
+                    document.getElementById('upcomingMatches').innerHTML = '<div class="text-center py-4" style="color: var(--txm);">No hay partidos programados aún</div>';
                     document.getElementById('pendingPredictions').textContent = 0;
                     return;
                 }
@@ -1339,10 +1328,10 @@
                         datasets: [{
                             label: 'Puntos acumulados',
                             data: [0, Math.floor(totalPoints * 0.25), Math.floor(totalPoints * 0.5), Math.floor(totalPoints * 0.75), totalPoints],
-                            borderColor: '#FFD100',
-                            backgroundColor: 'rgba(255, 209, 0, 0.1)',
+                            borderColor: '#F5C400',
+                            backgroundColor: 'rgba(245,196,0,0.1)',
                             borderWidth: 2,
-                            pointBackgroundColor: '#FFD100',
+                            pointBackgroundColor: '#F5C400',
                             pointBorderColor: '#fff',
                             pointRadius: 4,
                             pointHoverRadius: 6,
@@ -1358,10 +1347,10 @@
                                 labels: { color: '#ffffff', font: { size: 10 } }
                             },
                             tooltip: {
-                                backgroundColor: 'rgba(0,26,64,0.9)',
-                                titleColor: '#FFD100',
+                                backgroundColor: 'rgba(6,13,31,0.9)',
+                                titleColor: '#F5C400',
                                 bodyColor: '#ffffff',
-                                borderColor: '#FFD100',
+                                borderColor: '#F5C400',
                                 borderWidth: 1
                             }
                         },
@@ -1402,17 +1391,17 @@
                     const equipo = seleccionesMap.get(data.campeon_id) || 'Selección';
                     const fechaPred = new Date(data.fecha_actualizacion);
                     container.innerHTML = `
-                        <div style="background: rgba(255,209,0,0.15); border-radius: 16px; padding: 16px;">
+                        <div style="background: rgba(245,196,0,0.1); border-radius: 16px; padding: 16px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
                                 <div>
                                     <i class="fas fa-check-circle" style="color: #1a6b1a; font-size: 24px;"></i>
-                                    <strong style="color: var(--ec-yellow);"> Tu predicción actual (única e irreversible):</strong>
+                                    <strong style="color: var(--y);"> Tu predicción actual (única e irreversible):</strong>
                                     <span style="color: white; font-size: 18px; font-weight: bold;"> 🏆 ${equipo}</span>
-                                    <div style="font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 4px;">
+                                    <div style="font-size: 12px; color: var(--txm); margin-top: 4px;">
                                         Realizada el ${fechaPred.toLocaleDateString()} a las ${fechaPred.toLocaleTimeString()}
                                     </div>
                                 </div>
-                                <button id="downloadCertBtn" class="btn-champion btn-certificate" style="width: auto; background: var(--ec-blue);"><i class="fas fa-download"></i> Descargar Certificado</button>
+                                <button id="downloadCertBtn" class="btn-champion btn-certificate" style="width: auto; background: var(--b);"><i class="fas fa-download"></i> Descargar Certificado</button>
                             </div>
                         </div>
                     `;
@@ -1422,7 +1411,7 @@
                         showChampionForm(selecciones, null);
                     } else {
                         container.innerHTML = `
-                            <div class="text-center py-3" style="color: rgba(255,255,255,0.7);">
+                            <div class="text-center py-3" style="color: var(--txm);">
                                 <i class="fas fa-hourglass-end"></i> El plazo para predecir al campeón finalizó el 10 de junio de 2026.
                             </div>
                         `;
@@ -1447,7 +1436,7 @@
                         ${options}
                     </select>
                     <button id="saveChampionBtn" class="btn-champion"><i class="fas fa-save"></i> Guardar Predicción (no podrás cambiarla después)</button>
-                    <div class="text-center mt-2" style="font-size:12px; color:#FFD100;">⚠️ Una vez guardada, la predicción es DEFINITIVA.</div>
+                    <div class="text-center mt-2" style="font-size:12px; color:var(--y);">⚠️ Una vez guardada, la predicción es DEFINITIVA.</div>
                 </div>
             `;
             document.getElementById('saveChampionBtn').addEventListener('click', saveChampionPrediction);
@@ -1521,8 +1510,8 @@
             const url = window.location.origin;
             if (navigator.share) {
                 navigator.share({
-                    title: 'Polla Mundialista DGA 2026',
-                    text: '¡Únete a la polla mundialista de DGA!',
+                    title: 'Polla Mundialista 2026',
+                    text: '¡Únete a la polla mundialista!',
                     url: url
                 }).catch(() => {
                     copyToClipboard(url);
