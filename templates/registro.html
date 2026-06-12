@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>Registro · Polla Mundialista 2026</title>
+<title>Registrarse · Polla Mundialista 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -30,14 +30,14 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
   }
 
   .bg-wrap {
-    position: fixed; inset: 0; z-index: 0;
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background: radial-gradient(ellipse 55% 70% at 80% 20%, rgba(10,47,168,0.22) 0%, transparent 60%),
                 radial-gradient(ellipse 40% 55% at 10% 85%, rgba(208,2,27,0.14) 0%, transparent 55%),
                 var(--dk);
-    pointer-events: none;
   }
   .bg-wrap::after {
     content: '';
@@ -69,10 +69,14 @@
     border-radius: 60px;
     border: 1px solid var(--brd);
   }
-  .nav-ball { font-size: 1.2rem; animation: spin 5s linear infinite; display: inline-block; }
+  .nav-ball {
+    font-size: 1.2rem;
+    animation: spin 5s linear infinite;
+    display: inline-block;
+  }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .registro-container {
+  .register-container {
     position: relative; z-index: 2;
     flex: 1;
     display: flex;
@@ -81,32 +85,33 @@
     padding: 2rem 1.5rem 3rem;
   }
 
-  .registro-card {
+  .register-card {
     background: var(--s1);
     border: 1px solid var(--brd);
     border-radius: 32px;
     padding: 2.2rem 2rem;
     width: 100%;
-    max-width: 520px;
+    max-width: 500px;
     transition: transform 0.3s, border-color 0.3s;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
   }
-  .registro-card:hover {
+  .register-card:hover {
     border-color: rgba(245,196,0,0.35);
     transform: translateY(-3px);
   }
 
-  .registro-header {
+  .register-header {
     text-align: center;
-    margin-bottom: 1.8rem;
+    margin-bottom: 2rem;
   }
-  .registro-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-  .registro-header h2 {
+  .register-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+  .register-header h2 {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 2rem;
     letter-spacing: 0.06em;
     color: var(--y);
   }
-  .registro-header p {
+  .register-header p {
     font-size: 0.8rem;
     color: var(--txm);
     margin-top: 0.3rem;
@@ -141,7 +146,7 @@
   }
   .form-control::placeholder { color: var(--txd); }
 
-  .btn-registro {
+  .btn-register {
     width: 100%;
     background: var(--y);
     border: none;
@@ -156,9 +161,13 @@
     transition: transform 0.2s, box-shadow 0.2s;
     margin: 1rem 0 1rem;
   }
-  .btn-registro:hover {
+  .btn-register:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(245,196,0,0.35);
+  }
+  .btn-register:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
   }
 
   .text-center {
@@ -201,8 +210,19 @@
     border-top: 1px solid var(--brd);
   }
 
+  .spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(0,0,0,0.2);
+    border-top-color: var(--dk);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin-right: 0.4rem;
+  }
+
   @media (max-width: 550px) {
-    .registro-card { padding: 1.5rem; }
+    .register-card { padding: 1.5rem; }
   }
 </style>
 </head>
@@ -217,17 +237,17 @@
   </a>
 </nav>
 
-<div class="registro-container">
-  <div class="registro-card">
-    <div class="registro-header">
-      <div class="registro-icon">📝</div>
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <div class="register-icon">📝</div>
       <h2>CREAR CUENTA</h2>
       <p>Regístrate para participar en la Polla Mundialista</p>
     </div>
 
     <div id="alertContainer"></div>
 
-    <form id="registroForm" method="POST" action="{{ url_for('registro') }}">
+    <form id="registerForm" method="POST" action="{{ url_for('register') }}">
       <div class="form-group">
         <label class="form-label">👤 USUARIO *</label>
         <input type="text" name="username" id="username" class="form-control" 
@@ -244,12 +264,17 @@
                placeholder="Mínimo 6 caracteres" required>
       </div>
       <div class="form-group">
+        <label class="form-label">🔁 CONFIRMAR CONTRASEÑA *</label>
+        <input type="password" name="confirm_password" id="confirm_password" class="form-control" 
+               placeholder="Repite la contraseña" required>
+      </div>
+      <div class="form-group">
         <label class="form-label">👤 NOMBRE COMPLETO</label>
         <input type="text" name="nombre_completo" id="nombre_completo" class="form-control" 
                placeholder="Tu nombre y apellido (opcional)">
       </div>
 
-      <button type="submit" class="btn-registro" id="registerBtn">
+      <button type="submit" class="btn-register" id="registerBtn">
         ⚡ REGISTRARSE
       </button>
 
@@ -265,7 +290,7 @@
 </footer>
 
 <script>
-  const form = document.getElementById('registroForm');
+  const form = document.getElementById('registerForm');
   const alertDiv = document.getElementById('alertContainer');
 
   function showAlert(message, type = 'danger') {
@@ -284,6 +309,7 @@
     const username = document.getElementById('username').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
+    const confirm = document.getElementById('confirm_password').value;
     const nombre_completo = document.getElementById('nombre_completo').value.trim();
 
     if (username.length < 3) {
@@ -298,26 +324,43 @@
       showAlert('La contraseña debe tener al menos 6 caracteres', 'danger');
       return;
     }
+    if (password !== confirm) {
+      showAlert('Las contraseñas no coinciden', 'danger');
+      return;
+    }
 
     const btn = document.getElementById('registerBtn');
     const originalText = btn.innerHTML;
-    btn.innerHTML = '<span style="display:inline-block; width:1rem; height:1rem; border:2px solid rgba(0,0,0,0.2); border-top-color:#000; border-radius:50%; animation:spin 0.6s linear infinite;"></span> Registrando...';
+    btn.innerHTML = '<span class="spinner"></span> Registrando...';
     btn.disabled = true;
 
     try {
-      const response = await fetch('{{ url_for('registro') }}', {
+      const response = await fetch('{{ url_for('register') }}', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password, nombre_completo })
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          username: username,
+          email: email,
+          password: password,
+          confirm_password: confirm,
+          nombre_completo: nombre_completo
+        })
       });
-      const data = await response.json();
-      if (data.success) {
+      // El backend actual redirige al login después de registro exitoso (no devuelve JSON)
+      // Por lo tanto, si la respuesta es redirección (status 302 o 200 con html), asumimos éxito
+      if (response.redirected || response.ok) {
         showAlert('✅ ¡Registro exitoso! Redirigiendo al login...', 'success');
         setTimeout(() => {
-          window.location.href = "{{ url_for('login') }}";
-        }, 2000);
+          window.location.href = response.url || "{{ url_for('login') }}";
+        }, 1500);
       } else {
-        showAlert(data.error || 'Error al registrar', 'danger');
+        const text = await response.text();
+        // Si la página contiene un mensaje de error, lo extraemos (muy simple)
+        if (text.includes('error')) {
+          showAlert('Error al registrar. Intenta de nuevo.', 'danger');
+        } else {
+          showAlert('Error inesperado', 'danger');
+        }
         btn.innerHTML = originalText;
         btn.disabled = false;
       }
