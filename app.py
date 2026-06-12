@@ -15,21 +15,19 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'clave_secreta_polla_mundialista_2026'
 
 # ==================================================
-# CONFIGURACIÓN DE BASE DE DATOS PARA RAILWAY
+# CONFIGURACIÓN DE BASE DE DATOS
 # ==================================================
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if not DATABASE_URL:
     # Fallback local
     DATABASE_URL = 'postgresql://postgres:1111@localhost:5432/polla_mundialista'
 else:
-    # Railway requiere SSL
     if '?' not in DATABASE_URL:
         DATABASE_URL += '?sslmode=require'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Configuración para carga de archivos
 app.config['UPLOAD_FOLDER'] = 'static/avatars'
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -42,7 +40,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # ==================================================
-# MODELOS
+# MODELOS (sin campo área_trabajo)
 # ==================================================
 
 class Usuario(db.Model):
@@ -53,7 +51,6 @@ class Usuario(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     nombre_completo = db.Column(db.String(100))
     foto_perfil = db.Column(db.String(255), default='/static/avatars/default_avatar.png')
-    area_trabajo = db.Column(db.String(100))
     fecha_registro = db.Column(db.DateTime, default=datetime.now)
     ultimo_acceso = db.Column(db.DateTime)
     es_admin = db.Column(db.Boolean, default=False)
@@ -572,7 +569,7 @@ def polla_mundialista_carrusel():
 
 @app.route('/manual')
 def manual():
-    return render_template('manual_usuario_polla_dga_2026.html')
+    return render_template('manual_usuario_polla_2026.html')
 
 @app.route('/partidos')
 def partidos():
@@ -606,7 +603,6 @@ def register():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
         nombre_completo = request.form.get('nombre_completo')
-        area_trabajo = request.form.get('area_trabajo')
         
         if not username or not email or not password:
             error = 'Todos los campos son obligatorios'
@@ -622,7 +618,7 @@ def register():
             hashed_password = generate_password_hash(password)
             nuevo_usuario = Usuario(
                 username=username, email=email, password_hash=hashed_password,
-                nombre_completo=nombre_completo, area_trabajo=area_trabajo
+                nombre_completo=nombre_completo
             )
             db.session.add(nuevo_usuario)
             db.session.commit()
@@ -724,7 +720,6 @@ def api_verificar_sesion():
                     'username': usuario.username,
                     'nombre_completo': usuario.nombre_completo,
                     'email': usuario.email,
-                    'area_trabajo': usuario.area_trabajo,
                     'foto_perfil': usuario.foto_perfil,
                     'fecha_registro': usuario.fecha_registro.isoformat() if usuario.fecha_registro else None
                 }
@@ -754,7 +749,6 @@ def api_partidos():
                 usuario_id=session['user_id'], partido_id=p.id
             ).order_by(PronosticoPartido.fecha_pronostico.desc()).first()
 
-        # Manejo seguro de local/visitante None
         if p.local:
             local_nombre = p.local.nombre
             local_bandera = p.local.bandera_local or p.local.bandera_url or get_bandera_default(p.local.nombre)
@@ -1040,19 +1034,15 @@ def api_guardar_prediccion_campeon():
     if datetime.now() > deadline:
         return jsonify({'error': 'El plazo para predecir al campeón ya expiró (10/06/2026 23:30)'}), 400
     
-    # Verificar que la selección exista
     seleccion = db.session.get(Seleccion, campeon_id)
     if not seleccion:
         return jsonify({'error': 'Selección no válida'}), 400
     
-    # Verificar si el usuario ya tiene una predicción de campeón (única e irreversible)
     pronostico_existente = PronosticoEspecial.query.filter_by(usuario_id=session['user_id']).first()
     if pronostico_existente and pronostico_existente.campeon_id is not None:
         return jsonify({'error': 'Ya realizaste tu predicción de campeón y no puedes cambiarla.'}), 400
     
-    # Solo crear nuevo registro (nunca actualizar si ya tiene campeón)
     if pronostico_existente:
-        # Caso borde: existe registro pero sin campeon_id (por ejemplo, si se creó vacío antes)
         pronostico_existente.campeon_id = campeon_id
         pronostico_existente.fecha_actualizacion = datetime.now()
         pronostico_existente.ip_address = request.remote_addr
@@ -1071,7 +1061,6 @@ def api_guardar_prediccion_campeon():
                   pronostico_existente.id if pronostico_existente else pronostico.id, 
                   f"Campeón: {seleccion.nombre}")
     
-    # Actualizar puntos especiales (si la final ya se jugó, se recalcula)
     actualizar_puntos_totales_usuario(session['user_id'])
     
     return jsonify({'success': True, 'message': 'Predicción guardada exitosamente (única e irreversible)'})
@@ -1094,9 +1083,7 @@ def api_certificado_campeon():
         from reportlab.lib.pagesizes import letter, landscape
         from reportlab.pdfgen import canvas
         from reportlab.lib import colors
-        from reportlab.lib.utils import ImageReader
         import io
-        import os
         
         buffer = io.BytesIO()
         c = canvas.Canvas(buffer, pagesize=landscape(letter))
@@ -1107,12 +1094,12 @@ def api_certificado_campeon():
         c.setLineWidth(3)
         c.rect(30, 30, width-60, height-60)
         
-        # Encabezado institucional
+        # Encabezado
         c.setFillColor(colors.HexColor('#003580'))
         c.rect(0, height-70, width, 70, fill=True, stroke=False)
         c.setFillColor(colors.HexColor('#FFD100'))
         c.setFont("Helvetica-Bold", 22)
-        c.drawCentredString(width/2, height-40, "POLLA MUNDIALISTA DGA LEGAL 2026")
+        c.drawCentredString(width/2, height-40, "POLLA MUNDIALISTA 2026")
         c.setFillColor(colors.white)
         c.setFont("Helvetica", 12)
         c.drawCentredString(width/2, height-58, "CERTIFICADO DE PREDICCIÓN")
@@ -1150,7 +1137,7 @@ def api_certificado_campeon():
         c.rect(0, 0, width, 40, fill=True, stroke=False)
         c.setFillColor(colors.HexColor('#FFD100'))
         c.setFont("Helvetica-Oblique", 9)
-        c.drawCentredString(width/2, 18, '"No solo litigamos resultados, también los pronosticamos." — DGA LEGAL 2026')
+        c.drawCentredString(width/2, 18, '"El fútbol es pasión, los pronósticos son emoción. ¡A jugar!" — Polla Mundialista 2026')
         
         c.save()
         buffer.seek(0)
@@ -1163,11 +1150,7 @@ def api_certificado_campeon():
     except ImportError:
         return jsonify({'error': 'ReportLab no está instalado'}), 500
 
-@app.route('/api/areas-disponibles')
-def api_areas_disponibles():
-    areas = db.session.query(Usuario.area_trabajo).filter(Usuario.area_trabajo != None).distinct().all()
-    areas_clean = sorted(set([a[0].strip() for a in areas if a[0] and a[0].strip()]))
-    return jsonify(areas_clean)
+# Nota: La ruta /api/areas-disponibles ha sido eliminada
 
 @app.route('/api/tabla-posiciones')
 def api_tabla_posiciones():
@@ -1187,7 +1170,6 @@ def api_tabla_posiciones():
             'usuario_id': usuario.id,
             'username': usuario.username,
             'nombre_completo': usuario.nombre_completo,
-            'area_trabajo': usuario.area_trabajo,
             'foto_perfil': usuario.foto_perfil,
             'puntos_totales': puntos.puntos_totales,
             'puntos_fase_grupos': puntos.puntos_fase_grupos,
@@ -1247,9 +1229,6 @@ def api_actualizar_perfil():
     if 'nombre_completo' in data and data['nombre_completo'] != usuario.nombre_completo:
         cambios.append(f"nombre: {usuario.nombre_completo} -> {data['nombre_completo']}")
         usuario.nombre_completo = data['nombre_completo']
-    if 'area_trabajo' in data and data['area_trabajo'] != usuario.area_trabajo:
-        cambios.append(f"área: {usuario.area_trabajo} -> {data['area_trabajo']}")
-        usuario.area_trabajo = data['area_trabajo']
     if 'email' in data and data['email'] != usuario.email:
         cambios.append(f"email: {usuario.email} -> {data['email']}")
         usuario.email = data['email']
@@ -1361,7 +1340,7 @@ def api_mis_pronosticos_pdf():
             c.rect(0, height - 30, width, 30, fill=True, stroke=False)
             c.setFillColor(colors.white)
             c.drawCentredString(width / 2, height - 20,
-                                "Polla Mundialista DGA LEGAL 2026 — continuación")
+                                "Polla Mundialista 2026 — continuación")
             c.setFillColor(colors.black)
             return height - 60
 
@@ -1369,7 +1348,7 @@ def api_mis_pronosticos_pdf():
         c.rect(0, height - 70, width, 70, fill=True, stroke=False)
         c.setFillColor(colors.HexColor('#FFD100'))
         c.setFont("Helvetica-Bold", 18)
-        c.drawCentredString(width / 2, height - 35, "Polla Mundialista DGA LEGAL 2026")
+        c.drawCentredString(width / 2, height - 35, "Polla Mundialista 2026")
         c.setFillColor(colors.white)
         c.setFont("Helvetica-Bold", 12)
         c.drawCentredString(width / 2, height - 55, "RESUMEN DE PRONÓSTICOS")
@@ -1380,7 +1359,7 @@ def api_mis_pronosticos_pdf():
         c.drawString(50, y, f"Usuario: {usuario.nombre_completo or usuario.username}")
         y -= 18
         c.setFont("Helvetica", 10)
-        c.drawString(50, y, f"Email: {usuario.email}  |  Área: {usuario.area_trabajo or '—'}")
+        c.drawString(50, y, f"Email: {usuario.email}")
         y -= 18
         c.drawString(50, y,
                      f"Puntos Totales: {puntos_obj.puntos_totales if puntos_obj else 0}  |  "
@@ -1459,7 +1438,7 @@ def api_mis_pronosticos_pdf():
         c.setFillColor(colors.HexColor('#FFD100'))
         c.setFont("Helvetica-Oblique", 8)
         c.drawCentredString(width / 2, 11,
-                            '"No solo litigamos resultados, también los pronosticamos." — DGA LEGAL 2026')
+                            '"El fútbol es pasión, los pronósticos son emoción. ¡A jugar!" — Polla Mundialista 2026')
 
         c.save()
         buffer.seek(0)
@@ -1539,7 +1518,6 @@ def api_admin_actualizar_resultado():
 
     recalcular_puntos_partido(partido_id)
     
-    # Regenerar toda la eliminatoria
     actualizar_toda_eliminatoria()
     
     return jsonify({'success': True})
@@ -1579,7 +1557,6 @@ def api_admin_crear_usuario():
     email = request.form.get('email')
     password = request.form.get('password')
     nombre_completo = request.form.get('nombre_completo')
-    area_trabajo = request.form.get('area_trabajo')
     es_admin = request.form.get('es_admin') == 'true'
     if not username or not email or not password:
         return jsonify({'message': 'Campos requeridos incompletos'}), 400
@@ -1592,7 +1569,7 @@ def api_admin_crear_usuario():
     hashed_password = generate_password_hash(password)
     nuevo_usuario = Usuario(
         username=username, email=email, password_hash=hashed_password,
-        nombre_completo=nombre_completo, area_trabajo=area_trabajo,
+        nombre_completo=nombre_completo,
         es_admin=es_admin, activo=True,
         foto_perfil='/static/avatars/default_avatar.png'
     )
@@ -1909,7 +1886,7 @@ def init_db():
             admin_user = Usuario(
                 username='ADMIN', email='admin@polla.com',
                 password_hash=generate_password_hash('admin123'),
-                nombre_completo='Administrador', area_trabajo='Administración',
+                nombre_completo='Administrador',
                 es_admin=True, activo=True
             )
             db.session.add(admin_user)
@@ -1932,7 +1909,7 @@ def init_db():
 
 if __name__ == '__main__':
     print("\n" + "=" * 60)
-    print("🏆 POLLA MUNDIALISTA DGA LEGAL 2026")
+    print("🏆 POLLA MUNDIALISTA 2026")
     print("=" * 60)
     init_db()
     port = int(os.environ.get('PORT', 5001))
