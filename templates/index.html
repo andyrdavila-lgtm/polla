@@ -59,10 +59,10 @@
     background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
   }
 
-  /* ── NAV ── */
+  /* ── NAV (solo logo) ── */
   nav {
     position: fixed; top: 3px; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center; justify-content: center;
     padding: 0 2.5rem; height: 60px;
     background: rgba(6,13,31,0.92);
     backdrop-filter: blur(16px);
@@ -75,19 +75,6 @@
   }
   .nav-ball { font-size: 1.25rem; display: inline-block; animation: spin 5s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .nav-right { display: flex; align-items: center; gap: .75rem; }
-  .nav-link {
-    font-size: .78rem; font-weight: 500; letter-spacing: .06em; text-transform: uppercase;
-    color: var(--txm); text-decoration: none; transition: color .2s;
-  }
-  .nav-link:hover { color: var(--y); }
-  .nav-btn {
-    font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-    background: var(--y); color: var(--dk); border: none; border-radius: 50px;
-    padding: 9px 22px; cursor: pointer; transition: opacity .2s, transform .2s;
-    text-decoration: none;
-  }
-  .nav-btn:hover { opacity: .88; transform: translateY(-1px); }
 
   /* ── HERO ── */
   .hero {
@@ -104,7 +91,6 @@
       radial-gradient(ellipse 35% 50% at 5% 90%, rgba(208,2,27,0.12) 0%, transparent 55%);
     pointer-events: none;
   }
-  /* Decorative ball silhouette */
   .hero-deco {
     position: absolute; right: 5%; top: 50%; transform: translateY(-50%);
     width: 340px; height: 340px; border-radius: 50%;
@@ -507,8 +493,7 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 600px) {
-    nav { padding: 0 1.2rem; }
-    .nav-link { display: none; }
+    nav { padding: 0 1.2rem; justify-content: center; }
     .hero { padding: 88px 1.4rem 3.5rem; min-height: auto; }
     .hero-deco { display: none; }
     .cd-num { font-size: 32px; }
@@ -531,17 +516,11 @@
 <!-- EC STRIPE -->
 <div class="ec-stripe"></div>
 
-<!-- NAV -->
+<!-- NAV (solo logo) -->
 <nav>
   <a class="nav-logo" href="{{ url_for('index') }}">
     <span class="nav-ball">⚽</span> Polla Mundialista 2026
   </a>
-  <div class="nav-right">
-    <a class="nav-link" href="#partidos">Partidos</a>
-    <a class="nav-link" href="#reglas">Reglas</a>
-    <a class="nav-link" href="#premios">Premios</a>
-    <a class="nav-btn" href="{{ url_for('login') }}">Mis pronósticos</a>
-  </div>
 </nav>
 
 <!-- HERO -->
@@ -577,7 +556,7 @@
       </div>
     </div>
 
-    <!-- BUTTONS -->
+    <!-- BUTTONS (se mantienen los botones de acción) -->
     <div class="btns">
       <a href="{{ url_for('login') }}" class="btn btn-primary">⚽ Hacer mis pronósticos</a>
       <button id="btnBases" class="btn btn-secondary">📋 Ver bases</button>
@@ -596,12 +575,11 @@
 
 <div class="divider"></div>
 
-<!-- PARTIDOS -->
+<!-- PARTIDOS DESTACADOS (sección visual, pero sin enlace en header) -->
 <section id="partidos" class="section observe">
   <div class="sec-label">01 — Highlights</div>
   <h2 class="sec-title bebas">Partidos <span>Destacados</span></h2>
   <div class="matches-grid" id="matchesGrid">
-    <!-- Loaded via JS or fallback below -->
     <div style="grid-column:1/-1; padding:3rem; text-align:center; color:var(--txd); font-size:.85rem; letter-spacing:.08em; text-transform:uppercase;">
       Cargando partidos…
     </div>
@@ -750,7 +728,7 @@
   document.querySelectorAll('.observe').forEach(el => io.observe(el));
 })();
 
-/* ── CARGAR PARTIDOS ── */
+/* ── CARGAR PARTIDOS DESTACADOS ── */
 async function cargarPartidos() {
   try {
     const res      = await fetch('/api/partidos');
@@ -800,7 +778,7 @@ async function cargarPartidos() {
 }
 cargarPartidos();
 
-/* ── MODAL ── */
+/* ── MODAL BASES ── */
 (function () {
   const overlay = document.getElementById('modal');
   const close   = document.getElementById('modalClose');
