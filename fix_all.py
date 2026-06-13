@@ -1,5 +1,6 @@
 from app import app, db, Partido, PronosticoPartido, Seleccion
 from datetime import timedelta
+from sqlalchemy.orm import aliased
 
 with app.app_context():
     print("=" * 50)
@@ -40,10 +41,15 @@ with app.app_context():
     print("3. VERIFICANDO Y CORRIGIENDO HORAS UTC")
     print("=" * 50)
     
-    # Buscar el partido México vs Sudáfrica
-    partido_ref = Partido.query.join(Partido.local).filter(
-        Seleccion.nombre == 'México'
-    ).join(Partido.visitante).filter(Seleccion.nombre == 'Sudáfrica').first()
+    # Usar alias para evitar conflictos de join
+    local_alias = aliased(Seleccion)
+    visit_alias = aliased(Seleccion)
+    
+    partido_ref = Partido.query.join(local_alias, Partido.local).filter(
+        local_alias.nombre == 'México'
+    ).join(visit_alias, Partido.visitante).filter(
+        visit_alias.nombre == 'Sudáfrica'
+    ).first()
     
     if partido_ref:
         utc_actual = partido_ref.fecha_hora
