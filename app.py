@@ -798,11 +798,11 @@ def api_guardar_prediccion_campeon():
     campeon_id = data.get('campeon_id')
     if not campeon_id:
         return jsonify({'error': 'Debe seleccionar un equipo'}), 400
-    deadline_ecuador = datetime(2026, 6, 10, 23, 30, 0)
+    deadline_ecuador = datetime(2026, 6, 18, 22, 0, 0)
     ahora_utc = datetime.utcnow()
     ahora_ecuador = convertir_a_ecuador(ahora_utc)
     if ahora_ecuador > deadline_ecuador:
-        return jsonify({'error': 'El plazo para predecir al campeón ya expiró (10/06/2026 23:30)'}), 400
+        return jsonify({'error': 'El plazo para predecir al campeón ya expiró (18/06/2026 22:00)'}), 400
     seleccion = db.session.get(Seleccion, campeon_id)
     if not seleccion:
         return jsonify({'error': 'Selección no válida'}), 400
