@@ -3,72 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Gestionar Usuarios - Admin Polla Mundialista</title>
+    <title>Gestionar Usuarios · Polla Mundialista 2026</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --ec-yellow: #FFD100;
-            --ec-blue: #003580;
-            --ec-red: #CC0001;
-            --ec-dark: #001a40;
-            --ec-green: #1a6b1a;
-            --white: #ffffff;
+            --y:   #F5C400;
+            --b:   #0A2FA8;
+            --r:   #D0021B;
+            --dk:  #060D1F;
+            --mid: #0D1A3A;
+            --s1:  #111C38;
+            --s2:  #162040;
+            --brd: rgba(255,255,255,0.08);
+            --tx:  rgba(255,255,255,0.92);
+            --txm: rgba(255,255,255,0.55);
+            --txd: rgba(255,255,255,0.30);
+            --green: #1a6b1a;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Barlow', sans-serif;
-            background: var(--ec-dark);
-            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            background: var(--dk);
+            color: var(--tx);
         }
         .bg-canvas { 
             position: fixed; 
             inset: 0; 
             z-index: 0; 
-            background: radial-gradient(ellipse at 20% 0%, rgba(0,53,128,0.6) 0%, transparent 60%),
-                        radial-gradient(ellipse at 80% 100%, rgba(26,107,26,0.4) 0%, transparent 60%),
-                        var(--ec-dark);
+            background: radial-gradient(ellipse 55% 70% at 80% 20%, rgba(10,47,168,0.22) 0%, transparent 60%),
+                        radial-gradient(ellipse 40% 55% at 10% 85%, rgba(208,2,27,0.14) 0%, transparent 55%),
+                        var(--dk);
             pointer-events: none;
         }
-        
         .bg-canvas::after {
             content: '';
             position: absolute;
             inset: 0;
-            background-image: radial-gradient(circle, rgba(255,209,0,0.06) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: gridDrift 25s linear infinite;
+            background-image: radial-gradient(circle, rgba(245,196,0,0.05) 1px, transparent 1px);
+            background-size: 52px 52px;
+            animation: gridDrift 30s linear infinite;
         }
-        
-        @keyframes gridDrift {
-            to { background-position: 60px 60px; }
-        }
-        
-        /* Floating balls */
+        @keyframes gridDrift { to { background-position: 52px 52px; } }
         .floater {
             position: fixed; z-index: 0;
-            width: 320px; height: 320px;
+            width: 280px; height: 280px;
             border-radius: 50%;
-            filter: blur(80px);
+            filter: blur(60px);
             pointer-events: none;
-            opacity: 0.18;
+            opacity: 0.12;
             animation: floatBall 18s ease-in-out infinite;
         }
-        .floater-1 { background: var(--ec-yellow); top: -80px; left: -80px; }
-        .floater-2 { background: var(--ec-blue); bottom: 10%; right: -100px; animation-delay: -6s; }
-        .floater-3 { background: var(--ec-red); top: 50%; left: 40%; animation-delay: -12s; width: 200px; height: 200px; }
-        
+        .floater-1 { background: var(--y); top: -80px; left: -80px; }
+        .floater-2 { background: var(--b); bottom: 10%; right: -100px; animation-delay: -6s; }
+        .floater-3 { background: var(--r); top: 50%; left: 40%; animation-delay: -12s; width: 180px; height: 180px; }
         @keyframes floatBall {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -40px) scale(1.1); }
-            66% { transform: translate(-20px, 30px) scale(0.9); }
+            0%,100% { transform: translate(0,0) scale(1); }
+            33% { transform: translate(30px,-40px) scale(1.1); }
+            66% { transform: translate(-20px,30px) scale(0.9); }
         }
-
         nav {
             position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            background: rgba(0,26,64,0.95); backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255,209,0,0.15);
+            background: rgba(6,13,31,0.95); backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--brd);
         }
         .nav-container {
             display: flex; align-items: center; justify-content: space-between;
@@ -76,11 +74,12 @@
         }
         .nav-brand {
             display: flex; align-items: center; gap: 8px;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 16px; font-weight: 700; color: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem; font-weight: 600;
+            color: var(--tx);
             text-decoration: none;
         }
-        .nav-brand .ball { font-size: 22px; animation: spin 4s linear infinite; }
+        .nav-brand .ball { font-size: 1.2rem; animation: spin 4s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .menu-toggle {
             display: none; flex-direction: column; justify-content: space-between;
@@ -88,7 +87,7 @@
         }
         .menu-toggle span {
             display: block; height: 3px; width: 100%;
-            background-color: var(--ec-yellow); border-radius: 3px;
+            background-color: var(--y); border-radius: 3px;
             transition: all 0.3s ease;
         }
         .menu-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
@@ -96,28 +95,28 @@
         .menu-toggle.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
         .nav-links { display: flex; gap: 24px; list-style: none; transition: all 0.3s ease; }
         .nav-links a {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px; font-weight: 600; letter-spacing: 0.08em;
-            text-transform: uppercase; color: rgba(255,255,255,0.7);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem; font-weight: 500; letter-spacing: 0.03em;
+            text-transform: uppercase; color: var(--txm);
             text-decoration: none; transition: color 0.3s;
         }
-        .nav-links a:hover, .nav-links a.active { color: var(--ec-yellow); }
+        .nav-links a:hover, .nav-links a.active { color: var(--y); }
         .nav-stripe {
             height: 3px;
-            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
             position: absolute; bottom: 0; left: 0; right: 0;
         }
         @media (max-width: 768px) {
             .menu-toggle { display: flex; }
             .nav-links {
                 position: fixed; top: 64px; left: -100%; width: 100%;
-                height: calc(100vh - 64px); background: rgba(0,26,64,0.98);
+                height: calc(100vh - 64px); background: rgba(6,13,31,0.98);
                 backdrop-filter: blur(20px);
                 flex-direction: column; align-items: center; justify-content: center;
                 gap: 32px; transition: left 0.3s ease; z-index: 999;
             }
             .nav-links.active { left: 0; }
-            .nav-links a { font-size: 18px; padding: 12px; }
+            .nav-links a { font-size: 1rem; padding: 12px; }
         }
         .container {
             position: relative; z-index: 1; max-width: 1280px;
@@ -126,20 +125,19 @@
         .page-header { margin-bottom: 24px; }
         .page-header h1 {
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 36px; color: var(--white);
+            font-size: 36px; color: var(--tx);
         }
-        .page-header h1 i { color: var(--ec-yellow); margin-right: 12px; }
+        .page-header h1 i { color: var(--y); margin-right: 12px; }
         .page-header p {
-            color: rgba(255,255,255,0.5);
+            color: var(--txm);
             font-size: 14px;
             margin-top: 8px;
         }
 
-        /* Filtros de búsqueda */
+        /* Filtros de búsqueda (sin área) */
         .filters-bar {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 20px;
             padding: 16px;
             margin-bottom: 24px;
@@ -162,20 +160,20 @@
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.5);
+            color: var(--txm);
         }
         .filter-group select, .filter-group input {
             background: transparent;
             border: none;
-            color: var(--white);
+            color: var(--tx);
             font-size: 13px;
             padding: 6px 8px;
             outline: none;
         }
         .reset-btn {
-            background: rgba(255,209,0,0.2);
-            border: 1px solid var(--ec-yellow);
-            color: var(--ec-yellow);
+            background: rgba(245,196,0,0.2);
+            border: 1px solid var(--y);
+            color: var(--y);
             padding: 6px 16px;
             border-radius: 40px;
             cursor: pointer;
@@ -183,20 +181,19 @@
             transition: all 0.3s;
         }
         .reset-btn:hover {
-            background: var(--ec-yellow);
-            color: var(--ec-dark);
+            background: var(--y);
+            color: var(--dk);
         }
         .contador {
             margin-left: auto;
             font-size: 12px;
-            color: rgba(255,255,255,0.4);
+            color: var(--txd);
         }
 
-        /* Formulario de creación */
+        /* Formulario de creación (sin área) */
         .create-user-card {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 20px;
             padding: 24px;
             margin-bottom: 30px;
@@ -204,7 +201,7 @@
         .create-user-card h2 {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 24px;
-            color: var(--ec-yellow);
+            color: var(--y);
             margin-bottom: 20px;
         }
         .form-grid {
@@ -221,28 +218,28 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            color: rgba(255,255,255,0.6);
+            color: var(--txm);
             margin-bottom: 6px;
         }
         .form-group label i {
-            color: var(--ec-yellow);
+            color: var(--y);
             margin-right: 6px;
         }
         .form-control {
             width: 100%;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--brd);
             border-radius: 12px;
             padding: 12px 16px;
-            color: var(--white);
+            color: var(--tx);
             font-size: 14px;
         }
         .form-control:focus {
             outline: none;
-            border-color: var(--ec-yellow);
+            border-color: var(--y);
         }
         .form-control::placeholder {
-            color: rgba(255,255,255,0.3);
+            color: var(--txd);
         }
         
         /* Tabs para selector de avatar */
@@ -250,13 +247,13 @@
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid var(--brd);
             padding-bottom: 10px;
         }
         .avatar-tab {
             background: transparent;
             border: none;
-            color: rgba(255,255,255,0.5);
+            color: var(--txm);
             padding: 8px 16px;
             cursor: pointer;
             font-size: 13px;
@@ -264,8 +261,8 @@
             transition: all 0.3s;
         }
         .avatar-tab.active {
-            background: var(--ec-yellow);
-            color: var(--ec-dark);
+            background: var(--y);
+            color: var(--dk);
         }
         .avatar-tab:hover:not(.active) {
             background: rgba(255,255,255,0.1);
@@ -282,7 +279,7 @@
             height: 60px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--ec-yellow);
+            border: 2px solid var(--y);
         }
         .avatar-preview .avatar-placeholder {
             width: 60px;
@@ -293,14 +290,14 @@
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            border: 2px dashed rgba(255,255,255,0.3);
+            border: 2px dashed var(--txd);
         }
         .btn-upload {
             background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid var(--brd);
             border-radius: 8px;
             padding: 8px 16px;
-            color: var(--white);
+            color: var(--tx);
             font-size: 12px;
             cursor: pointer;
             transition: all 0.3s;
@@ -319,7 +316,7 @@
             min-width: 200px;
         }
         .btn-test-url {
-            background: var(--ec-blue);
+            background: var(--b);
             border: none;
             border-radius: 8px;
             padding: 8px 16px;
@@ -328,16 +325,16 @@
             cursor: pointer;
         }
         .btn-test-url:hover {
-            background: #004499;
+            background: #1e3a8a;
         }
         .btn-create {
-            background: linear-gradient(135deg, var(--ec-green), #0d4d0d);
+            background: var(--green);
             border: none;
             border-radius: 12px;
             padding: 12px 24px;
             color: white;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
@@ -348,7 +345,7 @@
         }
         .btn-create:hover {
             transform: scale(1.02);
-            background: linear-gradient(135deg, #0d4d0d, var(--ec-green));
+            opacity: 0.9;
         }
         .btn-create:disabled {
             opacity: 0.7;
@@ -356,9 +353,8 @@
         }
 
         .table-container {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 20px;
             overflow-x: auto;
         }
@@ -370,15 +366,15 @@
             background: rgba(0,0,0,0.4);
             padding: 16px;
             text-align: left;
-            font-family: 'Barlow Condensed', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-size: 12px;
             font-weight: 700;
-            color: var(--ec-yellow);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: var(--y);
+            border-bottom: 1px solid var(--brd);
         }
         td {
             padding: 12px 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid var(--brd);
             vertical-align: middle;
         }
         .user-avatar-small {
@@ -388,8 +384,8 @@
             object-fit: cover;
         }
         .badge-admin {
-            background: var(--ec-yellow);
-            color: var(--ec-dark);
+            background: var(--y);
+            color: var(--dk);
             padding: 4px 8px;
             border-radius: 12px;
             font-size: 11px;
@@ -402,9 +398,9 @@
             font-size: 11px;
         }
         .btn-delete {
-            background: rgba(204,0,1,0.2);
-            border: 1px solid var(--ec-red);
-            color: #ff6b6b;
+            background: rgba(208,2,27,0.2);
+            border: 1px solid var(--r);
+            color: #ff7a7a;
             padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
@@ -412,13 +408,13 @@
             transition: all 0.3s;
         }
         .btn-delete:hover {
-            background: var(--ec-red);
+            background: var(--r);
             color: white;
         }
         .btn-reset-password {
-            background: rgba(255,209,0,0.2);
-            border: 1px solid var(--ec-yellow);
-            color: var(--ec-yellow);
+            background: rgba(245,196,0,0.2);
+            border: 1px solid var(--y);
+            color: var(--y);
             padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
@@ -427,8 +423,8 @@
             margin-right: 8px;
         }
         .btn-reset-password:hover {
-            background: var(--ec-yellow);
-            color: var(--ec-dark);
+            background: var(--y);
+            color: var(--dk);
         }
         
         /* Alertas */
@@ -441,18 +437,18 @@
         }
         .alert-success {
             background: rgba(26,107,26,0.2);
-            border: 1px solid var(--ec-green);
+            border: 1px solid var(--green);
             color: #90EE90;
         }
         .alert-danger {
-            background: rgba(204,0,1,0.2);
-            border: 1px solid var(--ec-red);
-            color: #ff6b6b;
+            background: rgba(208,2,27,0.2);
+            border: 1px solid var(--r);
+            color: #ff7a7a;
         }
         .alert-warning {
-            background: rgba(255,209,0,0.2);
-            border: 1px solid var(--ec-yellow);
-            color: #FFD100;
+            background: rgba(245,196,0,0.2);
+            border: 1px solid var(--y);
+            color: var(--y);
         }
 
         /* Modal */
@@ -469,8 +465,8 @@
             align-items: center;
         }
         .modal-content {
-            background: var(--ec-dark);
-            border: 1px solid var(--ec-yellow);
+            background: var(--s1);
+            border: 1px solid var(--y);
             border-radius: 20px;
             padding: 24px;
             max-width: 400px;
@@ -480,12 +476,12 @@
         .modal-content h3 {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 24px;
-            color: var(--ec-yellow);
+            color: var(--y);
             margin-bottom: 16px;
         }
         .modal-content p {
             margin-bottom: 20px;
-            color: rgba(255,255,255,0.7);
+            color: var(--txm);
         }
         .modal-buttons {
             display: flex;
@@ -500,7 +496,7 @@
             font-weight: 700;
         }
         .modal-btn-confirm {
-            background: var(--ec-red);
+            background: var(--r);
             color: white;
         }
         .modal-btn-cancel {
@@ -509,14 +505,18 @@
         }
 
         footer {
-            background: rgba(0,0,0,0.5); border-top: 1px solid rgba(255,255,255,0.06);
-            padding: 20px; text-align: center; margin-top: 40px;
+            background: rgba(0,0,0,0.5);
+            border-top: 1px solid var(--brd);
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
         }
         .footer-stripe {
-            height: 3px; background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            height: 3px;
+            background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
             width: 80px; margin: 0 auto 12px;
         }
-        .footer-text { font-size: 10px; color: rgba(255,255,255,0.35); }
+        .footer-text { font-size: 10px; color: var(--txd); }
 
         .toast-notification {
             position: fixed;
@@ -532,11 +532,11 @@
             animation: fadeInUp 0.3s ease;
         }
         .toast-notification.success {
-            background: var(--ec-green);
-            border-left: 4px solid var(--ec-yellow);
+            background: var(--green);
+            border-left: 4px solid var(--y);
         }
         .toast-notification.error {
-            background: var(--ec-red);
+            background: var(--r);
         }
         @keyframes fadeInUp {
             from {
@@ -586,7 +586,7 @@
     <nav>
         <div class="nav-container">
             <a class="nav-brand" href="{{ url_for('dashboard') }}">
-                <span class="ball">⚽</span> Polla Mundialista DGA 2026
+                <span class="ball">⚽</span> Polla Mundialista 2026
             </a>
             <div class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></div>
             <ul class="nav-links" id="navLinks">
@@ -604,42 +604,18 @@
     <div class="container">
         <div class="page-header">
             <h1><i class="fas fa-users"></i> GESTIONAR USUARIOS</h1>
-            <p>Administra los participantes de la Polla Mundialista DGA 2026</p>
+            <p>Administra los participantes de la Polla Mundialista 2026</p>
         </div>
 
         <!-- Alerta -->
         <div id="alertMessage" class="alert"></div>
 
-        <!-- Filtros de búsqueda -->
+        <!-- Filtros de búsqueda (sin área) -->
         <div class="filters-bar">
             <div class="filters-row">
                 <div class="filter-group">
                     <label><i class="fas fa-search"></i> BUSCAR:</label>
                     <input type="text" id="searchFilter" placeholder="Nombre o usuario...">
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-building"></i> ÁREA:</label>
-                    <select id="areaFilter">
-                        <option value="">Todas</option>
-                        <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
-                        <option value="BANCARIO FINANCIERO">BANCARIO FINANCIERO</option>
-                        <option value="CARTERA">CARTERA</option>
-                        <option value="FAMILIAR">FAMILIAR</option>
-                        <option value="DERECHO ADMINISTRATIVO">DERECHO ADMINISTRATIVO</option>
-                        <option value="CONSTITUCIONAL">CONSTITUCIONAL</option>
-                        <option value="FINANCIERO">FINANCIERO</option>
-                        <option value="CUENCA">CUENCA</option>
-                        <option value="GUAYAQUIL">GUAYAQUIL</option>
-                        <option value="LABORAL">LABORAL</option>
-                        <option value="INMOBILIARIO">INMOBILIARIO</option>
-                        <option value="PROPIEDAD INTELECTUAL">PROPIEDAD INTELECTUAL</option>
-                        <option value="REGULATORIO">REGULATORIO</option>
-                        <option value="RESOLUCIÓN DE CONFLICTOS">RESOLUCIÓN DE CONFLICTOS</option>
-                        <option value="SOCIETARIO">SOCIETARIO</option>
-                        <option value="SOCIO">SOCIO</option>
-                        <option value="TALENTO HUMANO">TALENTO HUMANO</option>
-                        <option value="TRIBUTARIO">TRIBUTARIO</option>
-                    </select>
                 </div>
                 <div class="filter-group">
                     <label><i class="fas fa-user-tag"></i> ROL:</label>
@@ -656,7 +632,7 @@
             </div>
         </div>
 
-        <!-- Formulario para crear usuario -->
+        <!-- Formulario para crear usuario (sin área) -->
         <div class="create-user-card">
             <h2><i class="fas fa-user-plus"></i> CREAR NUEVO USUARIO</h2>
             <form id="createUserForm">
@@ -676,30 +652,6 @@
                     <div class="form-group">
                         <label><i class="fas fa-user-circle"></i> NOMBRE COMPLETO</label>
                         <input type="text" class="form-control" id="nombre_completo" placeholder="Nombre y apellido">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-building"></i> ÁREA DE TRABAJO</label>
-                        <select class="form-control" id="area_trabajo">
-                            <option value="">Selecciona un área</option>
-                            <option value="ADMINISTRATIVO">ADMINISTRATIVO</option>
-                            <option value="BANCARIO FINANCIERO">BANCARIO FINANCIERO</option>
-                            <option value="CARTERA">CARTERA</option>
-                            <option value="FAMILIAR">FAMILIAR</option>
-                            <option value="DERECHO ADMINISTRATIVO">DERECHO ADMINISTRATIVO</option>
-                            <option value="CONSTITUCIONAL">CONSTITUCIONAL</option>
-                            <option value="FINANCIERO">FINANCIERO</option>
-                            <option value="CUENCA">CUENCA</option>
-                            <option value="GUAYAQUIL">GUAYAQUIL</option>
-                            <option value="LABORAL">LABORAL</option>
-                            <option value="INMOBILIARIO">INMOBILIARIO</option>
-                            <option value="PROPIEDAD INTELECTUAL">PROPIEDAD INTELECTUAL</option>
-                            <option value="REGULATORIO">REGULATORIO</option>
-                            <option value="RESOLUCIÓN DE CONFLICTOS">RESOLUCIÓN DE CONFLICTOS</option>
-                            <option value="SOCIETARIO">SOCIETARIO</option>
-                            <option value="SOCIO">SOCIO</option>
-                            <option value="TALENTO HUMANO">TALENTO HUMANO</option>
-                            <option value="TRIBUTARIO">TRIBUTARIO</option>
-                        </select>
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-camera"></i> FOTO DE PERFIL</label>
@@ -725,7 +677,7 @@
                                 </button>
                                 <input type="file" id="avatarInput" style="display: none" accept="image/jpeg,image/png,image/jpg,image/gif">
                             </div>
-                            <small style="color: rgba(255,255,255,0.4); font-size: 10px;">Formatos: JPG, PNG, GIF. Máx 2MB</small>
+                            <small style="color: var(--txd); font-size: 10px;">Formatos: JPG, PNG, GIF. Máx 2MB</small>
                         </div>
                         
                         <!-- Opción 2: URL externa -->
@@ -741,8 +693,8 @@
                                     </button>
                                 </div>
                             </div>
-                            <small style="color: rgba(255,255,255,0.4); font-size: 10px;">
-                                <i class="fas fa-info-circle"></i> Puedes usar enlaces de SharePoint, Google Drive, Imgur, etc.
+                            <small style="color: var(--txd); font-size: 10px;">
+                                <i class="fas fa-info-circle"></i> Enlaces externos compatibles
                             </small>
                         </div>
                     </div>
@@ -760,7 +712,7 @@
             </form>
         </div>
 
-        <!-- Tabla de usuarios existentes -->
+        <!-- Tabla de usuarios existentes (sin columna Área) -->
         <div class="table-container">
             <table id="usuariosTable">
                 <thead>
@@ -769,7 +721,6 @@
                         <th>Usuario</th>
                         <th>Nombre</th>
                         <th>Email</th>
-                        <th>Área</th>
                         <th>Rol</th>
                         <th>Estado</th>
                         <th>Acciones</th>
@@ -777,16 +728,15 @@
                 </thead>
                 <tbody id="tablaBody">
                     {% for usuario in usuarios %}
-                    <tr data-username="{{ usuario.username.lower() }}" data-nombre="{{ (usuario.nombre_completo or '').lower() }}" data-area="{{ usuario.area_trabajo or '' }}" data-rol="{{ 'admin' if usuario.es_admin else 'user' }}">
+                    <tr data-username="{{ usuario.username.lower() }}" data-nombre="{{ (usuario.nombre_completo or '').lower() }}" data-rol="{{ 'admin' if usuario.es_admin else 'user' }}">
                         <tr>
-                            <img src="{{ usuario.foto_perfil or 'https://ui-avatars.com/api/?background=FFD100&color=001a40&bold=true&size=35&rounded=true&name=' + usuario.username }}" 
+                            <img src="{{ usuario.foto_perfil or 'https://ui-avatars.com/api/?background=F5C400&color=001a40&bold=true&size=35&rounded=true&name=' + usuario.username }}" 
                                  class="user-avatar-small" 
-                                 onerror="this.src='https://ui-avatars.com/api/?background=FFD100&color=001a40&bold=true&size=35&rounded=true&name={{ usuario.username }}'">
+                                 onerror="this.src='https://ui-avatars.com/api/?background=F5C400&color=001a40&bold=true&size=35&rounded=true&name={{ usuario.username }}'">
                         </td>
                         <td><strong>{{ usuario.username }}</strong></td>
                         <td>{{ usuario.nombre_completo or '-' }}</td>
                         <td>{{ usuario.email or '-' }}</td>
-                        <td>{{ usuario.area_trabajo or '-' }}</td>
                         <td>{% if usuario.es_admin %}<span class="badge-admin">ADMIN</span>{% else %}<span class="badge-user">Usuario</span>{% endif %}</td>
                         <td>{% if usuario.activo %}✅ Activo{% else %}❌ Inactivo{% endif %}</td>
                         <td>
@@ -798,7 +748,7 @@
                                 <i class="fas fa-trash"></i> Eliminar
                             </button>
                             {% else %}
-                            <span style="color:rgba(255,255,255,0.3);">Principal</span>
+                            <span style="color: var(--txd);">Principal</span>
                             {% endif %}
                          </td>
                     </tr>
@@ -822,7 +772,7 @@
 
     <footer>
         <div class="footer-stripe"></div>
-        <div class="footer-text">© 2026 Polla Mundialista DGA LEGAL - Panel Administrador</div>
+        <div class="footer-text">© 2026 Polla Mundialista 2026 — Panel Administrador</div>
     </footer>
 
     <script>
@@ -845,7 +795,6 @@
 
         // Variables para modal
         let pendingAction = null;
-        let pendingParams = null;
 
         // Mostrar alerta
         function showAlert(message, type) {
@@ -869,9 +818,8 @@
             }, 3000);
         }
 
-        // Filtros de búsqueda
+        // Filtros de búsqueda (sin área)
         const searchFilter = document.getElementById('searchFilter');
-        const areaFilter = document.getElementById('areaFilter');
         const rolFilter = document.getElementById('rolFilter');
         const resetFiltersBtn = document.getElementById('resetFilters');
         const tablaRows = document.querySelectorAll('#tablaBody tr');
@@ -879,7 +827,6 @@
 
         function aplicarFiltros() {
             const searchTerm = searchFilter.value.toLowerCase();
-            const areaValue = areaFilter.value;
             const rolValue = rolFilter.value;
             
             let visibleCount = 0;
@@ -887,16 +834,11 @@
             tablaRows.forEach(row => {
                 const username = row.getAttribute('data-username') || '';
                 const nombre = row.getAttribute('data-nombre') || '';
-                const area = row.getAttribute('data-area') || '';
                 const rol = row.getAttribute('data-rol') || '';
                 
                 let mostrar = true;
                 
                 if (searchTerm && !username.includes(searchTerm) && !nombre.includes(searchTerm)) {
-                    mostrar = false;
-                }
-                
-                if (areaValue && area !== areaValue) {
                     mostrar = false;
                 }
                 
@@ -915,12 +857,10 @@
         }
 
         if (searchFilter) searchFilter.addEventListener('input', aplicarFiltros);
-        if (areaFilter) areaFilter.addEventListener('change', aplicarFiltros);
         if (rolFilter) rolFilter.addEventListener('change', aplicarFiltros);
         if (resetFiltersBtn) {
             resetFiltersBtn.addEventListener('click', () => {
                 if (searchFilter) searchFilter.value = '';
-                if (areaFilter) areaFilter.value = '';
                 if (rolFilter) rolFilter.value = '';
                 aplicarFiltros();
             });
@@ -1002,7 +942,7 @@
             showAlert('URL cargada correctamente', 'success');
         };
         
-        // Crear usuario
+        // Crear usuario (sin campo área)
         document.getElementById('createUserForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -1010,7 +950,6 @@
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const nombre_completo = document.getElementById('nombre_completo').value;
-            const area_trabajo = document.getElementById('area_trabajo').value;
             const es_admin = document.getElementById('es_admin').value === 'true';
             
             if (!username || !email || !password) {
@@ -1034,7 +973,6 @@
                 formData.append('email', email);
                 formData.append('password', password);
                 formData.append('nombre_completo', nombre_completo);
-                formData.append('area_trabajo', area_trabajo);
                 formData.append('es_admin', es_admin);
                 
                 const response = await fetch('/api/admin/crear-usuario', {
@@ -1053,6 +991,13 @@
                         await fetch('/api/admin/subir-avatar-usuario', {
                             method: 'POST',
                             body: avatarFormData
+                        });
+                    } else if (currentMethod === 'url' && avatarUrlValue) {
+                        // Guardar URL como foto de perfil
+                        await fetch('/api/admin/actualizar-avatar-url', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ usuario_id: data.user_id, avatar_url: avatarUrlValue })
                         });
                     }
                     
