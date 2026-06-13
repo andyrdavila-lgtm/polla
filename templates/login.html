@@ -5,318 +5,432 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Iniciar Sesión · Polla Mundialista 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --y:   #F5C400;
-    --b:   #0A2FA8;
-    --r:   #D0021B;
-    --dk:  #060D1F;
-    --mid: #0D1A3A;
-    --s1:  #111C38;
-    --s2:  #162040;
-    --brd: rgba(255,255,255,0.08);
-    --tx:  rgba(255,255,255,0.92);
-    --txm: rgba(255,255,255,0.55);
-    --txd: rgba(255,255,255,0.30);
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
   body {
     font-family: 'Inter', sans-serif;
-    background: var(--dk);
-    color: var(--tx);
+    background: #0B0F1C;
+    color: #FFFFFF;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
   }
 
-  .bg-wrap {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background:
-      radial-gradient(ellipse 55% 70% at 80% 20%, rgba(10,47,168,0.22) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 55% at 10% 85%, rgba(208,2,27,0.14) 0%, transparent 55%),
-      var(--dk);
+  /* Modern Gradient Background */
+  .bg-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: radial-gradient(circle at 20% 30%, rgba(0, 255, 170, 0.08) 0%, rgba(11, 15, 28, 0) 60%),
+                radial-gradient(circle at 80% 70%, rgba(0, 102, 204, 0.1) 0%, rgba(11, 15, 28, 0) 60%),
+                #0B0F1C;
   }
-  .bg-wrap::after {
+
+  .noise {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: -1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* Main Brand Header */
+  .main-brand-header {
+    background: linear-gradient(135deg, rgba(0, 255, 170, 0.15), rgba(0, 102, 204, 0.08));
+    border-bottom: 2px solid rgba(0, 255, 170, 0.3);
+    padding: 20px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .main-brand-header::before {
     content: '';
-    position: absolute; inset: 0;
-    background-image: radial-gradient(circle, rgba(245,196,0,0.05) 1px, transparent 1px);
-    background-size: 52px 52px;
-    animation: gridDrift 30s linear infinite;
-  }
-  @keyframes gridDrift { to { background-position: 52px 52px; } }
-
-  .ec-stripe {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-    height: 3px;
-    background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 255, 170, 0.05) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
   }
 
-  nav {
-    position: relative; z-index: 10;
-    display: flex; justify-content: center;
-    padding: 1.5rem 2rem 0;
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
-  .nav-logo {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    font-size: 1rem; font-weight: 600;
-    color: var(--tx); text-decoration: none;
-    background: rgba(6,13,31,0.7);
-    backdrop-filter: blur(12px);
-    padding: 0.6rem 1.4rem;
-    border-radius: 60px;
-    border: 1px solid var(--brd);
+
+  .main-brand-header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #00FFAA, #FFFFFF, #00FFAA);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+    z-index: 1;
   }
-  .nav-ball {
-    font-size: 1.2rem;
-    animation: spin 5s linear infinite;
+
+  .main-brand-header .badge {
     display: inline-block;
+    background: rgba(0, 255, 170, 0.2);
+    border: 1px solid rgba(0, 255, 170, 0.4);
+    border-radius: 40px;
+    padding: 6px 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #00FFAA;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
 
+  .main-brand-header p {
+    font-size: 0.7rem;
+    color: #8E9AAF;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Navbar simplificado */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(11, 15, 28, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .nav-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+    text-decoration: none;
+  }
+
+  .nav-logo .accent {
+    color: #00FFAA;
+  }
+
+  /* Login Container */
   .login-container {
-    position: relative; z-index: 2;
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1.5rem 3rem;
+    padding: 40px 20px;
   }
 
   .login-card {
-    background: var(--s1);
-    border: 1px solid var(--brd);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 32px;
-    padding: 2.2rem 2rem;
+    padding: 40px 32px;
     width: 100%;
     max-width: 460px;
-    backdrop-filter: blur(8px);
-    transition: transform 0.3s, border-color 0.3s;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    transition: all 0.3s;
   }
+
   .login-card:hover {
-    border-color: rgba(245,196,0,0.35);
+    border-color: rgba(0, 255, 170, 0.3);
     transform: translateY(-3px);
   }
 
   .login-header {
     text-align: center;
-    margin-bottom: 2rem;
-  }
-  .login-icon {
-    font-size: 3rem;
-    margin-bottom: 0.6rem;
-    display: inline-block;
-  }
-  .login-header h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem;
-    letter-spacing: 0.06em;
-    color: var(--y);
-  }
-  .login-header p {
-    font-size: 0.8rem;
-    color: var(--txm);
-    margin-top: 0.4rem;
+    margin-bottom: 32px;
   }
 
-  .form-group { margin-bottom: 1.5rem; }
+  .login-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .login-header h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #FFFFFF, #00FFAA);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .login-header p {
+    font-size: 0.8rem;
+    color: #8E9AAF;
+    margin-top: 8px;
+  }
+
+  /* Formulario */
+  .form-group {
+    margin-bottom: 20px;
+  }
+
   .form-label {
     display: block;
     font-size: 0.7rem;
     font-weight: 600;
-    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--txm);
-    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+    color: #8E9AAF;
+    margin-bottom: 8px;
   }
-  .form-label i { margin-right: 0.4rem; color: var(--y); }
-  .input-wrapper { position: relative; }
+
+  .form-label i {
+    color: #00FFAA;
+    margin-right: 6px;
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
   .form-control {
     width: 100%;
-    background: rgba(0,0,0,0.35);
-    border: 1px solid var(--brd);
-    border-radius: 16px;
-    padding: 0.9rem 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 14px 16px;
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
-    color: var(--tx);
-    transition: all 0.2s;
+    color: white;
+    transition: all 0.3s;
   }
+
   .form-control:focus {
     outline: none;
-    border-color: var(--y);
-    background: rgba(0,0,0,0.5);
-    box-shadow: 0 0 0 3px rgba(245,196,0,0.1);
+    border-color: #00FFAA;
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 0 3px rgba(0, 255, 170, 0.1);
   }
-  .form-control::placeholder { color: var(--txd); }
+
+  .form-control::placeholder {
+    color: #8E9AAF;
+    opacity: 0.5;
+  }
 
   .toggle-pw {
     position: absolute;
-    right: 1rem;
+    right: 16px;
     top: 50%;
     transform: translateY(-50%);
     background: none;
     border: none;
-    color: var(--txm);
+    color: #8E9AAF;
     cursor: pointer;
     font-size: 1rem;
     transition: color 0.2s;
   }
-  .toggle-pw:hover { color: var(--y); }
+
+  .toggle-pw:hover {
+    color: #00FFAA;
+  }
 
   .form-check {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 1.8rem;
+    gap: 10px;
+    margin-bottom: 24px;
   }
+
   .form-check input {
-    width: 1rem;
-    height: 1rem;
-    accent-color: var(--y);
-    cursor: pointer;
-  }
-  .form-check label {
-    font-size: 0.8rem;
-    color: var(--txm);
+    width: 16px;
+    height: 16px;
+    accent-color: #00FFAA;
     cursor: pointer;
   }
 
+  .form-check label {
+    font-size: 0.8rem;
+    color: #B0C4DE;
+    cursor: pointer;
+  }
+
+  /* Botones */
   .btn-login {
     width: 100%;
-    background: var(--y);
+    background: #00FFAA;
     border: none;
-    border-radius: 60px;
-    padding: 0.9rem;
+    border-radius: 40px;
+    padding: 14px;
     font-family: 'Inter', sans-serif;
-    font-weight: 700;
+    font-weight: 800;
     font-size: 0.85rem;
-    letter-spacing: 0.12em;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--dk);
+    color: #0B0F1C;
     cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
-    margin-bottom: 1.5rem;
+    transition: all 0.3s;
+    margin-bottom: 20px;
   }
-  .btn-login::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(255,255,255,0.3);
-    transform: translateX(-110%) skewX(-15deg);
-    transition: transform 0.4s ease;
-  }
-  .btn-login:hover::before { transform: translateX(110%) skewX(-15deg); }
+
   .btn-login:hover {
+    background: #00E099;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(245,196,0,0.35);
+    box-shadow: 0 8px 24px rgba(0, 255, 170, 0.3);
   }
-  .btn-login:active { transform: scale(0.97); }
+
   .btn-login:disabled {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: not-allowed;
     transform: none;
   }
 
+  /* Enlaces */
   .text-center {
     text-align: center;
     font-size: 0.8rem;
-    color: var(--txm);
+    color: #B0C4DE;
   }
+
   .text-center a {
-    color: var(--y);
+    color: #00FFAA;
     text-decoration: none;
     font-weight: 600;
     transition: opacity 0.2s;
   }
+
   .text-center a:hover {
     opacity: 0.8;
     text-decoration: underline;
   }
+
   .footer-links {
     display: flex;
     justify-content: center;
-    gap: 1.2rem;
-    margin-top: 0.8rem;
+    gap: 20px;
+    margin-top: 16px;
   }
+
   .divider-line {
     height: 2px;
-    background: linear-gradient(90deg, transparent, var(--y), transparent);
-    width: 80px;
-    margin: 1rem auto 0;
+    background: linear-gradient(90deg, transparent, #00FFAA, transparent);
+    width: 60px;
+    margin: 20px auto 0;
     border-radius: 2px;
   }
 
-  /* Alertas (para errores del backend) */
+  /* Alertas */
   .alert {
-    padding: 0.8rem 1rem;
-    border-radius: 14px;
+    padding: 12px 16px;
+    border-radius: 16px;
     font-size: 0.8rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 10px;
     border: 1px solid transparent;
   }
+
   .alert-danger {
-    background: rgba(208,2,27,0.12);
-    border-color: rgba(208,2,27,0.4);
-    color: #ff7a7a;
-  }
-  .alert-success {
-    background: rgba(10,47,168,0.12);
-    border-color: rgba(10,47,168,0.3);
-    color: #8bb5ff;
+    background: rgba(255, 68, 68, 0.1);
+    border-color: rgba(255, 68, 68, 0.3);
+    color: #FF8888;
   }
 
-  /* Modal recuperar contraseña */
+  .alert-success {
+    background: rgba(0, 255, 170, 0.1);
+    border-color: rgba(0, 255, 170, 0.3);
+    color: #00FFAA;
+  }
+
+  /* Modal */
   .modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    z-index: 500;
-    background: rgba(0,0,0,0.85);
-    backdrop-filter: blur(14px);
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
     justify-content: center;
     align-items: center;
-    padding: 1.5rem;
+    padding: 20px;
   }
-  .modal-overlay.open { display: flex; }
+
+  .modal-overlay.open {
+    display: flex;
+  }
+
   .modal-box {
-    background: var(--s1);
-    border: 1px solid rgba(245,196,0,0.3);
+    background: #0B0F1C;
+    border: 1px solid rgba(0, 255, 170, 0.3);
     border-radius: 28px;
     max-width: 460px;
     width: 100%;
     overflow: hidden;
-    animation: fadeUp 0.3s ease;
+    animation: modalFadeIn 0.3s ease;
   }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
+
+  @keyframes modalFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
+
   .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.2rem 1.5rem;
-    border-bottom: 1px solid var(--brd);
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
+
   .modal-header h3 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem;
-    color: var(--y);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #00FFAA;
   }
+
   .modal-close {
-    background: rgba(255,255,255,0.07);
+    background: rgba(255, 255, 255, 0.1);
     border: none;
-    color: var(--tx);
+    color: white;
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -324,92 +438,133 @@
     font-size: 1.2rem;
     transition: background 0.2s;
   }
-  .modal-close:hover { background: var(--r); }
-  .modal-body {
-    padding: 1.5rem;
+
+  .modal-close:hover {
+    background: #FF4444;
   }
+
+  .modal-body {
+    padding: 24px;
+  }
+
   .modal-body p {
     font-size: 0.85rem;
-    color: var(--txm);
-    margin-bottom: 1rem;
+    color: #B0C4DE;
+    margin-bottom: 16px;
     line-height: 1.5;
   }
+
   .modal-input {
     width: 100%;
-    padding: 0.8rem 1rem;
-    background: rgba(0,0,0,0.4);
-    border: 1px solid var(--brd);
-    border-radius: 14px;
-    color: var(--tx);
-    margin-bottom: 1rem;
+    padding: 12px 16px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    color: white;
+    font-family: inherit;
+    margin-bottom: 16px;
   }
+
   .modal-input:focus {
     outline: none;
-    border-color: var(--y);
+    border-color: #00FFAA;
   }
+
   .modal-buttons {
     display: flex;
-    gap: 0.8rem;
+    gap: 12px;
     justify-content: flex-end;
   }
+
   .modal-btn {
-    padding: 0.6rem 1.2rem;
+    padding: 10px 20px;
     border-radius: 40px;
     font-weight: 600;
     font-size: 0.75rem;
     cursor: pointer;
     transition: all 0.2s;
     border: none;
+    font-family: inherit;
   }
+
   .modal-btn-primary {
-    background: var(--y);
-    color: var(--dk);
+    background: #00FFAA;
+    color: #0B0F1C;
   }
-  .modal-btn-primary:hover { opacity: 0.85; transform: scale(0.98); }
+
+  .modal-btn-primary:hover {
+    background: #00E099;
+  }
+
   .modal-btn-secondary {
-    background: rgba(255,255,255,0.08);
-    color: var(--tx);
-    border: 1px solid var(--brd);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
-  .modal-btn-secondary:hover { background: rgba(255,255,255,0.12); }
+
+  .modal-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
   .reset-message {
     font-size: 0.75rem;
-    margin-top: 0.5rem;
     text-align: center;
+    margin-top: 8px;
   }
 
+  /* Footer */
   footer {
     text-align: center;
-    padding: 1.5rem;
+    padding: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: #8E9AAF;
     font-size: 0.7rem;
-    color: var(--txd);
-    border-top: 1px solid var(--brd);
-    margin-top: auto;
   }
 
-  @media (max-width: 500px) {
-    .login-card { padding: 1.8rem 1.3rem; }
-    .btn-login { font-size: 0.75rem; }
+  /* Responsive */
+  @media (max-width: 550px) {
+    .login-card {
+      padding: 32px 24px;
+    }
+    .login-header h2 {
+      font-size: 1.5rem;
+    }
+    .main-brand-header h1 {
+      font-size: 1.5rem;
+    }
+    .main-brand-header .badge {
+      font-size: 0.7rem;
+      padding: 4px 16px;
+    }
   }
 </style>
 </head>
 <body>
 
-<div class="bg-wrap"></div>
-<div class="ec-stripe"></div>
+<div class="bg-gradient"></div>
+<div class="noise"></div>
 
-<nav>
-  <a class="nav-logo" href="{{ url_for('index') }}">
-    <span class="nav-ball">⚽</span> Polla Mundialista 2026
-  </a>
+<!-- Logo destacado de Oscar Caicedo -->
+<div class="main-brand-header">
+  <h1>⚽ OSCAR CAICEDO ⚽</h1>
+  <div class="badge">PEC MNT B12 · COORDINADOR OFICIAL</div>
+  <p>Polla Mundialista 2026 · ¡Bienvenido!</p>
+</div>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a class="nav-logo" href="{{ url_for('index') }}">
+      <span>⚽ <span class="accent">Polla Mundialista 2026</span></span>
+    </a>
+  </div>
 </nav>
 
 <div class="login-container">
   <div class="login-card">
     <div class="login-header">
       <div class="login-icon">⚽</div>
-      <h2>POLLA MUNDIALISTA 2026</h2>
-      <p>Ingresa con tus credenciales</p>
+      <h2>INICIAR SESIÓN</h2>
+      <p>Ingresa con tus credenciales para participar</p>
     </div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -426,13 +581,13 @@
 
     <form id="loginForm" method="POST" action="{{ url_for('login') }}">
       <div class="form-group">
-        <label class="form-label"><i>👤</i> USUARIO O EMAIL</label>
+        <label class="form-label"><i class="fas fa-user"></i> USUARIO O EMAIL</label>
         <input type="text" name="username" id="username" class="form-control" 
                placeholder="ej: admin o admin@polla.com" value="{{ request.form.username if request.form else '' }}" autofocus required>
       </div>
 
       <div class="form-group">
-        <label class="form-label"><i>🔒</i> CONTRASEÑA</label>
+        <label class="form-label"><i class="fas fa-lock"></i> CONTRASEÑA</label>
         <div class="input-wrapper">
           <input type="password" name="password" id="password" class="form-control" 
                  placeholder="Ingresa tu contraseña" required>
@@ -453,14 +608,17 @@
         <a href="#" id="forgotLink">¿Olvidaste tu contraseña?</a>
       </div>
       <div class="footer-links">
-        <a href="{{ url_for('register') }}">
-          ✨ Regístrate aquí
-        </a>
+        <a href="{{ url_for('register') }}">✨ Regístrate aquí</a>
+        <a href="{{ url_for('index') }}">🏠 Volver al inicio</a>
       </div>
       <div class="divider-line"></div>
     </form>
   </div>
 </div>
+
+<footer>
+  © 2026 Polla Mundialista 2026 — Oscar Caicedo · PEC MNT B12
+</footer>
 
 <!-- MODAL RECUPERAR CONTRASEÑA -->
 <div id="resetModal" class="modal-overlay">
@@ -481,17 +639,17 @@
   </div>
 </div>
 
-<footer>© 2026 Polla Mundialista 2026 — Todos los derechos reservados</footer>
-
 <script>
   // Toggle contraseña
   const toggleBtn = document.getElementById('togglePassword');
   const passwordField = document.getElementById('password');
-  toggleBtn.addEventListener('click', () => {
-    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
-    passwordField.setAttribute('type', type);
-    toggleBtn.textContent = type === 'password' ? '👁' : '🙈';
-  });
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordField.setAttribute('type', type);
+      toggleBtn.textContent = type === 'password' ? '👁' : '🙈';
+    });
+  }
 
   // Recordar usuario (localStorage)
   const rememberCheck = document.getElementById('remember');
@@ -501,16 +659,16 @@
     rememberCheck.checked = true;
   }
 
-  // Al enviar el formulario, guardar el usuario si se eligió recordar
   const loginForm = document.getElementById('loginForm');
-  loginForm.addEventListener('submit', () => {
-    if (rememberCheck.checked) {
-      localStorage.setItem('rememberedUser', usernameInput.value.trim());
-    } else {
-      localStorage.removeItem('rememberedUser');
-    }
-    // El formulario se envía normalmente, el navegador sigue la redirección
-  });
+  if (loginForm) {
+    loginForm.addEventListener('submit', () => {
+      if (rememberCheck.checked) {
+        localStorage.setItem('rememberedUser', usernameInput.value.trim());
+      } else {
+        localStorage.removeItem('rememberedUser');
+      }
+    });
+  }
 
   // ==================== MODAL RECUPERAR ====================
   const modal = document.getElementById('resetModal');
@@ -522,53 +680,64 @@
   const resetMessageDiv = document.getElementById('resetMessage');
 
   function openModal() {
-    modal.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    resetEmailInput.value = '';
-    resetMessageDiv.innerHTML = '';
+    if (modal) {
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      resetEmailInput.value = '';
+      resetMessageDiv.innerHTML = '';
+    }
   }
+
   function closeModalFunc() {
-    modal.classList.remove('open');
-    document.body.style.overflow = '';
+    if (modal) {
+      modal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
   }
 
-  forgotLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    openModal();
-  });
-  closeModal.addEventListener('click', closeModalFunc);
-  cancelReset.addEventListener('click', closeModalFunc);
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) closeModalFunc();
-  });
+  if (forgotLink) {
+    forgotLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal();
+    });
+  }
+  if (closeModal) closeModal.addEventListener('click', closeModalFunc);
+  if (cancelReset) cancelReset.addEventListener('click', closeModalFunc);
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModalFunc();
+    });
+  }
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('open')) closeModalFunc();
+    if (e.key === 'Escape' && modal && modal.classList.contains('open')) closeModalFunc();
   });
 
-  sendReset.addEventListener('click', async () => {
-    const emailOrUser = resetEmailInput.value.trim();
-    if (!emailOrUser) {
-      resetMessageDiv.innerHTML = '<span style="color:#ff7a7a;">⚠️ Ingresa tu usuario o email</span>';
-      return;
-    }
-    resetMessageDiv.innerHTML = '<span style="color:var(--y);">⏳ Enviando...</span>';
-    try {
-      const response = await fetch('/api/recuperar-contrasena', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email_or_user: emailOrUser })
-      });
-      const data = await response.json();
-      if (data.success) {
-        resetMessageDiv.innerHTML = '<span style="color:#8bb5ff;">✅ ' + (data.message || 'Revisa tu correo') + '</span>';
-        setTimeout(() => closeModalFunc(), 2500);
-      } else {
-        resetMessageDiv.innerHTML = '<span style="color:#ff7a7a;">❌ ' + (data.message || 'Error al enviar') + '</span>';
+  if (sendReset) {
+    sendReset.addEventListener('click', async () => {
+      const emailOrUser = resetEmailInput.value.trim();
+      if (!emailOrUser) {
+        resetMessageDiv.innerHTML = '<span style="color:#FF8888;">⚠️ Ingresa tu usuario o email</span>';
+        return;
       }
-    } catch (err) {
-      resetMessageDiv.innerHTML = '<span style="color:#ff7a7a;">❌ Error de conexión</span>';
-    }
-  });
+      resetMessageDiv.innerHTML = '<span style="color:#00FFAA;">⏳ Enviando...</span>';
+      try {
+        const response = await fetch('/api/recuperar-contrasena', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email_or_user: emailOrUser })
+        });
+        const data = await response.json();
+        if (data.success) {
+          resetMessageDiv.innerHTML = '<span style="color:#00FFAA;">✅ ' + (data.message || 'Revisa tu correo') + '</span>';
+          setTimeout(() => closeModalFunc(), 2500);
+        } else {
+          resetMessageDiv.innerHTML = '<span style="color:#FF8888;">❌ ' + (data.message || 'Error al enviar') + '</span>';
+        }
+      } catch (err) {
+        resetMessageDiv.innerHTML = '<span style="color:#FF8888;">❌ Error de conexión</span>';
+      }
+    });
+  }
 </script>
 </body>
 </html>
