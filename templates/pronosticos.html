@@ -161,7 +161,7 @@
         .reset-btn:hover { background: var(--y); color: var(--dk); }
         .phase-tabs { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
         .phase-tab {
-            background: rgba(255,255,255,0.06); backdrop-filter: blur(12px);
+            background: rgba(255,255,255,0.06);
             border: 1px solid var(--brd);
             border-radius: 40px; padding: 12px 28px;
             font-family: 'Inter', sans-serif;
@@ -212,22 +212,29 @@
             margin-bottom: 12px; min-height: 40px;
         }
         .vs { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--y); padding: 0 16px; }
-        .prediction-options { display: flex; gap: 12px; margin: 16px 0; justify-content: center; flex-wrap: wrap; }
+        .prediction-options {
+            display: flex;
+            gap: 12px;
+            margin: 16px 0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
         .prediction-type {
-            background: rgba(0,0,0,0.4); border: 1px solid var(--brd);
-            border-radius: 30px; padding: 6px 14px;
-            cursor: pointer; font-size: 11px; transition: all 0.3s;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--brd);
+            border-radius: 30px;
+            padding: 6px 14px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: all 0.3s;
             color: var(--txm);
         }
-        .prediction-type.active { background: var(--y); color: var(--dk); border-color: var(--y); font-weight: 700; }
-        .prediction-type:hover:not(.active) { border-color: var(--y); color: var(--tx); }
-        .winner-select {
-            background: rgba(0,0,0,0.5); border: 2px solid var(--brd);
-            border-radius: 12px; padding: 8px; color: var(--tx);
-            font-size: 13px; width: 100%; cursor: pointer;
+        .prediction-type.active {
+            background: var(--y);
+            color: var(--dk);
+            border-color: var(--y);
+            font-weight: 700;
         }
-        .winner-select:focus { outline: none; border-color: var(--y); }
-        .winner-select:disabled { opacity: 0.5; cursor: not-allowed; }
         .score-inputs { display: flex; align-items: center; justify-content: center; gap: 12px; }
         .score-input {
             width: 70px; text-align: center; font-size: 18px; font-weight: 700;
@@ -370,7 +377,7 @@
     <div class="container">
         <div class="page-header fade-in">
             <h1><i class="fas fa-chart-line"></i> MIS PRONÓSTICOS</h1>
-            <p>Registra tus predicciones para cada partido del Mundial 2026 (Máximo 2 intentos por partido)</p>
+            <p>Registra tus predicciones de marcador para cada partido (Máximo 2 intentos por partido)</p>
         </div>
 
         <button class="pdf-btn" id="pdfBackupBtn">
@@ -452,7 +459,7 @@
         let allMatches      = [];
         let allTeams        = [];
         let predictions     = {};
-        let predictionTypes = {};
+        let predictionTypes = {};  // 'marcador' o 'penales'
         let matchIntentos   = {};
         let currentPhase    = 'grupos';
         let isLoading       = false;
@@ -470,9 +477,8 @@
         // ─── PUNTOS INFO ────────────────────────────────────────────────────
         function getPointsInfo(tipo, fase) {
             const esGrupos = (fase === 'grupos');
-            if (tipo === 'ganador')  return '🏆 3 pts (acertar ganador)';
-            if (tipo === 'marcador') return esGrupos ? '🎯 5 pts exacto / 3 pts ganador' : '🎯 8 pts exacto / 3 pts ganador';
-            if (tipo === 'penales')  return '⚡ 10 pts exacto / 8 pts marcador / 3 pts ganador';
+            if (tipo === 'marcador') return esGrupos ? '🎯 5 pts (exacto) / 3 pts (ganador) / 1 pt (diferencia)' : '🎯 8 pts (exacto) / 3 pts (ganador)';
+            if (tipo === 'penales')  return '⚡ 10 pts (exacto penales) / 8 pts (marcador exacto 90\') / 3 pts (ganador)';
             return '📊 3 pts (acertar ganador)';
         }
 
@@ -517,6 +523,15 @@
             allMatches = await response.json();
             allMatches.forEach(m => {
                 if (m.intentos !== undefined) matchIntentos[m.id] = m.intentos;
+                // Forzar tipo por defecto a 'marcador' (para grupos) y si es eliminatoria, se elige penales o marcador según lo guardado
+                if (!predictionTypes[m.id]) {
+                    if (m.fase !== 'grupos' && m.fase !== 'grupos') {
+                        // Inicialmente, si no hay tipo guardado, usar 'marcador'
+                        predictionTypes[m.id] = 'marcador';
+                    } else {
+                        predictionTypes[m.id] = 'marcador';
+                    }
+                }
             });
         }
 
@@ -526,10 +541,13 @@
             predictions = data;
             
             for (const [matchId, pred] of Object.entries(predictions)) {
-                if (pred.goles_local !== undefined && pred.goles_visitante !== undefined) {
+                if (pred.penales_local !== undefined && pred.penales_visitante !== undefined) {
+                    predictionTypes[matchId] = 'penales';
+                } else if (pred.goles_local !== undefined && pred.goles_visitante !== undefined) {
                     predictionTypes[matchId] = 'marcador';
-                } else if (pred.winner || pred.ganador) {
-                    predictionTypes[matchId] = 'ganador';
+                } else {
+                    // si no hay datos, por defecto marcador
+                    predictionTypes[matchId] = 'marcador';
                 }
             }
             
@@ -549,14 +567,14 @@
             return diff > 30;
         }
 
-        // ─── RENDER HTML DE UN PARTIDO ───────────────────────────────────────
+        // ─── RENDER HTML DE UN PARTIDO (SOLO MARCADOR Y PENALES) ──────────────
         function renderMatchCard(match) {
             const intentos        = matchIntentos[match.id] || 0;
             const isEditable      = isMatchEditable(match);
             const isFinalizado    = match.estado === 'finalizado';
             const haAlcanzadoLim  = intentos >= 2;
             const savedPred       = predictions[String(match.id)] || {};
-            const savedTipo       = predictionTypes[String(match.id)] || 'ganador';
+            const savedTipo       = predictionTypes[String(match.id)] || 'marcador';
             const esEliminatoria  = (match.fase !== 'grupos');
 
             let lockClass = '', lockLabel = '';
@@ -573,10 +591,9 @@
             const disabled = (!isEditable || isFinalizado || haAlcanzadoLim) ? 'disabled' : '';
             const localN   = match.local_nombre   || 'Por definir';
             const visitN   = match.visitante_nombre || 'Por definir';
-            const fecha    = new Date(match.fecha_hora).toLocaleString();
+            const fecha    = new Date(match.fecha_hora).toLocaleString('es-EC', { timeZone: 'America/Guayaquil' });
             const grupoDisp = match.grupo ? `Grupo ${match.grupo}` : (match.fase === 'grupos' ? '' : match.fase);
 
-            const tipoGanadorActive  = savedTipo === 'ganador'  ? 'active' : '';
             const tipoMarcadorActive = savedTipo === 'marcador' ? 'active' : '';
             const tipoPenalesActive  = savedTipo === 'penales'  ? 'active' : '';
 
@@ -601,9 +618,6 @@
                 </div>
 
                 <div class="prediction-options">
-                    <div class="prediction-type ${tipoGanadorActive}" data-type="ganador" data-id="${match.id}" ${disabled ? 'style="pointer-events:none;opacity:0.5"' : ''}>
-                        <i class="fas fa-trophy"></i> Ganador
-                    </div>
                     <div class="prediction-type ${tipoMarcadorActive}" data-type="marcador" data-id="${match.id}" ${disabled ? 'style="pointer-events:none;opacity:0.5"' : ''}>
                         <i class="fas fa-chart-bar"></i> Marcador
                     </div>
@@ -637,17 +651,6 @@
         }
 
         function buildInputHtml(match, tipo, saved, disabled, localN, visitN) {
-            if (tipo === 'ganador') {
-                const ganador = saved.ganador || saved.winner || '';
-                return `
-                <select class="winner-select" id="winner_${match.id}" ${disabled}>
-                    <option value="">Selecciona el ganador...</option>
-                    <option value="local"     ${ganador==='local'?'selected':''}>${escapeHtml(localN)}</option>
-                    <option value="visitante" ${ganador==='visitante'?'selected':''}>${escapeHtml(visitN)}</option>
-                    <option value="empate"    ${ganador==='empate'?'selected':''}>Empate</option>
-                </select>`;
-            }
-
             if (tipo === 'marcador') {
                 const gl = saved.goles_local   !== undefined ? saved.goles_local   : '';
                 const gv = saved.goles_visitante !== undefined ? saved.goles_visitante : '';
@@ -780,15 +783,10 @@
                 return;
             }
 
-            const tipoActivo = predictionTypes[matchId] || 'ganador';
+            const tipoActivo = predictionTypes[matchId] || 'marcador';
             let data = { partido_id: parseInt(matchId), tipo: tipoActivo };
 
-            if (tipoActivo === 'ganador') {
-                const sel = document.getElementById(`winner_${matchId}`);
-                if (!sel || !sel.value) { showToast('⚠️ Selecciona el ganador', 'error'); return; }
-                data.ganador = sel.value;
-
-            } else if (tipoActivo === 'marcador') {
+            if (tipoActivo === 'marcador') {
                 const gl = parseInt(document.getElementById(`local_${matchId}`)?.value);
                 const gv = parseInt(document.getElementById(`visitante_${matchId}`)?.value);
                 if (isNaN(gl) || isNaN(gv)) { showToast('⚠️ Ingresa el marcador completo', 'error'); return; }
@@ -810,6 +808,9 @@
                 data.goles_visitante  = gv;
                 data.penales_local    = pl;
                 data.penales_visitante = pv;
+            } else {
+                showToast('Tipo no válido', 'error');
+                return;
             }
 
             btn.disabled = true;
