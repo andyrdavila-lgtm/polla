@@ -5,268 +5,323 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Gestionar Usuarios · Polla Mundialista 2026</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --y:   #F5C400;
-            --b:   #0A2FA8;
-            --r:   #D0021B;
-            --dk:  #060D1F;
-            --mid: #0D1A3A;
-            --s1:  #111C38;
-            --s2:  #162040;
-            --brd: rgba(255,255,255,0.08);
-            --tx:  rgba(255,255,255,0.92);
-            --txm: rgba(255,255,255,0.55);
-            --txd: rgba(255,255,255,0.30);
-            --green: #1a6b1a;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--dk);
-            color: var(--tx);
+            background: #0B0F1C;
+            color: #FFFFFF;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        .bg-canvas { 
-            position: fixed; 
-            inset: 0; 
-            z-index: 0; 
-            background: radial-gradient(ellipse 55% 70% at 80% 20%, rgba(10,47,168,0.22) 0%, transparent 60%),
-                        radial-gradient(ellipse 40% 55% at 10% 85%, rgba(208,2,27,0.14) 0%, transparent 55%),
-                        var(--dk);
+
+        /* Modern Gradient Background */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(circle at 20% 30%, rgba(0, 255, 170, 0.08) 0%, rgba(11, 15, 28, 0) 60%),
+                        radial-gradient(circle at 80% 70%, rgba(0, 102, 204, 0.1) 0%, rgba(11, 15, 28, 0) 60%),
+                        #0B0F1C;
+        }
+
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
             pointer-events: none;
+            z-index: -1;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
         }
-        .bg-canvas::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(circle, rgba(245,196,0,0.05) 1px, transparent 1px);
-            background-size: 52px 52px;
-            animation: gridDrift 30s linear infinite;
+
+        /* Navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            background: rgba(11, 15, 28, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
-        @keyframes gridDrift { to { background-position: 52px 52px; } }
-        .floater {
-            position: fixed; z-index: 0;
-            width: 280px; height: 280px;
-            border-radius: 50%;
-            filter: blur(60px);
-            pointer-events: none;
-            opacity: 0.12;
-            animation: floatBall 18s ease-in-out infinite;
-        }
-        .floater-1 { background: var(--y); top: -80px; left: -80px; }
-        .floater-2 { background: var(--b); bottom: 10%; right: -100px; animation-delay: -6s; }
-        .floater-3 { background: var(--r); top: 50%; left: 40%; animation-delay: -12s; width: 180px; height: 180px; }
-        @keyframes floatBall {
-            0%,100% { transform: translate(0,0) scale(1); }
-            33% { transform: translate(30px,-40px) scale(1.1); }
-            66% { transform: translate(-20px,30px) scale(0.9); }
-        }
-        nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            background: rgba(6,13,31,0.95); backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--brd);
-        }
+
         .nav-container {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; height: 64px; max-width: 1280px; margin: 0 auto;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
         }
-        .nav-brand {
-            display: flex; align-items: center; gap: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem; font-weight: 600;
-            color: var(--tx);
-            text-decoration: none;
+
+        .logo {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: -0.3px;
         }
-        .nav-brand .ball { font-size: 1.2rem; animation: spin 4s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .menu-toggle {
-            display: none; flex-direction: column; justify-content: space-between;
-            width: 30px; height: 21px; cursor: pointer;
+
+        .logo .accent {
+            color: #00FFAA;
         }
-        .menu-toggle span {
-            display: block; height: 3px; width: 100%;
-            background-color: var(--y); border-radius: 3px;
-            transition: all 0.3s ease;
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
         }
-        .menu-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
-        .menu-toggle.active span:nth-child(2) { opacity: 0; }
-        .menu-toggle.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
-        .nav-links { display: flex; gap: 24px; list-style: none; transition: all 0.3s ease; }
+
         .nav-links a {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.8rem; font-weight: 500; letter-spacing: 0.03em;
-            text-transform: uppercase; color: var(--txm);
-            text-decoration: none; transition: color 0.3s;
+            text-decoration: none;
+            color: #B0C4DE;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s;
         }
-        .nav-links a:hover, .nav-links a.active { color: var(--y); }
-        .nav-stripe {
-            height: 3px;
-            background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
-            position: absolute; bottom: 0; left: 0; right: 0;
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #00FFAA;
         }
-        @media (max-width: 768px) {
-            .menu-toggle { display: flex; }
-            .nav-links {
-                position: fixed; top: 64px; left: -100%; width: 100%;
-                height: calc(100vh - 64px); background: rgba(6,13,31,0.98);
-                backdrop-filter: blur(20px);
-                flex-direction: column; align-items: center; justify-content: center;
-                gap: 32px; transition: left 0.3s ease; z-index: 999;
-            }
-            .nav-links.active { left: 0; }
-            .nav-links a { font-size: 1rem; padding: 12px; }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
         }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 2px;
+            background: white;
+            transition: 0.3s;
+        }
+
+        /* Main Brand Header */
+        .main-brand-header {
+            background: linear-gradient(135deg, rgba(0, 255, 170, 0.1), rgba(0, 102, 204, 0.05));
+            border-bottom: 1px solid rgba(0, 255, 170, 0.2);
+            padding: 12px 0;
+            text-align: center;
+        }
+
+        .main-brand-header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #00FFAA, #FFFFFF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .main-brand-header p {
+            font-size: 0.65rem;
+            color: #8E9AAF;
+            margin-top: 4px;
+        }
+
+        /* Container */
         .container {
-            position: relative; z-index: 1; max-width: 1280px;
-            margin: 0 auto; padding: 80px 16px 40px;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 32px 24px 64px;
         }
-        .page-header { margin-bottom: 24px; }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
         .page-header h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 36px; color: var(--tx);
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #FFFFFF 0%, #00FFAA 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
         }
-        .page-header h1 i { color: var(--y); margin-right: 12px; }
+
         .page-header p {
-            color: var(--txm);
-            font-size: 14px;
+            color: #8E9AAF;
             margin-top: 8px;
         }
 
-        /* Filtros de búsqueda (sin área) */
+        /* Filters Bar */
         .filters-bar {
-            background: var(--s1);
-            border: 1px solid var(--brd);
-            border-radius: 20px;
-            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 20px;
             margin-bottom: 24px;
         }
+
         .filters-row {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
             align-items: center;
         }
+
         .filter-group {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(0,0,0,0.3);
-            padding: 6px 12px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 6px 16px;
             border-radius: 40px;
         }
+
         .filter-group label {
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
             text-transform: uppercase;
-            color: var(--txm);
+            color: #8E9AAF;
         }
+
         .filter-group select, .filter-group input {
             background: transparent;
             border: none;
-            color: var(--tx);
+            color: white;
             font-size: 13px;
-            padding: 6px 8px;
+            padding: 8px 0;
             outline: none;
         }
+
+        .filter-group select option {
+            background: #0B0F1C;
+        }
+
         .reset-btn {
-            background: rgba(245,196,0,0.2);
-            border: 1px solid var(--y);
-            color: var(--y);
-            padding: 6px 16px;
+            background: rgba(0, 255, 170, 0.1);
+            border: 1px solid #00FFAA;
+            color: #00FFAA;
+            padding: 8px 20px;
             border-radius: 40px;
             cursor: pointer;
             font-size: 12px;
             transition: all 0.3s;
         }
+
         .reset-btn:hover {
-            background: var(--y);
-            color: var(--dk);
+            background: #00FFAA;
+            color: #0B0F1C;
         }
+
         .contador {
             margin-left: auto;
             font-size: 12px;
-            color: var(--txd);
+            color: #8E9AAF;
         }
 
-        /* Formulario de creación (sin área) */
+        /* Create User Card */
         .create-user-card {
-            background: var(--s1);
-            border: 1px solid var(--brd);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 28px;
+            margin-bottom: 32px;
         }
+
         .create-user-card h2 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 24px;
-            color: var(--y);
-            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #00FFAA;
+            margin-bottom: 24px;
         }
+
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
         }
+
         .form-group {
             margin-bottom: 16px;
         }
+
         .form-group label {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            color: var(--txm);
+            color: #8E9AAF;
             margin-bottom: 6px;
         }
+
         .form-group label i {
-            color: var(--y);
+            color: #00FFAA;
             margin-right: 6px;
         }
-        .form-control {
+
+        .form-control, .form-select {
             width: 100%;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid var(--brd);
-            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
             padding: 12px 16px;
-            color: var(--tx);
-            font-size: 14px;
+            color: white;
+            font-size: 0.9rem;
+            font-family: inherit;
         }
-        .form-control:focus {
+
+        .form-control:focus, .form-select:focus {
             outline: none;
-            border-color: var(--y);
+            border-color: #00FFAA;
         }
+
         .form-control::placeholder {
-            color: var(--txd);
+            color: #8E9AAF;
+            opacity: 0.5;
         }
-        
-        /* Tabs para selector de avatar */
+
+        /* Avatar Tabs */
         .avatar-tabs {
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
-            border-bottom: 1px solid var(--brd);
-            padding-bottom: 10px;
         }
+
         .avatar-tab {
             background: transparent;
             border: none;
-            color: var(--txm);
-            padding: 8px 16px;
+            color: #8E9AAF;
+            padding: 6px 16px;
             cursor: pointer;
-            font-size: 13px;
-            border-radius: 20px;
+            font-size: 12px;
+            border-radius: 40px;
             transition: all 0.3s;
         }
+
         .avatar-tab.active {
-            background: var(--y);
-            color: var(--dk);
+            background: #00FFAA;
+            color: #0B0F1C;
         }
+
         .avatar-tab:hover:not(.active) {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
         }
+
         .avatar-preview {
             display: flex;
             align-items: center;
@@ -274,181 +329,205 @@
             margin-top: 8px;
             flex-wrap: wrap;
         }
+
         .avatar-preview img {
             width: 60px;
             height: 60px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--y);
+            border: 2px solid #00FFAA;
         }
-        .avatar-preview .avatar-placeholder {
+
+        .avatar-placeholder {
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            border: 2px dashed var(--txd);
+            border: 2px dashed #8E9AAF;
         }
+
         .btn-upload {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid var(--brd);
-            border-radius: 8px;
-            padding: 8px 16px;
-            color: var(--tx);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 40px;
+            padding: 8px 20px;
+            color: white;
             font-size: 12px;
             cursor: pointer;
             transition: all 0.3s;
         }
+
         .btn-upload:hover {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
         }
+
         .url-input-group {
             display: flex;
             gap: 10px;
             margin-top: 8px;
             flex-wrap: wrap;
         }
-        .url-input-group input {
-            flex: 1;
-            min-width: 200px;
-        }
+
         .btn-test-url {
-            background: var(--b);
-            border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
+            background: rgba(0, 102, 204, 0.3);
+            border: 1px solid rgba(0, 102, 204, 0.5);
+            border-radius: 40px;
+            padding: 8px 20px;
             color: white;
             font-size: 12px;
             cursor: pointer;
+            transition: all 0.3s;
         }
+
         .btn-test-url:hover {
-            background: #1e3a8a;
+            background: rgba(0, 102, 204, 0.5);
         }
+
         .btn-create {
-            background: var(--green);
+            background: #00FFAA;
+            color: #0B0F1C;
             border: none;
-            border-radius: 12px;
-            padding: 12px 24px;
-            color: white;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.8rem;
+            border-radius: 40px;
+            padding: 14px 28px;
             font-weight: 700;
-            letter-spacing: 0.08em;
+            font-size: 0.85rem;
             text-transform: uppercase;
+            letter-spacing: 1px;
             cursor: pointer;
             transition: all 0.3s;
             margin-top: 20px;
             width: 100%;
         }
+
         .btn-create:hover {
             transform: scale(1.02);
-            opacity: 0.9;
+            background: #00E099;
         }
+
         .btn-create:disabled {
-            opacity: 0.7;
+            opacity: 0.6;
             cursor: not-allowed;
         }
 
+        /* Table Container */
         .table-container {
-            background: var(--s1);
-            border: 1px solid var(--brd);
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
             overflow-x: auto;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
+
         th {
-            background: rgba(0,0,0,0.4);
+            background: rgba(0, 0, 0, 0.4);
             padding: 16px;
             text-align: left;
-            font-family: 'Inter', sans-serif;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
-            color: var(--y);
-            border-bottom: 1px solid var(--brd);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #00FFAA;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
+
         td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--brd);
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             vertical-align: middle;
+            color: #B0C4DE;
         }
+
         .user-avatar-small {
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             object-fit: cover;
         }
+
         .badge-admin {
-            background: var(--y);
-            color: var(--dk);
-            padding: 4px 8px;
-            border-radius: 12px;
+            background: #00FFAA;
+            color: #0B0F1C;
+            padding: 4px 12px;
+            border-radius: 20px;
             font-size: 11px;
-            font-weight: bold;
+            font-weight: 700;
         }
+
         .badge-user {
-            background: rgba(255,255,255,0.2);
-            padding: 4px 8px;
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
             font-size: 11px;
         }
-        .btn-delete {
-            background: rgba(208,2,27,0.2);
-            border: 1px solid var(--r);
-            color: #ff7a7a;
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s;
-        }
-        .btn-delete:hover {
-            background: var(--r);
-            color: white;
-        }
-        .btn-reset-password {
-            background: rgba(245,196,0,0.2);
-            border: 1px solid var(--y);
-            color: var(--y);
-            padding: 6px 12px;
-            border-radius: 8px;
+
+        .btn-delete, .btn-reset-password {
+            padding: 8px 16px;
+            border-radius: 40px;
             cursor: pointer;
             font-size: 11px;
+            font-weight: 600;
             transition: all 0.3s;
+            border: none;
+            font-family: inherit;
             margin-right: 8px;
         }
-        .btn-reset-password:hover {
-            background: var(--y);
-            color: var(--dk);
+
+        .btn-reset-password {
+            background: rgba(0, 255, 170, 0.1);
+            border: 1px solid #00FFAA;
+            color: #00FFAA;
         }
-        
+
+        .btn-reset-password:hover {
+            background: #00FFAA;
+            color: #0B0F1C;
+        }
+
+        .btn-delete {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #FF4444;
+            color: #FF8888;
+        }
+
+        .btn-delete:hover {
+            background: #FF4444;
+            color: white;
+        }
+
         /* Alertas */
         .alert {
             padding: 12px 16px;
-            border-radius: 12px;
+            border-radius: 16px;
             margin-bottom: 16px;
-            font-size: 14px;
+            font-size: 0.85rem;
             display: none;
         }
+
         .alert-success {
-            background: rgba(26,107,26,0.2);
-            border: 1px solid var(--green);
-            color: #90EE90;
+            background: rgba(0, 255, 170, 0.1);
+            border: 1px solid rgba(0, 255, 170, 0.3);
+            color: #00FFAA;
         }
+
         .alert-danger {
-            background: rgba(208,2,27,0.2);
-            border: 1px solid var(--r);
-            color: #ff7a7a;
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            color: #FF8888;
         }
+
         .alert-warning {
-            background: rgba(245,196,0,0.2);
-            border: 1px solid var(--y);
-            color: var(--y);
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: #FFD700;
         }
 
         /* Modal */
@@ -460,70 +539,66 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.7);
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
             justify-content: center;
             align-items: center;
         }
+
         .modal-content {
-            background: var(--s1);
-            border: 1px solid var(--y);
-            border-radius: 20px;
-            padding: 24px;
+            background: #0B0F1C;
+            border: 1px solid #00FFAA;
+            border-radius: 24px;
+            padding: 28px;
             max-width: 400px;
             width: 90%;
             text-align: center;
         }
+
         .modal-content h3 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 24px;
-            color: var(--y);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00FFAA;
             margin-bottom: 16px;
         }
+
         .modal-content p {
             margin-bottom: 20px;
-            color: var(--txm);
+            color: #8E9AAF;
         }
+
         .modal-buttons {
             display: flex;
             gap: 12px;
             justify-content: center;
         }
+
         .modal-btn {
-            padding: 10px 20px;
-            border-radius: 30px;
-            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: 700;
+            border: none;
+            font-family: inherit;
         }
+
         .modal-btn-confirm {
-            background: var(--r);
+            background: #FF4444;
             color: white;
         }
+
         .modal-btn-cancel {
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
         }
 
-        footer {
-            background: rgba(0,0,0,0.5);
-            border-top: 1px solid var(--brd);
-            padding: 20px;
-            text-align: center;
-            margin-top: 40px;
-        }
-        .footer-stripe {
-            height: 3px;
-            background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
-            width: 80px; margin: 0 auto 12px;
-        }
-        .footer-text { font-size: 10px; color: var(--txd); }
-
+        /* Toast */
         .toast-notification {
             position: fixed;
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.9);
+            background: rgba(0, 0, 0, 0.9);
             color: white;
             padding: 12px 24px;
             border-radius: 50px;
@@ -531,13 +606,16 @@
             z-index: 2000;
             animation: fadeInUp 0.3s ease;
         }
+
         .toast-notification.success {
-            background: var(--green);
-            border-left: 4px solid var(--y);
+            background: #00FFAA;
+            color: #0B0F1C;
         }
+
         .toast-notification.error {
-            background: var(--r);
+            background: #FF4444;
         }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -549,6 +627,16 @@
             }
         }
 
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 32px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #8E9AAF;
+            font-size: 0.8rem;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -570,25 +658,59 @@
                 margin-left: 0;
                 text-align: center;
             }
+            .menu-toggle {
+                display: flex;
+            }
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: #0B0F1C;
+                flex-direction: column;
+                align-items: center;
+                padding-top: 40px;
+                transition: 0.3s;
+                gap: 24px;
+            }
+            .nav-links.active {
+                left: 0;
+            }
             th, td {
-                padding: 8px;
+                padding: 10px;
                 font-size: 11px;
             }
+            .main-brand-header h2 {
+                font-size: 1rem;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00FFAA;
+            border-radius: 3px;
         }
     </style>
 </head>
 <body>
-    <div class="bg-canvas"></div>
-    <div class="floater floater-1"></div>
-    <div class="floater floater-2"></div>
-    <div class="floater floater-3"></div>
+    <div class="bg-gradient"></div>
+    <div class="noise"></div>
 
-    <nav>
+    <nav class="navbar">
         <div class="nav-container">
-            <a class="nav-brand" href="{{ url_for('dashboard') }}">
-                <span class="ball">⚽</span> Polla Mundialista 2026
-            </a>
-            <div class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></div>
+            <div class="logo">
+                <span>⚽ <span class="accent">Polla Mundialista 2026</span></span>
+            </div>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span><span></span><span></span>
+            </div>
             <ul class="nav-links" id="navLinks">
                 <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
                 <li><a href="{{ url_for('pronosticos') }}">Pronósticos</a></li>
@@ -598,8 +720,13 @@
                 <li><a href="{{ url_for('logout') }}" id="logoutBtn">Salir</a></li>
             </ul>
         </div>
-        <div class="nav-stripe"></div>
     </nav>
+
+    <!-- Logo destacado de Oscar Caicedo -->
+    <div class="main-brand-header">
+        <h2>⚽ OSCAR CAICEDO · PEC MNT B12 ⚽</h2>
+        <p>Administrador · Gestión de Usuarios</p>
+    </div>
 
     <div class="container">
         <div class="page-header">
@@ -607,10 +734,9 @@
             <p>Administra los participantes de la Polla Mundialista 2026</p>
         </div>
 
-        <!-- Alerta -->
         <div id="alertMessage" class="alert"></div>
 
-        <!-- Filtros de búsqueda (sin área) -->
+        <!-- Filtros -->
         <div class="filters-bar">
             <div class="filters-row">
                 <div class="filter-group">
@@ -632,7 +758,7 @@
             </div>
         </div>
 
-        <!-- Formulario para crear usuario (sin área) -->
+        <!-- Formulario para crear usuario -->
         <div class="create-user-card">
             <h2><i class="fas fa-user-plus"></i> CREAR NUEVO USUARIO</h2>
             <form id="createUserForm">
@@ -655,47 +781,27 @@
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-camera"></i> FOTO DE PERFIL</label>
-                        
-                        <!-- Tabs para seleccionar método -->
                         <div class="avatar-tabs">
-                            <button type="button" class="avatar-tab active" data-method="upload">
-                                <i class="fas fa-upload"></i> Subir archivo
-                            </button>
-                            <button type="button" class="avatar-tab" data-method="url">
-                                <i class="fas fa-link"></i> Usar URL
-                            </button>
+                            <button type="button" class="avatar-tab active" data-method="upload"><i class="fas fa-upload"></i> Subir archivo</button>
+                            <button type="button" class="avatar-tab" data-method="url"><i class="fas fa-link"></i> Usar URL</button>
                         </div>
-                        
-                        <!-- Opción 1: Subir archivo -->
                         <div id="uploadMethod" class="avatar-method">
                             <div class="avatar-preview">
-                                <div id="avatarPreview" class="avatar-placeholder">
-                                    <i class="fas fa-user"></i>
-                                </div>
-                                <button type="button" class="btn-upload" onclick="document.getElementById('avatarInput').click()">
-                                    <i class="fas fa-upload"></i> Subir foto
-                                </button>
+                                <div id="avatarPreview" class="avatar-placeholder"><i class="fas fa-user"></i></div>
+                                <button type="button" class="btn-upload" onclick="document.getElementById('avatarInput').click()"><i class="fas fa-upload"></i> Subir foto</button>
                                 <input type="file" id="avatarInput" style="display: none" accept="image/jpeg,image/png,image/jpg,image/gif">
                             </div>
-                            <small style="color: var(--txd); font-size: 10px;">Formatos: JPG, PNG, GIF. Máx 2MB</small>
+                            <small style="color: #8E9AAF; font-size: 10px;">Formatos: JPG, PNG, GIF. Máx 2MB</small>
                         </div>
-                        
-                        <!-- Opción 2: URL externa -->
                         <div id="urlMethod" class="avatar-method" style="display: none;">
                             <div class="avatar-preview">
-                                <div id="urlAvatarPreview" class="avatar-placeholder">
-                                    <i class="fas fa-link"></i>
-                                </div>
+                                <div id="urlAvatarPreview" class="avatar-placeholder"><i class="fas fa-link"></i></div>
                                 <div class="url-input-group">
-                                    <input type="text" id="avatarUrl" class="form-control" placeholder="https://ejemplo.com/imagen.jpg" style="flex:1;">
-                                    <button type="button" class="btn-test-url" onclick="testUrl()">
-                                        <i class="fas fa-eye"></i> Probar URL
-                                    </button>
+                                    <input type="text" id="avatarUrl" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
+                                    <button type="button" class="btn-test-url" onclick="testUrl()"><i class="fas fa-eye"></i> Probar URL</button>
                                 </div>
                             </div>
-                            <small style="color: var(--txd); font-size: 10px;">
-                                <i class="fas fa-info-circle"></i> Enlaces externos compatibles
-                            </small>
+                            <small style="color: #8E9AAF; font-size: 10px;"><i class="fas fa-info-circle"></i> Enlaces externos compatibles</small>
                         </div>
                     </div>
                     <div class="form-group">
@@ -706,13 +812,11 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn-create">
-                    <i class="fas fa-save"></i> CREAR USUARIO
-                </button>
+                <button type="submit" class="btn-create"><i class="fas fa-save"></i> CREAR USUARIO</button>
             </form>
         </div>
 
-        <!-- Tabla de usuarios existentes (sin columna Área) -->
+        <!-- Tabla de usuarios -->
         <div class="table-container">
             <table id="usuariosTable">
                 <thead>
@@ -729,11 +833,7 @@
                 <tbody id="tablaBody">
                     {% for usuario in usuarios %}
                     <tr data-username="{{ usuario.username.lower() }}" data-nombre="{{ (usuario.nombre_completo or '').lower() }}" data-rol="{{ 'admin' if usuario.es_admin else 'user' }}">
-                        <tr>
-                            <img src="{{ usuario.foto_perfil or 'https://ui-avatars.com/api/?background=F5C400&color=001a40&bold=true&size=35&rounded=true&name=' + usuario.username }}" 
-                                 class="user-avatar-small" 
-                                 onerror="this.src='https://ui-avatars.com/api/?background=F5C400&color=001a40&bold=true&size=35&rounded=true&name={{ usuario.username }}'">
-                        </td>
+                        <td><img src="{{ usuario.foto_perfil or 'https://ui-avatars.com/api/?background=00FFAA&color=0B0F1C&bold=true&size=40&rounded=true&name=' + usuario.username }}" class="user-avatar-small" onerror="this.src='https://ui-avatars.com/api/?background=00FFAA&color=0B0F1C&bold=true&size=40&rounded=true&name={{ usuario.username }}'"></td>
                         <td><strong>{{ usuario.username }}</strong></td>
                         <td>{{ usuario.nombre_completo or '-' }}</td>
                         <td>{{ usuario.email or '-' }}</td>
@@ -741,16 +841,12 @@
                         <td>{% if usuario.activo %}✅ Activo{% else %}❌ Inactivo{% endif %}</td>
                         <td>
                             {% if not usuario.es_admin %}
-                            <button class="btn-reset-password" onclick="resetPassword({{ usuario.id }}, '{{ usuario.username }}')">
-                                <i class="fas fa-key"></i> Reset Pass
-                            </button>
-                            <button class="btn-delete" onclick="eliminarUsuario({{ usuario.id }}, '{{ usuario.username }}')">
-                                <i class="fas fa-trash"></i> Eliminar
-                            </button>
+                            <button class="btn-reset-password" onclick="resetPassword({{ usuario.id }}, '{{ usuario.username }}')"><i class="fas fa-key"></i> Reset Pass</button>
+                            <button class="btn-delete" onclick="eliminarUsuario({{ usuario.id }}, '{{ usuario.username }}')"><i class="fas fa-trash"></i> Eliminar</button>
                             {% else %}
-                            <span style="color: var(--txd);">Principal</span>
+                            <span style="color: #8E9AAF;">Principal</span>
                             {% endif %}
-                         </td>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -758,7 +854,12 @@
         </div>
     </div>
 
-    <!-- Modal de confirmación -->
+    <footer>
+        <div>© 2026 Polla Mundialista 2026 — Oscar Caicedo · PEC MNT B12</div>
+        <div style="margin-top: 8px; font-size: 0.7rem;">Panel de Administración · Gestión de Usuarios</div>
+    </footer>
+
+    <!-- Modal -->
     <div id="confirmModal" class="modal">
         <div class="modal-content">
             <h3><i class="fas fa-exclamation-triangle"></i> Confirmar</h3>
@@ -770,11 +871,6 @@
         </div>
     </div>
 
-    <footer>
-        <div class="footer-stripe"></div>
-        <div class="footer-text">© 2026 Polla Mundialista 2026 — Panel Administrador</div>
-    </footer>
-
     <script>
         // Menú hamburguesa
         const menuToggle = document.getElementById('menuToggle');
@@ -785,7 +881,6 @@
                 navLinks.classList.toggle('active');
             });
         }
-        
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', () => {
                 if (menuToggle) menuToggle.classList.remove('active');
@@ -793,10 +888,8 @@
             });
         });
 
-        // Variables para modal
         let pendingAction = null;
 
-        // Mostrar alerta
         function showAlert(message, type) {
             const alertDiv = document.getElementById('alertMessage');
             alertDiv.className = `alert alert-${type}`;
@@ -807,18 +900,15 @@
             }, 5000);
         }
 
-        // Mostrar toast
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast-notification ${type}`;
             toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
             document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
+            setTimeout(() => toast.remove(), 3000);
         }
 
-        // Filtros de búsqueda (sin área)
+        // Filtros
         const searchFilter = document.getElementById('searchFilter');
         const rolFilter = document.getElementById('rolFilter');
         const resetFiltersBtn = document.getElementById('resetFilters');
@@ -828,31 +918,18 @@
         function aplicarFiltros() {
             const searchTerm = searchFilter.value.toLowerCase();
             const rolValue = rolFilter.value;
-            
             let visibleCount = 0;
-            
             tablaRows.forEach(row => {
                 const username = row.getAttribute('data-username') || '';
                 const nombre = row.getAttribute('data-nombre') || '';
                 const rol = row.getAttribute('data-rol') || '';
-                
                 let mostrar = true;
-                
-                if (searchTerm && !username.includes(searchTerm) && !nombre.includes(searchTerm)) {
-                    mostrar = false;
-                }
-                
-                if (rolValue === 'admin' && rol !== 'admin') {
-                    mostrar = false;
-                }
-                if (rolValue === 'user' && rol !== 'user') {
-                    mostrar = false;
-                }
-                
+                if (searchTerm && !username.includes(searchTerm) && !nombre.includes(searchTerm)) mostrar = false;
+                if (rolValue === 'admin' && rol !== 'admin') mostrar = false;
+                if (rolValue === 'user' && rol !== 'user') mostrar = false;
                 row.style.display = mostrar ? '' : 'none';
                 if (mostrar) visibleCount++;
             });
-            
             contadorSpan.textContent = `Mostrando ${visibleCount} de ${tablaRows.length} usuarios`;
         }
 
@@ -865,25 +942,22 @@
                 aplicarFiltros();
             });
         }
-        
-        // Inicializar contador
         aplicarFiltros();
-        
-        // Tabs para método de avatar
+
+        // Avatar tabs
         let selectedAvatar = null;
         let currentMethod = 'upload';
         let avatarUrlValue = '';
-        
+
         const tabs = document.querySelectorAll('.avatar-tab');
         const uploadMethod = document.getElementById('uploadMethod');
         const urlMethod = document.getElementById('urlMethod');
-        
+
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 tabs.forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 currentMethod = tab.dataset.method;
-                
                 if (currentMethod === 'upload') {
                     uploadMethod.style.display = 'block';
                     urlMethod.style.display = 'none';
@@ -893,8 +967,7 @@
                 }
             });
         });
-        
-        // Previsualizar avatar subido
+
         document.getElementById('avatarInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -904,13 +977,11 @@
                     this.value = '';
                     return;
                 }
-                
                 if (file.size > 2 * 1024 * 1024) {
                     showAlert('La imagen no puede superar los 2MB', 'danger');
                     this.value = '';
                     return;
                 }
-                
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const preview = document.getElementById('avatarPreview');
@@ -921,52 +992,47 @@
                 reader.readAsDataURL(file);
             }
         });
-        
-        // Probar URL
+
         window.testUrl = function() {
             const url = document.getElementById('avatarUrl').value.trim();
             if (!url) {
                 showAlert('Ingresa una URL válida', 'warning');
                 return;
             }
-            
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
                 showAlert('La URL debe comenzar con http:// o https://', 'warning');
                 return;
             }
-            
             const preview = document.getElementById('urlAvatarPreview');
             preview.innerHTML = `<img src="${url}" style="width:60px;height:60px;border-radius:50%;object-fit:cover;" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fas fa-exclamation-triangle\'></i>';">`;
             avatarUrlValue = url;
             selectedAvatar = null;
             showAlert('URL cargada correctamente', 'success');
         };
-        
-        // Crear usuario (sin campo área)
+
+        // Crear usuario
         document.getElementById('createUserForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const username = document.getElementById('username').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const nombre_completo = document.getElementById('nombre_completo').value;
             const es_admin = document.getElementById('es_admin').value === 'true';
-            
+
             if (!username || !email || !password) {
                 showAlert('Por favor completa los campos requeridos (*)', 'warning');
                 return;
             }
-            
             if (password.length < 6) {
                 showAlert('La contraseña debe tener al menos 6 caracteres', 'warning');
                 return;
             }
-            
+
             const submitBtn = document.querySelector('.btn-create');
             const originalText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> CREANDO...';
             submitBtn.disabled = true;
-            
+
             try {
                 const formData = new FormData();
                 formData.append('username', username);
@@ -974,37 +1040,25 @@
                 formData.append('password', password);
                 formData.append('nombre_completo', nombre_completo);
                 formData.append('es_admin', es_admin);
-                
-                const response = await fetch('/api/admin/crear-usuario', {
-                    method: 'POST',
-                    body: formData
-                });
-                
+
+                const response = await fetch('/api/admin/crear-usuario', { method: 'POST', body: formData });
                 const data = await response.json();
-                
+
                 if (response.ok && data.success) {
                     if (currentMethod === 'upload' && selectedAvatar) {
                         const avatarFormData = new FormData();
                         avatarFormData.append('avatar', selectedAvatar);
                         avatarFormData.append('usuario_id', data.user_id);
-                        
-                        await fetch('/api/admin/subir-avatar-usuario', {
-                            method: 'POST',
-                            body: avatarFormData
-                        });
+                        await fetch('/api/admin/subir-avatar-usuario', { method: 'POST', body: avatarFormData });
                     } else if (currentMethod === 'url' && avatarUrlValue) {
-                        // Guardar URL como foto de perfil
                         await fetch('/api/admin/actualizar-avatar-url', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ usuario_id: data.user_id, avatar_url: avatarUrlValue })
                         });
                     }
-                    
                     showToast('✅ Usuario creado exitosamente', 'success');
-                    setTimeout(() => {
-                        location.reload();
-                    }, 1500);
+                    setTimeout(() => location.reload(), 1500);
                 } else {
                     showAlert('❌ Error: ' + (data.message || 'Error al crear usuario'), 'danger');
                 }
@@ -1017,45 +1071,36 @@
             }
         });
 
-        // Resetear contraseña
         window.resetPassword = function(userId, username) {
             const newPassword = prompt(`Ingrese la nueva contraseña para el usuario "${username}":\n\nMínimo 6 caracteres`);
-            
             if (!newPassword) return;
-            
             if (newPassword.length < 6) {
                 showAlert('La contraseña debe tener al menos 6 caracteres', 'warning');
                 return;
             }
-            
-            pendingAction = { type: 'resetPassword', userId: userId, newPassword: newPassword };
+            pendingAction = { type: 'resetPassword', userId: userId, newPassword: newPassword, username: username };
             document.getElementById('modalMessage').innerHTML = `¿Estás seguro de resetear la contraseña del usuario <strong>${username}</strong>?<br><br>La nueva contraseña será: <strong>${newPassword}</strong>`;
             document.getElementById('confirmModal').style.display = 'flex';
         };
 
-        // Eliminar usuario
         window.eliminarUsuario = function(id, username) {
             pendingAction = { type: 'delete', userId: id, username: username };
             document.getElementById('modalMessage').innerHTML = `⚠️ ¿Estás seguro de eliminar al usuario <strong>${username}</strong>?<br><br>Esta acción no se puede deshacer y eliminará todos sus pronósticos.`;
             document.getElementById('confirmModal').style.display = 'flex';
         };
 
-        // Ejecutar acción pendiente
         async function executePendingAction() {
             if (!pendingAction) return;
-            
             const modal = document.getElementById('confirmModal');
             modal.style.display = 'none';
-            
+
             if (pendingAction.type === 'delete') {
                 try {
                     const response = await fetch(`/api/admin/eliminar-usuario/${pendingAction.userId}`, { method: 'DELETE' });
                     const data = await response.json();
                     if (data.success) {
                         showToast(`✅ Usuario "${pendingAction.username}" eliminado correctamente`, 'success');
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1000);
+                        setTimeout(() => location.reload(), 1000);
                     } else {
                         showAlert('❌ Error: ' + (data.message || data.error || 'Error al eliminar usuario'), 'danger');
                     }
@@ -1079,7 +1124,6 @@
                     showAlert('❌ Error de conexión', 'danger');
                 }
             }
-            
             pendingAction = null;
         }
 
@@ -1088,22 +1132,16 @@
             document.getElementById('confirmModal').style.display = 'none';
         }
 
-        // Eventos del modal
         document.getElementById('modalConfirmBtn')?.addEventListener('click', executePendingAction);
         document.getElementById('modalCancelBtn')?.addEventListener('click', cancelAction);
-        
         window.addEventListener('click', (e) => {
             const modal = document.getElementById('confirmModal');
-            if (e.target === modal) {
-                cancelAction();
-            }
+            if (e.target === modal) cancelAction();
         });
-        
-        // Logout
+
         document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
             e.preventDefault();
-            fetch('/logout')
-                .then(() => window.location.href = "{{ url_for('login') }}");
+            fetch('/logout').then(() => window.location.href = "{{ url_for('login') }}");
         });
     </script>
 </body>
