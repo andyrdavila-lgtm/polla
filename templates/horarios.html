@@ -3,21 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Horarios - Polla Mundialista DGA 2026</title>
+    <title>Horarios · Polla Mundialista 2026</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&family=Barlow+Condensed:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --ec-yellow: #FFD100;
-            --ec-blue:   #003580;
-            --ec-red:    #CC0001;
-            --ec-dark:   #001a40;
-            --ec-mid:    #002a66;
-            --ec-green:  #1a6b1a;
-            --white:     #ffffff;
-            --off-white: #f4f1e8;
-            --gold:      #c8920a;
+            --y:   #F5C400;
+            --b:   #0A2FA8;
+            --r:   #D0021B;
+            --dk:  #060D1F;
+            --mid: #0D1A3A;
+            --s1:  #111C38;
+            --s2:  #162040;
+            --brd: rgba(255,255,255,0.08);
+            --tx:  rgba(255,255,255,0.92);
+            --txm: rgba(255,255,255,0.55);
+            --txd: rgba(255,255,255,0.30);
+            --green: #1a6b1a;
         }
 
         * {
@@ -27,8 +30,9 @@
         }
 
         body {
-            font-family: 'Barlow', sans-serif;
-            background: var(--ec-dark);
+            font-family: 'Inter', sans-serif;
+            background: var(--dk);
+            color: var(--tx);
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
@@ -39,9 +43,9 @@
             position: fixed;
             inset: 0;
             z-index: 0;
-            background: radial-gradient(ellipse at 20% 0%, rgba(0,53,128,0.6) 0%, transparent 60%),
-                        radial-gradient(ellipse at 80% 100%, rgba(26,107,26,0.4) 0%, transparent 60%),
-                        var(--ec-dark);
+            background: radial-gradient(ellipse 55% 70% at 80% 20%, rgba(10,47,168,0.22) 0%, transparent 60%),
+                        radial-gradient(ellipse 40% 55% at 10% 85%, rgba(208,2,27,0.14) 0%, transparent 55%),
+                        var(--dk);
             pointer-events: none;
         }
         
@@ -49,31 +53,31 @@
             content: '';
             position: absolute;
             inset: 0;
-            background-image: radial-gradient(circle, rgba(255,209,0,0.06) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: gridDrift 25s linear infinite;
+            background-image: radial-gradient(circle, rgba(245,196,0,0.05) 1px, transparent 1px);
+            background-size: 52px 52px;
+            animation: gridDrift 30s linear infinite;
         }
         
         @keyframes gridDrift {
-            to { background-position: 60px 60px; }
+            to { background-position: 52px 52px; }
         }
 
-        /* Floating balls */
+        /* Floating balls (simplificadas) */
         .floater {
             position: fixed;
             z-index: 0;
-            width: 320px;
-            height: 320px;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
-            filter: blur(80px);
+            filter: blur(60px);
             pointer-events: none;
-            opacity: 0.18;
+            opacity: 0.12;
             animation: floatBall 18s ease-in-out infinite;
         }
         
-        .floater-1 { background: var(--ec-yellow); top: -80px; left: -80px; animation-delay: 0s; }
-        .floater-2 { background: var(--ec-blue); bottom: 10%; right: -100px; animation-delay: -6s; }
-        .floater-3 { background: var(--ec-red); top: 50%; left: 40%; animation-delay: -12s; width: 200px; height: 200px; }
+        .floater-1 { background: var(--y); top: -80px; left: -80px; animation-delay: 0s; }
+        .floater-2 { background: var(--b); bottom: 10%; right: -100px; animation-delay: -6s; }
+        .floater-3 { background: var(--r); top: 50%; left: 40%; animation-delay: -12s; width: 180px; height: 180px; }
         
         @keyframes floatBall {
             0%, 100% { transform: translate(0, 0) scale(1); }
@@ -88,9 +92,9 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            background: rgba(0,26,64,0.95);
+            background: rgba(6,13,31,0.95);
             backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255,209,0,0.15);
+            border-bottom: 1px solid var(--brd);
         }
         
         .nav-container {
@@ -107,17 +111,17 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--tx);
             text-decoration: none;
             z-index: 1001;
         }
         
         .nav-brand .ball {
-            font-size: 22px;
+            font-size: 1.2rem;
             animation: spin 4s linear infinite;
             display: inline-block;
         }
@@ -140,7 +144,7 @@
             display: block;
             height: 3px;
             width: 100%;
-            background-color: var(--ec-yellow);
+            background-color: var(--y);
             border-radius: 3px;
             transition: all 0.3s ease;
         }
@@ -167,12 +171,12 @@
         }
         
         .nav-links a {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0.08em;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.7);
+            color: var(--txm);
             text-decoration: none;
             transition: color 0.3s;
             white-space: nowrap;
@@ -180,12 +184,12 @@
         
         .nav-links a:hover,
         .nav-links a.active {
-            color: var(--ec-yellow);
+            color: var(--y);
         }
         
         .nav-stripe {
             height: 3px;
-            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
             position: absolute;
             bottom: 0;
             left: 0;
@@ -203,7 +207,7 @@
                 left: -100%;
                 width: 100%;
                 height: calc(100vh - 64px);
-                background: rgba(0,26,64,0.98);
+                background: rgba(6,13,31,0.98);
                 backdrop-filter: blur(20px);
                 flex-direction: column;
                 align-items: center;
@@ -218,7 +222,7 @@
             }
             
             .nav-links a {
-                font-size: 18px;
+                font-size: 1rem;
                 padding: 12px;
             }
         }
@@ -238,17 +242,17 @@
         .page-header h1 {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 36px;
-            color: var(--white);
+            color: var(--tx);
             margin-bottom: 8px;
         }
         
         .page-header h1 i {
-            color: var(--ec-yellow);
+            color: var(--y);
             margin-right: 12px;
         }
         
         .page-header p {
-            color: rgba(255,255,255,0.5);
+            color: var(--txm);
             font-size: 14px;
         }
 
@@ -261,9 +265,8 @@
         }
         
         .stat-card {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 20px;
             padding: 20px;
             text-align: center;
@@ -272,26 +275,26 @@
         
         .stat-card:hover {
             transform: translateY(-4px);
-            border-color: var(--ec-yellow);
+            border-color: var(--y);
         }
         
         .stat-card i {
             font-size: 32px;
-            color: var(--ec-yellow);
+            color: var(--y);
             margin-bottom: 12px;
         }
         
         .stat-number {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 36px;
-            color: var(--white);
+            color: var(--tx);
         }
         
         .stat-label {
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            color: rgba(255,255,255,0.5);
+            color: var(--txm);
         }
         
         @media (max-width: 768px) {
@@ -309,9 +312,8 @@
 
         /* Filters */
         .filters-bar {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 20px;
             padding: 16px;
             margin-bottom: 24px;
@@ -328,7 +330,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
             padding: 6px 12px;
             border-radius: 40px;
         }
@@ -337,20 +339,20 @@
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.5);
+            color: var(--txm);
         }
         
         .filter-group select, .filter-group input {
             background: transparent;
             border: none;
-            color: var(--white);
+            color: var(--tx);
             font-size: 13px;
             padding: 6px 8px;
             outline: none;
         }
         
         .filter-group select option {
-            background: var(--ec-dark);
+            background: var(--dk);
         }
         
         .search-input {
@@ -359,9 +361,9 @@
         }
         
         .reset-btn {
-            background: rgba(255,209,0,0.2);
-            border: 1px solid var(--ec-yellow);
-            color: var(--ec-yellow);
+            background: rgba(245,196,0,0.2);
+            border: 1px solid var(--y);
+            color: var(--y);
             padding: 6px 16px;
             border-radius: 40px;
             cursor: pointer;
@@ -370,15 +372,14 @@
         }
         
         .reset-btn:hover {
-            background: var(--ec-yellow);
-            color: var(--ec-dark);
+            background: var(--y);
+            color: var(--dk);
         }
 
         /* Tabla de Horarios */
         .tabla-container {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 20px;
             overflow-x: auto;
         }
@@ -392,20 +393,20 @@
             background: rgba(0,0,0,0.4);
             padding: 16px;
             text-align: left;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            color: var(--ec-yellow);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: var(--y);
+            border-bottom: 1px solid var(--brd);
         }
         
         .horarios-table td {
             padding: 14px 16px;
-            color: rgba(255,255,255,0.8);
+            color: var(--txm);
             font-size: 14px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid var(--brd);
         }
         
         .horarios-table tr {
@@ -413,12 +414,12 @@
         }
         
         .horarios-table tr:hover {
-            background: rgba(255,209,0,0.08);
+            background: rgba(245,196,0,0.08);
         }
         
         .horarios-table .ecuador-row {
-            background: rgba(255,209,0,0.12);
-            border-left: 3px solid var(--ec-yellow);
+            background: rgba(245,196,0,0.12);
+            border-left: 3px solid var(--y);
             position: relative;
         }
         
@@ -426,7 +427,7 @@
             content: '⭐';
             position: absolute;
             left: -20px;
-            color: var(--ec-yellow);
+            color: var(--y);
             font-size: 12px;
         }
         
@@ -447,12 +448,12 @@
             text-align: center;
             font-family: 'Bebas Neue', sans-serif;
             font-size: 14px;
-            color: var(--ec-yellow);
+            color: var(--y);
             font-weight: bold;
         }
         
         .group-badge {
-            background: rgba(255,209,0,0.15);
+            background: rgba(245,196,0,0.15);
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 11px;
@@ -461,27 +462,27 @@
         }
         
         .status-finalizado {
-            color: var(--ec-green);
+            color: var(--green);
             font-weight: 600;
         }
         
         .status-pendiente {
-            color: var(--ec-yellow);
+            color: var(--y);
             font-weight: 600;
         }
         
         .status-bloqueado {
-            color: var(--ec-red);
+            color: var(--r);
             font-weight: 600;
         }
         
         .sede-text {
             font-size: 12px;
-            color: rgba(255,255,255,0.6);
+            color: var(--txd);
         }
         
         .resultado-text {
-            color: var(--ec-yellow);
+            color: var(--y);
             font-weight: bold;
             margin-left: 10px;
             font-size: 13px;
@@ -499,8 +500,8 @@
         
         .page-btn {
             background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.15);
-            color: var(--white);
+            border: 1px solid var(--brd);
+            color: var(--tx);
             padding: 8px 14px;
             border-radius: 8px;
             cursor: pointer;
@@ -509,14 +510,14 @@
         }
         
         .page-btn:hover {
-            background: rgba(255,209,0,0.2);
-            border-color: var(--ec-yellow);
+            background: rgba(245,196,0,0.2);
+            border-color: var(--y);
         }
         
         .page-btn.active {
-            background: var(--ec-yellow);
-            color: var(--ec-dark);
-            border-color: var(--ec-yellow);
+            background: var(--y);
+            color: var(--dk);
+            border-color: var(--y);
         }
         
         .page-btn:disabled {
@@ -540,12 +541,12 @@
         }
         
         .toast-notification.success {
-            background: var(--ec-green);
-            border-left: 4px solid var(--ec-yellow);
+            background: var(--green);
+            border-left: 4px solid var(--y);
         }
         
         .toast-notification.error {
-            background: var(--ec-red);
+            background: var(--r);
         }
         
         @keyframes fadeInUp {
@@ -563,7 +564,7 @@
             position: relative;
             z-index: 1;
             background: rgba(0,0,0,0.5);
-            border-top: 1px solid rgba(255,255,255,0.06);
+            border-top: 1px solid var(--brd);
             padding: 20px 16px;
             text-align: center;
             margin-top: 40px;
@@ -571,7 +572,7 @@
         
         .footer-stripe {
             height: 3px;
-            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
             width: 80px;
             margin: 0 auto 12px;
             border-radius: 3px;
@@ -579,14 +580,14 @@
         
         .footer-text {
             font-size: 10px;
-            color: rgba(255,255,255,0.35);
+            color: var(--txd);
         }
         
         .spinner {
             width: 40px;
             height: 40px;
-            border: 3px solid rgba(255,209,0,0.2);
-            border-top-color: var(--ec-yellow);
+            border: 3px solid rgba(245,196,0,0.2);
+            border-top-color: var(--y);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 20px auto;
@@ -605,7 +606,7 @@
         }
         
         ::-webkit-scrollbar-thumb {
-            background: var(--ec-yellow);
+            background: var(--y);
             border-radius: 3px;
         }
         
@@ -649,7 +650,7 @@
     <nav>
         <div class="nav-container">
             <a class="nav-brand" href="{{ url_for('dashboard') }}">
-                <span class="ball">⚽</span> Polla Mundialista DGA 2026
+                <span class="ball">⚽</span> Polla Mundialista 2026
             </a>
             <div class="menu-toggle" id="menuToggle">
                 <span></span>
@@ -748,7 +749,7 @@
 
     <footer>
         <div class="footer-stripe"></div>
-        <div class="footer-text">© 2026 Polla Mundialista DGA LEGAL - "No solo litigamos resultados, también los pronosticamos." ⚖️⚽️</div>
+        <div class="footer-text">© 2026 Polla Mundialista 2026 — Todos los derechos reservados</div>
     </footer>
 
     <script>
@@ -798,7 +799,7 @@
             } catch (error) {
                 console.error('Error loading matches:', error);
                 document.getElementById('tablaBody').innerHTML = `
-                    <tr><td colspan="6" style="text-align: center; padding: 40px; color: #ff6b6b;">
+                    <tr><td colspan="6" style="text-align: center; padding: 40px; color: #ff7a7a;">
                         Error al cargar los partidos
                     </td><td style="display: none;"></td><td style="display: none;"></td><td style="display: none;"></td><td style="display: none;"></td><td style="display: none;"></td>
                     </tr>
@@ -810,7 +811,7 @@
         function updateStats() {
             const total = allMatches.length;
             const grupos = allMatches.filter(m => m.fase === 'grupos').length;
-            const eliminatoria = allMatches.filter(m => m.fase === 'eliminatoria').length;
+            const eliminatoria = allMatches.filter(m => m.fase !== 'grupos' && m.fase !== '').length;
             const ecuador = allMatches.filter(m => m.local_nombre === 'Ecuador' || m.visitante_nombre === 'Ecuador').length;
             
             document.getElementById('totalMatches').textContent = total;
@@ -829,14 +830,15 @@
                 'R16': 'Dieciseisavos',
                 'QF': 'Cuartos de Final',
                 'SF': 'Semifinal',
-                '🏆': 'Final'
+                '3P': 'Tercer Puesto',
+                'FINAL': 'Final'
             };
             
-            if (match.grupo && sedeMap[match.grupo]) {
-                return sedeMap[match.grupo];
+            if (sedeMap[match.fase]) {
+                return sedeMap[match.fase];
             }
             
-            if (match.grupo && match.grupo.match(/^[A-H]$/)) {
+            if (match.grupo && match.grupo.match(/^[A-L]$/)) {
                 return 'Sede por definir';
             }
             
@@ -848,12 +850,11 @@
             const paginationDiv = document.getElementById('pagination');
             
             if (!filteredMatches || filteredMatches.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">No hay partidos disponibles</td><td style="display: none;"></td><td style="display: none;"></td><td style="display: none;"></td><td style="display: none;"></td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px;">No hay partidos disponibles</td></tr>';
                 paginationDiv.innerHTML = '';
                 return;
             }
             
-            // Paginación
             const totalPages = Math.ceil(filteredMatches.length / itemsPerPage);
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
@@ -865,7 +866,7 @@
                 const fecha = new Date(match.fecha_hora);
                 const fechaStr = fecha.toLocaleDateString('es-ES');
                 const horaStr = fecha.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const grupoDisplay = match.grupo ? `Grupo ${match.grupo}` : (match.fase === 'grupos' ? 'Fase Grupos' : 'Eliminatoria');
+                const grupoDisplay = match.grupo ? `Grupo ${match.grupo}` : (match.fase === 'grupos' ? 'Fase Grupos' : match.fase);
                 
                 let estadoClass = 'status-pendiente';
                 let estadoText = '⏳ Pendiente';
@@ -884,8 +885,8 @@
                 
                 const localBandera = match.local_bandera || 'https://flagcdn.com/w80/default.png';
                 const visitanteBandera = match.visitante_bandera || 'https://flagcdn.com/w80/default.png';
-                const localNombre = match.local_nombre || '?';
-                const visitanteNombre = match.visitante_nombre || '?';
+                const localNombre = escapeHtml(match.local_nombre || '?');
+                const visitanteNombre = escapeHtml(match.visitante_nombre || '?');
                 
                 html += `
                     <tr class="${isEcuador ? 'ecuador-row' : ''}">
@@ -901,8 +902,8 @@
                                 ${resultado ? `<span class="resultado-text">(${resultado})</span>` : ''}
                             </div>
                         </td>
-                        <td><span class="group-badge">${grupoDisplay}</span></td>
-                        <td><span class="sede-text">${getSedeDisplay(match)}</span></td>
+                        <td><span class="group-badge">${escapeHtml(grupoDisplay)}</span></td>
+                        <td><span class="sede-text">${escapeHtml(getSedeDisplay(match))}</span></td>
                         <td class="${estadoClass}">${estadoText}</td>
                     </tr>
                 `;
@@ -910,7 +911,6 @@
             
             tbody.innerHTML = html;
             
-            // Generar paginación
             if (totalPages > 1) {
                 let paginationHtml = '';
                 paginationHtml += `<button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹ Anterior</button>`;
@@ -925,7 +925,7 @@
                 
                 if (startPage > 1) {
                     paginationHtml += `<button class="page-btn" onclick="changePage(1)">1</button>`;
-                    if (startPage > 2) paginationHtml += `<span style="color: rgba(255,255,255,0.3); padding: 0 8px;">...</span>`;
+                    if (startPage > 2) paginationHtml += `<span style="color: var(--txd); padding: 0 8px;">...</span>`;
                 }
                 
                 for (let i = startPage; i <= endPage; i++) {
@@ -933,7 +933,7 @@
                 }
                 
                 if (endPage < totalPages) {
-                    if (endPage < totalPages - 1) paginationHtml += `<span style="color: rgba(255,255,255,0.3); padding: 0 8px;">...</span>`;
+                    if (endPage < totalPages - 1) paginationHtml += `<span style="color: var(--txd); padding: 0 8px;">...</span>`;
                     paginationHtml += `<button class="page-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
                 }
                 
@@ -972,6 +972,16 @@
             filteredMatches = filtered;
             currentPage = 1;
             renderTable();
+        }
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
         }
         
         // Eventos
