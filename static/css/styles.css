@@ -1,0 +1,341 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --y: #F5C400;
+    --b: #0A2FA8;
+    --r: #D0021B;
+    --dk: #060D1F;
+    --mid: #0D1A3A;
+    --s1: #111C38;
+    --s2: #162040;
+    --brd: rgba(255,255,255,0.08);
+    --tx: rgba(255,255,255,0.92);
+    --txm: rgba(255,255,255,0.55);
+    --txd: rgba(255,255,255,0.30);
+    --success: #1a6b1a;
+    --warning: #F5C400;
+    --danger: #D0021B;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--dk);
+    color: var(--tx);
+    min-height: 100vh;
+}
+
+/* Navbar estilo moderno */
+.navbar {
+    background: rgba(6,13,31,0.95);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    border-bottom: 1px solid var(--brd);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--y) !important;
+    letter-spacing: 0.02em;
+}
+
+.navbar-brand i {
+    margin-right: 8px;
+    animation: bounce 2s infinite;
+}
+
+/* Cards estilo neón */
+.card {
+    border: 1px solid var(--brd);
+    border-radius: 20px;
+    background: var(--s1);
+    backdrop-filter: blur(0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: var(--y);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+}
+
+/* Tabla de posiciones estilo liga (sin área) */
+.tabla-posiciones {
+    background: var(--s1);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--brd);
+}
+
+.tabla-header {
+    background: rgba(0,0,0,0.4);
+    color: var(--y);
+    padding: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--brd);
+}
+
+.tabla-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 100px 80px;
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--brd);
+    transition: background 0.3s ease;
+    color: var(--txm);
+}
+
+.tabla-row:hover {
+    background: rgba(245,196,0,0.08);
+}
+
+.tabla-row.top-1 {
+    background: linear-gradient(90deg, rgba(245,196,0,0.12), transparent);
+    border-left: 3px solid var(--y);
+}
+
+/* Perfil de usuario estilo FIFA (modernizado) */
+.profile-card {
+    background: linear-gradient(135deg, var(--s1), var(--s2));
+    border: 1px solid var(--brd);
+    border-radius: 24px;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.profile-card:hover {
+    border-color: var(--y);
+    transform: translateY(-3px);
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid var(--y);
+    margin-bottom: 20px;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.05);
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 30px;
+}
+
+.stat-card {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--brd);
+    border-radius: 16px;
+    padding: 15px;
+    text-align: center;
+    backdrop-filter: blur(4px);
+    transition: border-color 0.3s;
+}
+
+.stat-card:hover {
+    border-color: var(--y);
+}
+
+.stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--y);
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--txm);
+}
+
+/* Partidos y pronósticos */
+.match-card {
+    background: var(--s1);
+    border: 1px solid var(--brd);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.match-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--y);
+    background: rgba(245,196,0,0.04);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.match-teams {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.team {
+    flex: 1;
+    text-align: center;
+}
+
+.team img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.match-score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    font-weight: bold;
+    padding: 8px 20px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 40px;
+    color: var(--y);
+}
+
+/* Pronóstico inputs */
+.pronostico-input {
+    width: 70px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    background: rgba(0,0,0,0.5);
+    border: 2px solid var(--brd);
+    border-radius: 12px;
+    padding: 8px;
+    margin: 0 5px;
+    color: var(--y);
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+.pronostico-input:focus {
+    outline: none;
+    border-color: var(--y);
+}
+
+/* Animaciones */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .match-teams {
+        flex-direction: column;
+    }
+    
+    .profile-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .tabla-row {
+        grid-template-columns: 40px 1fr 70px 60px;
+        font-size: 0.8rem;
+    }
+    
+    .team img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .match-score {
+        font-size: 1.2rem;
+        padding: 4px 16px;
+    }
+    
+    .pronostico-input {
+        width: 55px;
+        font-size: 1rem;
+    }
+}
+
+/* Tooltips y badges */
+.badge-premium {
+    background: linear-gradient(135deg, var(--y), #e6bc00);
+    color: var(--dk);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+}
+
+/* Loading spinner */
+.spinner {
+    border: 3px solid var(--brd);
+    border-top: 3px solid var(--y);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Botones genéricos (para consistencia) */
+.btn-primary {
+    background: var(--y);
+    color: var(--dk);
+    border: none;
+    padding: 10px 24px;
+    border-radius: 40px;
+    font-weight: 700;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(245,196,0,0.3);
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--y);
+    color: var(--y);
+    padding: 10px 24px;
+    border-radius: 40px;
+    font-weight: 700;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background: rgba(245,196,0,0.1);
+    transform: translateY(-2px);
+}
