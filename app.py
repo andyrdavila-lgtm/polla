@@ -569,7 +569,7 @@ def polla_mundialista_carrusel():
 
 @app.route('/manual')
 def manual():
-    return render_template('manual_usuario_polla_2026.html')
+    return render_template('manual.html')
 
 @app.route('/partidos')
 def partidos():
