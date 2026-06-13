@@ -33,7 +33,6 @@
     overflow-x: hidden;
   }
 
-  /* ── BG ── */
   .bg-wrap {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background:
@@ -50,14 +49,12 @@
   }
   @keyframes gridDrift { to { background-position: 52px 52px; } }
 
-  /* ── EC STRIPE (decorativa) ── */
   .ec-stripe {
     position: fixed; top: 0; left: 0; right: 0; z-index: 200;
     height: 3px;
     background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
   }
 
-  /* ── NAV MINI ── */
   nav {
     position: relative; z-index: 10;
     display: flex; justify-content: center;
@@ -65,7 +62,7 @@
   }
   .nav-logo {
     display: inline-flex; align-items: center; gap: 0.5rem;
-    font-size: 1rem; font-weight: 600; letter-spacing: 0.02em;
+    font-size: 1rem; font-weight: 600;
     color: var(--tx); text-decoration: none;
     background: rgba(6,13,31,0.7);
     backdrop-filter: blur(12px);
@@ -80,7 +77,6 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ── LOGIN CONTAINER ── */
   .login-container {
     position: relative; z-index: 2;
     flex: 1;
@@ -106,7 +102,6 @@
     transform: translateY(-3px);
   }
 
-  /* Header */
   .login-header {
     text-align: center;
     margin-bottom: 2rem;
@@ -128,10 +123,7 @@
     margin-top: 0.4rem;
   }
 
-  /* Form */
-  .form-group {
-    margin-bottom: 1.5rem;
-  }
+  .form-group { margin-bottom: 1.5rem; }
   .form-label {
     display: block;
     font-size: 0.7rem;
@@ -141,13 +133,8 @@
     color: var(--txm);
     margin-bottom: 0.5rem;
   }
-  .form-label i {
-    margin-right: 0.4rem;
-    color: var(--y);
-  }
-  .input-wrapper {
-    position: relative;
-  }
+  .form-label i { margin-right: 0.4rem; color: var(--y); }
+  .input-wrapper { position: relative; }
   .form-control {
     width: 100%;
     background: rgba(0,0,0,0.35);
@@ -165,11 +152,8 @@
     background: rgba(0,0,0,0.5);
     box-shadow: 0 0 0 3px rgba(245,196,0,0.1);
   }
-  .form-control::placeholder {
-    color: var(--txd);
-  }
+  .form-control::placeholder { color: var(--txd); }
 
-  /* Toggle password */
   .toggle-pw {
     position: absolute;
     right: 1rem;
@@ -184,7 +168,6 @@
   }
   .toggle-pw:hover { color: var(--y); }
 
-  /* Checkbox */
   .form-check {
     display: flex;
     align-items: center;
@@ -203,7 +186,6 @@
     cursor: pointer;
   }
 
-  /* Button */
   .btn-login {
     width: 100%;
     background: var(--y);
@@ -242,7 +224,6 @@
     transform: none;
   }
 
-  /* Enlaces */
   .text-center {
     text-align: center;
     font-size: 0.8rem;
@@ -272,7 +253,7 @@
     border-radius: 2px;
   }
 
-  /* Alertas */
+  /* Alertas (para errores del backend) */
   .alert {
     padding: 0.8rem 1rem;
     border-radius: 14px;
@@ -294,7 +275,7 @@
     color: #8bb5ff;
   }
 
-  /* MODAL RECUPERAR CONTRASEÑA */
+  /* Modal recuperar contraseña */
   .modal-overlay {
     display: none;
     position: fixed;
@@ -397,21 +378,7 @@
     text-align: center;
   }
 
-  /* Spinner */
-  .spinner {
-    display: inline-block;
-    width: 1rem;
-    height: 1rem;
-    border: 2px solid rgba(0,0,0,0.2);
-    border-top-color: var(--dk);
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-    margin-right: 0.4rem;
-  }
-
-  /* Footer */
   footer {
-    position: relative; z-index: 2;
     text-align: center;
     padding: 1.5rem;
     font-size: 0.7rem;
@@ -420,7 +387,6 @@
     margin-top: auto;
   }
 
-  /* Responsive */
   @media (max-width: 500px) {
     .login-card { padding: 1.8rem 1.3rem; }
     .btn-login { font-size: 0.75rem; }
@@ -432,7 +398,6 @@
 <div class="bg-wrap"></div>
 <div class="ec-stripe"></div>
 
-<!-- Mini nav solo con logo -->
 <nav>
   <a class="nav-logo" href="{{ url_for('index') }}">
     <span class="nav-ball">⚽</span> Polla Mundialista 2026
@@ -447,23 +412,31 @@
       <p>Ingresa con tus credenciales</p>
     </div>
 
-    <div id="alertContainer"></div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
 
     <form id="loginForm" method="POST" action="{{ url_for('login') }}">
       <div class="form-group">
-        <label class="form-label"><i class="icon">👤</i> USUARIO O EMAIL</label>
+        <label class="form-label"><i>👤</i> USUARIO O EMAIL</label>
         <input type="text" name="username" id="username" class="form-control" 
-               placeholder="ej: juan.perez o juan@ejemplo.com" autofocus required>
+               placeholder="ej: admin o admin@polla.com" value="{{ request.form.username if request.form else '' }}" autofocus required>
       </div>
 
       <div class="form-group">
-        <label class="form-label"><i class="icon">🔒</i> CONTRASEÑA</label>
+        <label class="form-label"><i>🔒</i> CONTRASEÑA</label>
         <div class="input-wrapper">
           <input type="password" name="password" id="password" class="form-control" 
                  placeholder="Ingresa tu contraseña" required>
-          <button type="button" class="toggle-pw" id="togglePassword">
-            👁
-          </button>
+          <button type="button" class="toggle-pw" id="togglePassword">👁</button>
         </div>
       </div>
 
@@ -473,14 +446,14 @@
       </div>
 
       <button type="submit" class="btn-login" id="loginBtn">
-        <i class="icon">⚡</i> INICIAR SESIÓN
+        ⚡ INICIAR SESIÓN
       </button>
 
       <div class="text-center">
         <a href="#" id="forgotLink">¿Olvidaste tu contraseña?</a>
       </div>
       <div class="footer-links">
-        <a href="{{ url_for('register') }}" id="registerLink">
+        <a href="{{ url_for('register') }}">
           ✨ Regístrate aquí
         </a>
       </div>
@@ -508,25 +481,9 @@
   </div>
 </div>
 
-<footer>
-  <div>© 2026 Polla Mundialista 2026 — Todos los derechos reservados</div>
-</footer>
+<footer>© 2026 Polla Mundialista 2026 — Todos los derechos reservados</footer>
 
 <script>
-  // ==================== UTILIDADES ====================
-  function showAlert(message, type = 'danger') {
-    const container = document.getElementById('alertContainer');
-    container.innerHTML = `
-      <div class="alert alert-${type}">
-        <span>${type === 'danger' ? '⚠️' : '✅'}</span>
-        <span>${message}</span>
-      </div>
-    `;
-    setTimeout(() => {
-      container.innerHTML = '';
-    }, 5000);
-  }
-
   // Toggle contraseña
   const toggleBtn = document.getElementById('togglePassword');
   const passwordField = document.getElementById('password');
@@ -539,63 +496,20 @@
   // Recordar usuario (localStorage)
   const rememberCheck = document.getElementById('remember');
   const usernameInput = document.getElementById('username');
-
   if (localStorage.getItem('rememberedUser')) {
     usernameInput.value = localStorage.getItem('rememberedUser');
     rememberCheck.checked = true;
   }
 
-  // Validación y envío del formulario (fetch para UX)
+  // Al enviar el formulario, guardar el usuario si se eligió recordar
   const loginForm = document.getElementById('loginForm');
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const username = usernameInput.value.trim();
-    const password = passwordField.value;
-
-    if (username.length < 2) {
-      showAlert('El usuario debe tener al menos 2 caracteres', 'danger');
-      return;
-    }
-    if (password.length === 0) {
-      showAlert('Ingresa tu contraseña', 'danger');
-      return;
-    }
-
-    // Guardar recordar usuario
+  loginForm.addEventListener('submit', () => {
     if (rememberCheck.checked) {
-      localStorage.setItem('rememberedUser', username);
+      localStorage.setItem('rememberedUser', usernameInput.value.trim());
     } else {
       localStorage.removeItem('rememberedUser');
     }
-
-    const btn = document.getElementById('loginBtn');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<span class="spinner"></span> Ingresando...';
-    btn.disabled = true;
-
-    try {
-      const response = await fetch('{{ url_for('login') }}', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          username: username,
-          password: password
-        })
-      });
-      const data = await response.json();
-      if (data.success) {
-        window.location.href = "{{ url_for('dashboard') }}";
-      } else {
-        showAlert(data.error || 'Credenciales incorrectas', 'danger');
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-      }
-    } catch (error) {
-      showAlert('Error de conexión. Intenta de nuevo.', 'danger');
-      btn.innerHTML = originalText;
-      btn.disabled = false;
-    }
+    // El formulario se envía normalmente, el navegador sigue la redirección
   });
 
   // ==================== MODAL RECUPERAR ====================
