@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Panel Admin - Polla Mundialista DGA 2026</title>
+    <title>Panel Admin · Polla Mundialista 2026</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&family=Barlow+Condensed:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --ec-yellow: #FFD100;
-            --ec-blue:   #003580;
-            --ec-red:    #CC0001;
-            --ec-dark:   #001a40;
-            --ec-mid:    #002a66;
-            --ec-green:  #1a6b1a;
-            --white:     #ffffff;
+            --y:   #F5C400;
+            --b:   #0A2FA8;
+            --r:   #D0021B;
+            --dk:  #060D1F;
+            --mid: #0D1A3A;
+            --s1:  #111C38;
+            --s2:  #162040;
+            --brd: rgba(255,255,255,0.08);
+            --tx:  rgba(255,255,255,0.92);
+            --txm: rgba(255,255,255,0.55);
+            --txd: rgba(255,255,255,0.30);
+            --green: #1a6b1a;
         }
 
         * {
@@ -25,20 +30,22 @@
         }
 
         body {
-            font-family: 'Barlow', sans-serif;
-            background: var(--ec-dark);
+            font-family: 'Inter', sans-serif;
+            background: var(--dk);
+            color: var(--tx);
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
         }
 
+        /* Animated Background */
         .bg-canvas {
             position: fixed;
             inset: 0;
             z-index: 0;
-            background: radial-gradient(ellipse at 20% 0%, rgba(0,53,128,0.6) 0%, transparent 60%),
-                        radial-gradient(ellipse at 80% 100%, rgba(26,107,26,0.4) 0%, transparent 60%),
-                        var(--ec-dark);
+            background: radial-gradient(ellipse 55% 70% at 80% 20%, rgba(10,47,168,0.22) 0%, transparent 60%),
+                        radial-gradient(ellipse 40% 55% at 10% 85%, rgba(208,2,27,0.14) 0%, transparent 55%),
+                        var(--dk);
             pointer-events: none;
         }
         
@@ -46,30 +53,31 @@
             content: '';
             position: absolute;
             inset: 0;
-            background-image: radial-gradient(circle, rgba(255,209,0,0.06) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: gridDrift 25s linear infinite;
+            background-image: radial-gradient(circle, rgba(245,196,0,0.05) 1px, transparent 1px);
+            background-size: 52px 52px;
+            animation: gridDrift 30s linear infinite;
         }
         
         @keyframes gridDrift {
-            to { background-position: 60px 60px; }
+            to { background-position: 52px 52px; }
         }
 
+        /* Floating balls */
         .floater {
             position: fixed;
             z-index: 0;
-            width: 320px;
-            height: 320px;
+            width: 280px;
+            height: 280px;
             border-radius: 50%;
-            filter: blur(80px);
+            filter: blur(60px);
             pointer-events: none;
-            opacity: 0.18;
+            opacity: 0.12;
             animation: floatBall 18s ease-in-out infinite;
         }
         
-        .floater-1 { background: var(--ec-yellow); top: -80px; left: -80px; animation-delay: 0s; }
-        .floater-2 { background: var(--ec-blue); bottom: 10%; right: -100px; animation-delay: -6s; }
-        .floater-3 { background: var(--ec-red); top: 50%; left: 40%; animation-delay: -12s; width: 200px; height: 200px; }
+        .floater-1 { background: var(--y); top: -80px; left: -80px; animation-delay: 0s; }
+        .floater-2 { background: var(--b); bottom: 10%; right: -100px; animation-delay: -6s; }
+        .floater-3 { background: var(--r); top: 50%; left: 40%; animation-delay: -12s; width: 180px; height: 180px; }
         
         @keyframes floatBall {
             0%, 100% { transform: translate(0, 0) scale(1); }
@@ -77,15 +85,16 @@
             66% { transform: translate(-20px, 30px) scale(0.9); }
         }
 
+        /* Navbar */
         nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 1000;
-            background: rgba(0,26,64,0.95);
+            background: rgba(6,13,31,0.95);
             backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255,209,0,0.15);
+            border-bottom: 1px solid var(--brd);
         }
         
         .nav-container {
@@ -102,17 +111,17 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--tx);
             text-decoration: none;
             z-index: 1001;
         }
         
         .nav-brand .ball {
-            font-size: 22px;
+            font-size: 1.2rem;
             animation: spin 4s linear infinite;
             display: inline-block;
         }
@@ -135,7 +144,7 @@
             display: block;
             height: 3px;
             width: 100%;
-            background-color: var(--ec-yellow);
+            background-color: var(--y);
             border-radius: 3px;
             transition: all 0.3s ease;
         }
@@ -162,12 +171,12 @@
         }
         
         .nav-links a {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 0.08em;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.7);
+            color: var(--txm);
             text-decoration: none;
             transition: color 0.3s;
             white-space: nowrap;
@@ -175,12 +184,12 @@
         
         .nav-links a:hover,
         .nav-links a.active {
-            color: var(--ec-yellow);
+            color: var(--y);
         }
         
         .nav-stripe {
             height: 3px;
-            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
             position: absolute;
             bottom: 0;
             left: 0;
@@ -198,7 +207,7 @@
                 left: -100%;
                 width: 100%;
                 height: calc(100vh - 64px);
-                background: rgba(0,26,64,0.98);
+                background: rgba(6,13,31,0.98);
                 backdrop-filter: blur(20px);
                 flex-direction: column;
                 align-items: center;
@@ -213,7 +222,7 @@
             }
             
             .nav-links a {
-                font-size: 18px;
+                font-size: 1rem;
                 padding: 12px;
             }
         }
@@ -233,17 +242,17 @@
         .page-header h1 {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 36px;
-            color: var(--white);
+            color: var(--tx);
             margin-bottom: 8px;
         }
         
         .page-header h1 i {
-            color: var(--ec-yellow);
+            color: var(--y);
             margin-right: 12px;
         }
         
         .page-header p {
-            color: rgba(255,255,255,0.5);
+            color: var(--txm);
             font-size: 14px;
         }
 
@@ -255,9 +264,8 @@
         }
         
         .stat-card {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 20px;
             padding: 20px;
             text-align: center;
@@ -266,20 +274,20 @@
         
         .stat-card:hover {
             transform: translateY(-4px);
-            border-color: var(--ec-yellow);
+            border-color: var(--y);
         }
         
         .stat-number {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 36px;
-            color: var(--ec-yellow);
+            color: var(--y);
         }
         
         .stat-label {
             font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            color: rgba(255,255,255,0.5);
+            color: var(--txm);
         }
 
         .admin-grid {
@@ -290,9 +298,8 @@
         }
         
         .admin-card {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 20px;
             padding: 30px 20px;
             text-align: center;
@@ -304,33 +311,32 @@
         
         .admin-card:hover {
             transform: translateY(-6px);
-            border-color: var(--ec-yellow);
-            background: rgba(255,255,255,0.1);
+            border-color: var(--y);
+            background: rgba(245,196,0,0.05);
         }
         
         .admin-card i {
             font-size: 48px;
-            color: var(--ec-yellow);
+            color: var(--y);
             margin-bottom: 16px;
         }
         
         .admin-card h3 {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 24px;
-            color: var(--white);
+            color: var(--tx);
             margin-bottom: 8px;
         }
         
         .admin-card p {
-            color: rgba(255,255,255,0.5);
+            color: var(--txm);
             font-size: 13px;
         }
 
         /* Sección de Backup */
         .backup-section {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 20px;
             padding: 24px;
             margin-bottom: 24px;
@@ -339,7 +345,7 @@
         .backup-section h3 {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 22px;
-            color: var(--ec-yellow);
+            color: var(--y);
             margin-bottom: 20px;
         }
         
@@ -354,13 +360,13 @@
         }
         
         .btn-backup {
-            background: linear-gradient(135deg, var(--ec-green), #0d4d0d);
+            background: var(--green);
             border: none;
             border-radius: 12px;
             padding: 12px 24px;
             color: white;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
@@ -370,38 +376,37 @@
         
         .btn-backup:hover {
             transform: scale(1.02);
-            background: linear-gradient(135deg, #0d4d0d, var(--ec-green));
+            opacity: 0.9;
         }
         
         .btn-restore {
-            background: linear-gradient(135deg, var(--ec-blue), #002a66);
+            background: var(--b);
             border: none;
             border-radius: 12px;
             padding: 12px 24px;
             color: white;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
             cursor: pointer;
             transition: all 0.3s;
-            position: relative;
         }
         
         .btn-restore:hover {
             transform: scale(1.02);
-            background: linear-gradient(135deg, #002a66, var(--ec-blue));
+            opacity: 0.9;
         }
         
         .file-input-label {
             display: inline-block;
-            background: linear-gradient(135deg, var(--ec-blue), #002a66);
+            background: var(--b);
             border-radius: 12px;
             padding: 12px 24px;
             color: white;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
@@ -411,7 +416,7 @@
         
         .file-input-label:hover {
             transform: scale(1.02);
-            background: linear-gradient(135deg, #002a66, var(--ec-blue));
+            opacity: 0.9;
         }
         
         .file-input-label i {
@@ -424,9 +429,8 @@
 
         /* Sección de Crear Partido */
         .create-match-section {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 20px;
             padding: 24px;
             margin-bottom: 24px;
@@ -435,7 +439,7 @@
         .create-match-section h3 {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 22px;
-            color: var(--ec-yellow);
+            color: var(--y);
             margin-bottom: 20px;
         }
         
@@ -451,42 +455,42 @@
         
         .form-group label {
             display: block;
-            font-size: 11px;
+            font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            color: rgba(255,255,255,0.5);
+            color: var(--txm);
             margin-bottom: 6px;
         }
         
         .form-group label i {
-            color: var(--ec-yellow);
+            color: var(--y);
             margin-right: 6px;
         }
         
         .form-control, .form-select {
             width: 100%;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--brd);
             border-radius: 12px;
             padding: 10px 14px;
-            color: var(--white);
-            font-size: 14px;
+            color: var(--tx);
+            font-size: 0.9rem;
         }
         
         .form-control:focus, .form-select:focus {
             outline: none;
-            border-color: var(--ec-yellow);
+            border-color: var(--y);
         }
         
         .btn-create-match {
-            background: var(--ec-yellow);
-            color: var(--ec-dark);
+            background: var(--y);
+            color: var(--dk);
             border: none;
             border-radius: 12px;
             padding: 12px 24px;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
@@ -501,9 +505,8 @@
         }
 
         .top-list {
-            background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--s1);
+            border: 1px solid var(--brd);
             border-radius: 20px;
             padding: 24px;
         }
@@ -511,7 +514,7 @@
         .top-list h3 {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 22px;
-            color: var(--ec-yellow);
+            color: var(--y);
             margin-bottom: 20px;
         }
         
@@ -524,7 +527,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 14px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid var(--brd);
         }
         
         .top-item:last-child {
@@ -533,29 +536,29 @@
         
         .top-rank {
             font-weight: bold;
-            color: var(--ec-yellow);
+            color: var(--y);
             font-size: 16px;
         }
         
         .top-name {
-            color: var(--white);
+            color: var(--tx);
             font-size: 14px;
         }
         
         .top-points {
             font-family: 'Bebas Neue', sans-serif;
             font-size: 20px;
-            color: var(--ec-yellow);
+            color: var(--y);
         }
 
         .btn-recalcular {
-            background: linear-gradient(135deg, var(--ec-green), #0d4d0d);
+            background: var(--green);
             border: none;
             border-radius: 12px;
             padding: 14px 24px;
             color: white;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
             font-weight: 700;
             letter-spacing: 0.08em;
             text-transform: uppercase;
@@ -567,7 +570,7 @@
         
         .btn-recalcular:hover {
             transform: scale(1.02);
-            background: linear-gradient(135deg, #0d4d0d, var(--ec-green));
+            opacity: 0.9;
         }
 
         /* Alertas */
@@ -581,27 +584,27 @@
         
         .alert-success {
             background: rgba(26,107,26,0.2);
-            border: 1px solid var(--ec-green);
+            border: 1px solid var(--green);
             color: #90EE90;
         }
         
         .alert-danger {
-            background: rgba(204,0,1,0.2);
-            border: 1px solid var(--ec-red);
-            color: #ff6b6b;
+            background: rgba(208,2,27,0.2);
+            border: 1px solid var(--r);
+            color: #ff7a7a;
         }
         
         .alert-warning {
-            background: rgba(255,209,0,0.2);
-            border: 1px solid var(--ec-yellow);
-            color: #FFD100;
+            background: rgba(245,196,0,0.2);
+            border: 1px solid var(--y);
+            color: var(--y);
         }
 
         footer {
             position: relative;
             z-index: 1;
             background: rgba(0,0,0,0.5);
-            border-top: 1px solid rgba(255,255,255,0.06);
+            border-top: 1px solid var(--brd);
             padding: 20px 16px;
             text-align: center;
             margin-top: 40px;
@@ -609,7 +612,7 @@
         
         .footer-stripe {
             height: 3px;
-            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
             width: 80px;
             margin: 0 auto 12px;
             border-radius: 3px;
@@ -617,14 +620,14 @@
         
         .footer-text {
             font-size: 10px;
-            color: rgba(255,255,255,0.35);
+            color: var(--txd);
         }
         
         .spinner {
             width: 40px;
             height: 40px;
-            border: 3px solid rgba(255,209,0,0.2);
-            border-top-color: var(--ec-yellow);
+            border: 3px solid rgba(245,196,0,0.2);
+            border-top-color: var(--y);
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 20px auto;
@@ -663,7 +666,7 @@
         }
         
         ::-webkit-scrollbar-thumb {
-            background: var(--ec-yellow);
+            background: var(--y);
             border-radius: 3px;
         }
         
@@ -686,7 +689,7 @@
     <nav>
         <div class="nav-container">
             <a class="nav-brand" href="{{ url_for('dashboard') }}">
-                <span class="ball">⚽</span> Polla Mundialista DGA 2026
+                <span class="ball">⚽</span> Polla Mundialista 2026
             </a>
             <div class="menu-toggle" id="menuToggle">
                 <span></span>
@@ -708,7 +711,7 @@
     <div class="container fade-in">
         <div class="page-header">
             <h1><i class="fas fa-user-shield"></i> PANEL ADMINISTRADOR</h1>
-            <p>Gestión completa de la Polla Mundialista DGA 2026</p>
+            <p>Gestión completa de la Polla Mundialista 2026</p>
         </div>
 
         <!-- Alerta -->
@@ -758,7 +761,7 @@
                 </label>
                 <input type="file" id="restoreFile" accept=".zip">
             </div>
-            <small style="color: rgba(255,255,255,0.4); margin-top: 12px; display: block;">
+            <small style="color: var(--txd); margin-top: 12px; display: block;">
                 <i class="fas fa-info-circle"></i> El backup incluye: usuarios, selecciones, partidos, pronósticos y puntuaciones.
                 La restauración reemplazará todos los datos actuales.
             </small>
@@ -815,7 +818,7 @@
 
     <footer>
         <div class="footer-stripe"></div>
-        <div class="footer-text">© 2026 Polla Mundialista DGA LEGAL - Panel Administrador</div>
+        <div class="footer-text">© 2026 Polla Mundialista 2026 — Panel Administrador</div>
     </footer>
 
     <script>
@@ -893,12 +896,12 @@
                         `;
                     });
                 } else {
-                    topHtml = '<div style="text-align: center; padding: 20px; color: rgba(255,255,255,0.5);">No hay participantes aún</div>';
+                    topHtml = '<div style="text-align: center; padding: 20px; color: var(--txm);">No hay participantes aún</div>';
                 }
                 document.getElementById('topUsuarios').innerHTML = topHtml;
             } catch (error) {
                 console.error('Error loading stats:', error);
-                document.getElementById('topUsuarios').innerHTML = '<div style="text-align: center; padding: 20px; color: #ff6b6b;">Error al cargar estadísticas</div>';
+                document.getElementById('topUsuarios').innerHTML = '<div style="text-align: center; padding: 20px; color: #ff7a7a;">Error al cargar estadísticas</div>';
             }
         }
         
