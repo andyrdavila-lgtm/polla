@@ -581,7 +581,11 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        usuario = Usuario.query.filter_by(username=username, activo=True).first()
+        # Buscar por username o email (usando OR)
+        usuario = Usuario.query.filter(
+            (Usuario.username == username) | (Usuario.email == username),
+            Usuario.activo == True
+        ).first()
         if usuario and check_password_hash(usuario.password_hash, password):
             session['user_id'] = usuario.id
             session['username'] = usuario.username
@@ -1613,6 +1617,20 @@ def api_admin_eliminar_usuario(usuario_id):
     db.session.commit()
     log_auditoria('DELETE', 'usuario', usuario_id, f"Usuario eliminado: {usuario.username}")
     return jsonify({'success': True})
+
+@app.route('/api/admin/reset-password/<int:usuario_id>', methods=['POST'])
+@admin_required
+def admin_reset_password(usuario_id):
+    data = request.get_json()
+    new_password = data.get('new_password')
+    usuario = Usuario.query.get(usuario_id)
+    if not usuario:
+        return jsonify({'success': False, 'message': 'Usuario no existe'}), 404
+    if len(new_password) < 6:
+        return jsonify({'success': False, 'message': 'La contraseña debe tener al menos 6 caracteres'}), 400
+    usuario.password_hash = generate_password_hash(new_password)
+    db.session.commit()
+    return jsonify({'success': True, 'message': 'Contraseña restablecida correctamente'})
 
 @app.route('/api/admin/crear-partido', methods=['POST'])
 @admin_required
