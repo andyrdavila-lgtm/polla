@@ -23,7 +23,6 @@
             overflow-x: hidden;
         }
 
-        /* Modern Gradient Background */
         .bg-gradient {
             position: fixed;
             top: 0;
@@ -49,7 +48,6 @@
             background-repeat: repeat;
         }
 
-        /* Navbar */
         .navbar {
             position: sticky;
             top: 0;
@@ -114,7 +112,6 @@
             transition: 0.3s;
         }
 
-        /* Main Brand Header */
         .main-brand-header {
             background: linear-gradient(135deg, rgba(0, 255, 170, 0.1), rgba(0, 102, 204, 0.05));
             border-bottom: 1px solid rgba(0, 255, 170, 0.2);
@@ -138,14 +135,12 @@
             margin-top: 4px;
         }
 
-        /* Container */
         .container {
             max-width: 1280px;
             margin: 0 auto;
             padding: 32px 24px 64px;
         }
 
-        /* Welcome Card */
         .welcome-card {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
@@ -172,167 +167,6 @@
             margin-top: 4px;
         }
 
-        /* SECCIÓN PRINCIPAL - PRIMER PRONÓSTICO DESTACADO */
-        .featured-prediction {
-            background: linear-gradient(135deg, rgba(0, 255, 170, 0.12), rgba(0, 102, 204, 0.08));
-            border: 2px solid rgba(0, 255, 170, 0.4);
-            border-radius: 28px;
-            padding: 28px;
-            margin-bottom: 32px;
-            transition: all 0.3s;
-            animation: pulseGlow 2s infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 170, 0.2); }
-            50% { box-shadow: 0 0 0 8px rgba(0, 255, 170, 0); }
-        }
-
-        .featured-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .featured-badge {
-            background: #00FFAA;
-            color: #0B0F1C;
-            padding: 6px 16px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .featured-countdown {
-            font-size: 0.8rem;
-            color: #FFD700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .featured-teams {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 24px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-
-        .featured-team {
-            text-align: center;
-            flex: 1;
-        }
-
-        .featured-team-flag {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            margin-bottom: 12px;
-            border-radius: 16px;
-        }
-
-        .featured-team-name {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-
-        .featured-score-inputs {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-        }
-
-        .featured-score-input {
-            width: 80px;
-            text-align: center;
-            font-size: 28px;
-            font-weight: 800;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(0, 255, 170, 0.5);
-            border-radius: 20px;
-            padding: 12px;
-            color: #00FFAA;
-            font-family: 'Space Grotesk', monospace;
-        }
-
-        .featured-score-input:focus {
-            outline: none;
-            border-color: #00FFAA;
-        }
-
-        .featured-vs {
-            font-size: 24px;
-            font-weight: 800;
-            color: #8E9AAF;
-        }
-
-        .featured-prediction-type {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin: 20px 0;
-        }
-
-        .pred-type-btn {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 40px;
-            padding: 8px 24px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: #B0C4DE;
-        }
-
-        .pred-type-btn.active {
-            background: #00FFAA;
-            color: #0B0F1C;
-            border-color: #00FFAA;
-        }
-
-        .featured-penalty {
-            background: rgba(255, 159, 67, 0.1);
-            border: 1px solid rgba(255, 159, 67, 0.3);
-            border-radius: 20px;
-            padding: 16px;
-            margin-top: 16px;
-            text-align: center;
-        }
-
-        .featured-btn {
-            background: #00FFAA;
-            color: #0B0F1C;
-            border: none;
-            border-radius: 40px;
-            padding: 14px 32px;
-            font-weight: 800;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-            margin-top: 20px;
-        }
-
-        .featured-btn:hover {
-            background: #00E099;
-            transform: scale(1.02);
-        }
-
-        .featured-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -370,7 +204,6 @@
             letter-spacing: 1px;
         }
 
-        /* Premio Section */
         .premio-section {
             background: linear-gradient(135deg, rgba(0, 255, 170, 0.08), rgba(0, 102, 204, 0.05));
             border: 1px solid rgba(0, 255, 170, 0.2);
@@ -427,7 +260,6 @@
         .premio-card.plata { border-top: 3px solid #C0C0C0; }
         .premio-card.bronce { border-top: 3px solid #CD7F32; }
 
-        /* Grid Layout */
         .grid-2 {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -459,7 +291,6 @@
             padding: 16px;
         }
 
-        /* Quick Actions */
         .quick-actions-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -493,12 +324,11 @@
             font-size: 0.85rem;
         }
 
-        /* Champion Card */
         .champion-card {
             background: linear-gradient(135deg, rgba(0, 255, 170, 0.05), rgba(0, 102, 204, 0.05));
             border: 1px solid rgba(0, 255, 170, 0.3);
             border-radius: 24px;
-            padding: 20px;
+            padding: 24px;
             margin-bottom: 32px;
         }
 
@@ -506,10 +336,21 @@
             background: rgba(255, 68, 68, 0.2);
             border: 1px solid #FF4444;
             border-radius: 40px;
-            padding: 4px 12px;
-            font-size: 11px;
+            padding: 8px 16px;
+            font-size: 0.8rem;
             display: inline-block;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .deadline-badge i {
+            margin-right: 8px;
+        }
+
+        .deadline-expired {
+            background: rgba(255, 68, 68, 0.3);
+            border-color: #FF4444;
+            color: #FF8888;
         }
 
         .champion-select {
@@ -517,9 +358,10 @@
             background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
-            padding: 10px 14px;
+            padding: 12px 16px;
             color: white;
-            margin-top: 10px;
+            font-family: inherit;
+            margin-top: 12px;
         }
 
         .btn-champion {
@@ -527,14 +369,35 @@
             color: #0B0F1C;
             border: none;
             border-radius: 40px;
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-weight: 700;
             cursor: pointer;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 12px;
+            transition: all 0.3s;
         }
 
-        /* Upcoming Matches */
+        .btn-champion:hover {
+            background: #00E099;
+            transform: scale(1.02);
+        }
+
+        .btn-champion:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .prediction-confirmed {
+            background: rgba(0, 255, 170, 0.1);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
         .upcoming-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -554,7 +417,6 @@
             background: rgba(0, 255, 170, 0.1);
         }
 
-        /* Footer */
         footer {
             text-align: center;
             padding: 32px;
@@ -563,7 +425,6 @@
             font-size: 0.8rem;
         }
 
-        /* Toast */
         .toast-notification {
             position: fixed;
             bottom: 30px;
@@ -591,7 +452,6 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
-        /* Spinner */
         .spinner-border {
             width: 1.2rem;
             height: 1.2rem;
@@ -606,7 +466,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .stats-grid, .grid-2, .quick-actions-grid, .upcoming-grid {
                 grid-template-columns: 1fr;
@@ -628,9 +487,6 @@
                 gap: 24px;
             }
             .nav-links.active { left: 0; }
-            .featured-teams { flex-direction: column; }
-            .featured-team-flag { width: 60px; height: 60px; }
-            .featured-score-input { width: 60px; font-size: 22px; }
             .main-brand-header h2 { font-size: 1rem; }
         }
 
@@ -670,7 +526,6 @@
     </div>
 
     <div class="container">
-        <!-- Welcome Card -->
         <div class="welcome-card">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
                 <div>
@@ -681,18 +536,6 @@
             </div>
         </div>
 
-        <!-- SECCIÓN PRINCIPAL: PRIMER PRONÓSTICO DESTACADO -->
-        <div class="featured-prediction" id="featuredPrediction">
-            <div class="featured-header">
-                <span class="featured-badge"><i class="fas fa-star"></i> PRÓXIMO PARTIDO</span>
-                <span class="featured-countdown" id="featuredCountdown"><i class="fas fa-hourglass-half"></i> Cargando...</span>
-            </div>
-            <div id="featuredContent">
-                <div style="text-align:center; padding:40px;"><div class="spinner-border"></div> Cargando próximo partido...</div>
-            </div>
-        </div>
-
-        <!-- Stats Grid -->
         <div class="stats-grid">
             <div class="stat-card" onclick="window.location.href='{{ url_for('perfil') }}'">
                 <div class="stat-number" id="totalPoints">0</div>
@@ -712,7 +555,6 @@
             </div>
         </div>
 
-        <!-- Premios -->
         <div class="premio-section">
             <div class="premio-header">
                 <h2><i class="fas fa-sack-dollar"></i> POZO ACUMULADO</h2>
@@ -724,9 +566,9 @@
                 </div>
             </div>
             <div class="premio-grid">
-                <div class="premio-card oro"><div class="premio-icon"><i class="fas fa-crown"></i></div><div class="premio-titulo">1er LUGAR</div><div class="pozo-monto" id="premioPrimer" style="font-size:1.1rem;">$0</div><div style="font-size:10px;">50%</div></div>
-                <div class="premio-card plata"><div class="premio-icon"><i class="fas fa-medal"></i></div><div class="premio-titulo">2do LUGAR</div><div class="pozo-monto" id="premioSegundo" style="font-size:1.1rem;">$0</div><div style="font-size:10px;">30%</div></div>
-                <div class="premio-card bronce"><div class="premio-icon"><i class="fas fa-medal"></i></div><div class="premio-titulo">3er LUGAR</div><div class="pozo-monto" id="premioTercero" style="font-size:1.1rem;">$0</div><div style="font-size:10px;">20%</div></div>
+                <div class="premio-card oro"><i class="fas fa-crown"></i><div class="premio-titulo">1er LUGAR</div><div class="pozo-monto" id="premioPrimer" style="font-size:1.1rem;">$0</div><div style="font-size:10px;">50%</div></div>
+                <div class="premio-card plata"><i class="fas fa-medal"></i><div class="premio-titulo">2do LUGAR</div><div class="pozo-monto" id="premioSegundo" style="font-size:1.1rem;">$0</div><div style="font-size:10px;">30%</div></div>
+                <div class="premio-card bronce"><i class="fas fa-medal"></i><div class="premio-titulo">3er LUGAR</div><div class="pozo-monto" id="premioTercero" style="font-size:1.1rem;">$0</div><div style="font-size:10px;">20%</div></div>
             </div>
         </div>
 
@@ -756,14 +598,17 @@
             </div>
         </div>
 
-        <!-- Predicción Campeón -->
+        <!-- SECCIÓN PREDICCIÓN CAMPEÓN ACTUALIZADA -->
         <div class="champion-card">
-            <div style="margin-bottom:12px;"><i class="fas fa-trophy"></i> <strong>🏆 Predice al CAMPEÓN del Mundo 2026</strong></div>
-            <div class="deadline-badge"><i class="fas fa-hourglass-half"></i> Plazo: 10 de junio 2026, 23:30 hrs</div>
-            <div id="championPredictionContainer"><div style="text-align:center; padding:16px;"><div class="spinner-border"></div></div></div>
+            <div style="margin-bottom: 12px;"><i class="fas fa-trophy"></i> <strong>🏆 Predice al CAMPEÓN del Mundo 2026</strong></div>
+            <div class="deadline-badge" id="deadlineBadge">
+                <i class="fas fa-hourglass-half"></i> Plazo: 18 de junio 2026, 22:00 hrs ECU
+            </div>
+            <div id="championPredictionContainer">
+                <div style="text-align:center; padding:20px;"><div class="spinner-border"></div> Cargando...</div>
+            </div>
         </div>
 
-        <!-- Próximos Partidos -->
         <div class="card">
             <div class="card-header"><h5><i class="fas fa-calendar-week"></i> Próximos Partidos</h5></div>
             <div class="card-body" id="upcomingMatches"><div style="text-align:center; padding:16px;"><div class="spinner-border"></div></div></div>
@@ -776,7 +621,6 @@
     </footer>
 
     <script>
-        // Menú hamburguesa
         const menuToggle = document.getElementById('menuToggle');
         const navLinks = document.getElementById('navLinks');
         if (menuToggle) {
@@ -795,8 +639,6 @@
         let currentUser = null;
         let refreshInterval = null;
         let seleccionesMap = new Map();
-        let allMatches = [];
-        let predictions = {};
 
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
@@ -820,9 +662,7 @@
                 animateNumber(document.getElementById('premioPrimer'), 0, data.primer_lugar);
                 animateNumber(document.getElementById('premioSegundo'), 0, data.segundo_lugar);
                 animateNumber(document.getElementById('premioTercero'), 0, data.tercer_lugar);
-            } catch (error) {
-                console.error('Error:', error);
-            }
+            } catch (error) { console.error('Error:', error); }
         }
 
         function checkAuth() {
@@ -843,17 +683,12 @@
         function startAutoRefresh() {
             if (refreshInterval) clearInterval(refreshInterval);
             refreshInterval = setInterval(() => {
-                if (currentUser) { loadUserStats(); loadTopUsers(); loadPremio(); loadFeaturedMatch(); }
+                if (currentUser) { loadUserStats(); loadTopUsers(); loadPremio(); }
             }, 30000);
         }
 
         async function loadDashboard() {
-            await Promise.all([loadMatches(), loadUserStats(), loadTopUsers(), loadUpcomingMatches(), loadProgressChart(), loadChampionPrediction(), loadPremio(), loadFeaturedMatch()]);
-        }
-
-        async function loadMatches() {
-            const response = await fetch('/api/partidos');
-            allMatches = await response.json();
+            await Promise.all([loadUserStats(), loadTopUsers(), loadUpcomingMatches(), loadProgressChart(), loadChampionPrediction(), loadPremio()]);
         }
 
         async function loadUserStats() {
@@ -945,177 +780,63 @@
             } catch (error) { console.error('Error:', error); }
         }
 
-        // Featured Match - Primer pronóstico destacado
-        async function loadFeaturedMatch() {
-            const container = document.getElementById('featuredContent');
-            try {
-                const response = await fetch('/api/partidos');
-                const matches = await response.json();
-                const nextMatch = matches.find(m => m.estado === 'pendiente');
-                if (!nextMatch) {
-                    container.innerHTML = '<div style="text-align:center; padding:40px;">🎉 Todos los partidos están completados 🎉</div>';
-                    return;
-                }
-
-                const predResponse = await fetch('/api/mis-pronosticos');
-                const savedPreds = await predResponse.json();
-                const saved = savedPreds[nextMatch.id] || {};
-
-                const fecha = new Date(nextMatch.fecha_hora);
-                const countdownEl = document.getElementById('featuredCountdown');
-                const updateCountdown = () => {
-                    const now = new Date();
-                    const diff = fecha - now;
-                    if (diff <= 0) countdownEl.innerHTML = '<i class="fas fa-clock"></i> Partido en curso';
-                    else {
-                        const hours = Math.floor(diff / 3600000);
-                        const minutes = Math.floor((diff % 3600000) / 60000);
-                        countdownEl.innerHTML = `<i class="fas fa-hourglass-half"></i> ${hours}h ${minutes}m restantes`;
-                    }
-                };
-                updateCountdown();
-                setInterval(updateCountdown, 60000);
-
-                const esEliminatoria = nextMatch.fase !== 'grupos';
-                const isEditable = nextMatch.estado !== 'finalizado' && !nextMatch.bloqueado_manual;
-
-                container.innerHTML = `
-                    <div class="featured-teams">
-                        <div class="featured-team">
-                            <img src="${nextMatch.local_bandera || 'https://flagcdn.com/w80/default.png'}" class="featured-team-flag" onerror="this.src='https://flagcdn.com/w80/default.png'">
-                            <div class="featured-team-name">${nextMatch.local_nombre || '?'}</div>
-                            <input type="number" class="featured-score-input" id="featured_local" value="${saved.goles_local !== undefined ? saved.goles_local : ''}" placeholder="0" min="0" step="1" ${!isEditable ? 'disabled' : ''}>
-                        </div>
-                        <div class="featured-vs">VS</div>
-                        <div class="featured-team">
-                            <img src="${nextMatch.visitante_bandera || 'https://flagcdn.com/w80/default.png'}" class="featured-team-flag" onerror="this.src='https://flagcdn.com/w80/default.png'">
-                            <div class="featured-team-name">${nextMatch.visitante_nombre || '?'}</div>
-                            <input type="number" class="featured-score-input" id="featured_visitante" value="${saved.goles_visitante !== undefined ? saved.goles_visitante : ''}" placeholder="0" min="0" step="1" ${!isEditable ? 'disabled' : ''}>
-                        </div>
-                    </div>
-                    <div class="featured-prediction-type">
-                        <button class="pred-type-btn ${(!saved.penales_local && !saved.penales_visitante) ? 'active' : ''}" data-type="marcador" onclick="setFeaturedType('marcador')">📊 Marcador</button>
-                        ${esEliminatoria ? `<button class="pred-type-btn ${(saved.penales_local || saved.penales_visitante) ? 'active' : ''}" data-type="penales" onclick="setFeaturedType('penales')">⚡ Con Penales</button>` : ''}
-                    </div>
-                    <div id="featuredPenaltySection" style="display:${(saved.penales_local || saved.penales_visitante) ? 'block' : 'none'}">
-                        <div class="featured-penalty">
-                            <div class="penalty-label" style="color:#ff9f43; margin-bottom:8px;">⚡ Penales (solo si empate en 90')</div>
-                            <div style="display:flex; justify-content:center; gap:16px;">
-                                <input type="number" class="featured-score-input" id="featured_pen_local" value="${saved.penales_local !== undefined ? saved.penales_local : ''}" placeholder="0" min="0" step="1" style="width:70px; font-size:20px;" ${!isEditable ? 'disabled' : ''}>
-                                <span style="color:#ff9f43;">-</span>
-                                <input type="number" class="featured-score-input" id="featured_pen_visitante" value="${saved.penales_visitante !== undefined ? saved.penales_visitante : ''}" placeholder="0" min="0" step="1" style="width:70px; font-size:20px;" ${!isEditable ? 'disabled' : ''}>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="featured-btn" id="featuredSaveBtn" ${!isEditable ? 'disabled' : ''} onclick="saveFeaturedPrediction(${nextMatch.id}, '${nextMatch.fase}')">
-                        <i class="fas fa-save"></i> GUARDAR PRONÓSTICO
-                    </button>
-                `;
-                window.currentFeaturedMatch = nextMatch;
-                window.featuredType = (saved.penales_local || saved.penales_visitante) ? 'penales' : 'marcador';
-            } catch (error) {
-                console.error('Error:', error);
-                container.innerHTML = '<div style="text-align:center; padding:40px;">Error al cargar el próximo partido</div>';
-            }
-        }
-
-        window.setFeaturedType = function(type) {
-            window.featuredType = type;
-            document.querySelectorAll('.pred-type-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            const penaltySection = document.getElementById('featuredPenaltySection');
-            penaltySection.style.display = type === 'penales' ? 'block' : 'none';
-        }
-
-        window.saveFeaturedPrediction = async function(matchId, fase) {
-            const localVal = document.getElementById('featured_local').value;
-            const visitVal = document.getElementById('featured_visitante').value;
-            if (localVal === '' || visitVal === '') {
-                showToast('⚠️ Ingresa el marcador completo', 'error');
-                return;
-            }
-            const goles_local = parseInt(localVal);
-            const goles_visitante = parseInt(visitVal);
-            if (isNaN(goles_local) || isNaN(goles_visitante) || goles_local < 0 || goles_visitante < 0) {
-                showToast('⚠️ Marcador inválido', 'error');
-                return;
-            }
-
-            let data = { partido_id: matchId, tipo: window.featuredType, goles_local, goles_visitante };
-            if (window.featuredType === 'penales') {
-                const penLocal = document.getElementById('featured_pen_local').value;
-                const penVisit = document.getElementById('featured_pen_visitante').value;
-                if (penLocal === '' || penVisit === '') {
-                    showToast('⚠️ Ingresa el resultado de penales', 'error');
-                    return;
-                }
-                const penales_local = parseInt(penLocal);
-                const penales_visitante = parseInt(penVisit);
-                if (penales_local === penales_visitante) {
-                    showToast('⚠️ En penales no puede haber empate', 'error');
-                    return;
-                }
-                data.penales_local = penales_local;
-                data.penales_visitante = penales_visitante;
-            }
-
-            const btn = document.getElementById('featuredSaveBtn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> GUARDANDO...';
-            btn.disabled = true;
-
-            try {
-                const response = await fetch('/api/pronostico-partido', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                const result = await response.json();
-                if (response.ok && result.success) {
-                    showToast('✅ Pronóstico guardado exitosamente', 'success');
-                    loadFeaturedMatch();
-                } else {
-                    showToast('❌ ' + (result.error || 'Error al guardar'), 'error');
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }
-            } catch (error) {
-                showToast('❌ Error de conexión', 'error');
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        }
-
+        // PREDICCIÓN CAMPEÓN CON FECHA LIMITE 18 DE JUNIO 2026 22:00 ECU
         async function loadChampionPrediction() {
             const container = document.getElementById('championPredictionContainer');
             try {
                 const selecResp = await fetch('/api/selecciones');
                 const selecciones = await selecResp.json();
                 selecciones.forEach(s => seleccionesMap.set(s.id, s.nombre));
+                
                 const predResp = await fetch('/api/mi-prediccion-campeon');
                 const data = await predResp.json();
-                const deadline = new Date(2026, 5, 10, 23, 30, 0);
+                
+                const deadline = new Date(2026, 5, 18, 22, 0, 0);
                 const ahora = new Date();
                 const plazoVigente = ahora < deadline;
+                const deadlineBadge = document.getElementById('deadlineBadge');
+                
+                if (!plazoVigente) {
+                    deadlineBadge.classList.add('deadline-expired');
+                    deadlineBadge.innerHTML = '<i class="fas fa-hourglass-end"></i> PLAZO FINALIZADO · 18 de junio 2026, 22:00 hrs ECU';
+                } else {
+                    deadlineBadge.innerHTML = '<i class="fas fa-hourglass-half"></i> Plazo: 18 de junio 2026, 22:00 hrs ECU';
+                }
+                
                 if (data.campeon_id) {
                     const equipo = seleccionesMap.get(data.campeon_id) || 'Selección';
-                    container.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;"><span><i class="fas fa-check-circle" style="color:#00FFAA;"></i> Tu predicción: 🏆 ${equipo}</span><button id="downloadCertBtn" style="background:#00FFAA; color:#0B0F1C; border:none; border-radius:40px; padding:6px 16px; cursor:pointer;"><i class="fas fa-download"></i> Certificado</button></div>`;
+                    container.innerHTML = `<div class="prediction-confirmed">
+                                <div><i class="fas fa-check-circle" style="color:#00FFAA; font-size:20px;"></i> <strong>Tu predicción:</strong> 🏆 ${equipo}</div>
+                                <button id="downloadCertBtn" style="background:#00FFAA; color:#0B0F1C; border:none; border-radius:40px; padding:8px 20px; cursor:pointer; font-weight:600;"><i class="fas fa-download"></i> Descargar Certificado</button>
+                            </div>`;
                     document.getElementById('downloadCertBtn')?.addEventListener('click', () => downloadCertificate());
                 } else if (plazoVigente) {
-                    let options = '';
+                    let options = '<option value="">Selecciona un equipo...</option>';
                     selecciones.forEach(s => { options += `<option value="${s.id}">${s.nombre}</option>`; });
-                    container.innerHTML = `<select id="championSelect" class="champion-select">${options}</select><button id="saveChampionBtn" class="btn-champion"><i class="fas fa-save"></i> Guardar Predicción</button><div style="font-size:10px; color:#00FFAA; text-align:center; margin-top:6px;">⚠️ Una vez guardada, es DEFINITIVA</div>`;
+                    container.innerHTML = `<select id="championSelect" class="champion-select">${options}</select>
+                                <button id="saveChampionBtn" class="btn-champion"><i class="fas fa-save"></i> Guardar Predicción (única e irreversible)</button>
+                                <div style="font-size:11px; color:#00FFAA; text-align:center; margin-top:10px;">⚠️ Una vez guardada, la predicción es DEFINITIVA y no se puede modificar.</div>`;
                     document.getElementById('saveChampionBtn').addEventListener('click', saveChampionPrediction);
                 } else {
-                    container.innerHTML = '<div style="text-align:center; padding:16px;">Plazo finalizado</div>';
+                    container.innerHTML = `<div class="prediction-confirmed" style="justify-content:center;">
+                                <div><i class="fas fa-hourglass-end" style="color:#FF4444; font-size:20px;"></i> <strong>Plazo finalizado</strong> - Ya no es posible predecir al campeón.</div>
+                            </div>`;
                 }
-            } catch (error) { container.innerHTML = '<div style="text-align:center;">Error</div>'; }
+            } catch (error) {
+                console.error('Error:', error);
+                container.innerHTML = '<div style="text-align:center; padding:20px; color:#FF8888;">Error al cargar la predicción.</div>';
+            }
         }
 
         async function saveChampionPrediction() {
             const select = document.getElementById('championSelect');
             const campeonId = parseInt(select.value);
+            if (!campeonId) {
+                showToast('⚠️ Por favor selecciona un equipo', 'error');
+                return;
+            }
             const btn = document.getElementById('saveChampionBtn');
+            const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
             btn.disabled = true;
             try {
@@ -1124,9 +845,20 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ campeon_id: campeonId })
                 });
-                if (response.ok) { showToast('✅ Predicción guardada', 'success'); loadChampionPrediction(); }
-                else { showToast('Error al guardar', 'error'); btn.innerHTML = 'Guardar'; btn.disabled = false; }
-            } catch (error) { showToast('Error de conexión', 'error'); btn.innerHTML = 'Guardar'; btn.disabled = false; }
+                const data = await response.json();
+                if (response.ok) {
+                    showToast('✅ Predicción guardada exitosamente (única e irreversible)', 'success');
+                    loadChampionPrediction();
+                } else {
+                    showToast(data.error || 'Error al guardar', 'error');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                showToast('Error de conexión', 'error');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
         }
 
         async function downloadCertificate() {
@@ -1137,12 +869,16 @@
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = `certificado_${currentUser.username}.pdf`;
+                    a.download = `certificado_campeon_${currentUser.username}.pdf`;
                     a.click();
                     URL.revokeObjectURL(url);
                     showToast('Certificado descargado', 'success');
-                } else { showToast('Error', 'error'); }
-            } catch (error) { showToast('Error', 'error'); }
+                } else {
+                    showToast('Error al generar certificado', 'error');
+                }
+            } catch (error) {
+                showToast('Error al descargar', 'error');
+            }
         }
 
         document.getElementById('logoutBtn').addEventListener('click', (e) => {
@@ -1156,7 +892,9 @@
             else copyToClipboard(url);
         });
 
-        function copyToClipboard(text) { navigator.clipboard.writeText(text).then(() => showToast('✅ Enlace copiado', 'success')).catch(() => alert('Comparte: ' + text)); }
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => showToast('✅ Enlace copiado', 'success')).catch(() => alert('Comparte: ' + text));
+        }
 
         checkAuth();
     </script>
