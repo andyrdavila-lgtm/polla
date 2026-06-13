@@ -5,236 +5,385 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>Registrarse · Polla Mundialista 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --y:   #F5C400;
-    --b:   #0A2FA8;
-    --r:   #D0021B;
-    --dk:  #060D1F;
-    --mid: #0D1A3A;
-    --s1:  #111C38;
-    --s2:  #162040;
-    --brd: rgba(255,255,255,0.08);
-    --tx:  rgba(255,255,255,0.92);
-    --txm: rgba(255,255,255,0.55);
-    --txd: rgba(255,255,255,0.30);
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
 
   body {
     font-family: 'Inter', sans-serif;
-    background: var(--dk);
-    color: var(--tx);
+    background: #0B0F1C;
+    color: #FFFFFF;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
   }
 
-  .bg-wrap {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background: radial-gradient(ellipse 55% 70% at 80% 20%, rgba(10,47,168,0.22) 0%, transparent 60%),
-                radial-gradient(ellipse 40% 55% at 10% 85%, rgba(208,2,27,0.14) 0%, transparent 55%),
-                var(--dk);
+  .bg-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: radial-gradient(circle at 20% 30%, rgba(0, 255, 170, 0.08) 0%, rgba(11, 15, 28, 0) 60%),
+                radial-gradient(circle at 80% 70%, rgba(0, 102, 204, 0.1) 0%, rgba(11, 15, 28, 0) 60%),
+                #0B0F1C;
   }
-  .bg-wrap::after {
+
+  .noise {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: -1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+  }
+
+  /* Main Brand Header */
+  .main-brand-header {
+    background: linear-gradient(135deg, rgba(0, 255, 170, 0.15), rgba(0, 102, 204, 0.08));
+    border-bottom: 2px solid rgba(0, 255, 170, 0.3);
+    padding: 20px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .main-brand-header::before {
     content: '';
-    position: absolute; inset: 0;
-    background-image: radial-gradient(circle, rgba(245,196,0,0.05) 1px, transparent 1px);
-    background-size: 52px 52px;
-    animation: gridDrift 30s linear infinite;
-  }
-  @keyframes gridDrift { to { background-position: 52px 52px; } }
-
-  .ec-stripe {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-    height: 3px;
-    background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 255, 170, 0.05) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
   }
 
-  nav {
-    position: relative; z-index: 10;
-    display: flex; justify-content: center;
-    padding: 1.5rem 2rem 0;
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
-  .nav-logo {
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    font-size: 1rem; font-weight: 600;
-    color: var(--tx); text-decoration: none;
-    background: rgba(6,13,31,0.7);
-    backdrop-filter: blur(12px);
-    padding: 0.6rem 1.4rem;
-    border-radius: 60px;
-    border: 1px solid var(--brd);
+
+  .main-brand-header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #00FFAA, #FFFFFF, #00FFAA);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+    z-index: 1;
   }
-  .nav-ball {
-    font-size: 1.2rem;
-    animation: spin 5s linear infinite;
+
+  .main-brand-header .badge {
     display: inline-block;
+    background: rgba(0, 255, 170, 0.2);
+    border: 1px solid rgba(0, 255, 170, 0.4);
+    border-radius: 40px;
+    padding: 6px 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #00FFAA;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
 
+  .main-brand-header p {
+    font-size: 0.7rem;
+    color: #8E9AAF;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Navbar simplificado */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(11, 15, 28, 0.8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .nav-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+    text-decoration: none;
+  }
+
+  .nav-logo .accent {
+    color: #00FFAA;
+  }
+
+  /* Register Container */
   .register-container {
-    position: relative; z-index: 2;
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1.5rem 3rem;
+    padding: 40px 20px;
   }
 
   .register-card {
-    background: var(--s1);
-    border: 1px solid var(--brd);
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 32px;
-    padding: 2.2rem 2rem;
+    padding: 40px 32px;
     width: 100%;
     max-width: 500px;
-    transition: transform 0.3s, border-color 0.3s;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    transition: all 0.3s;
   }
+
   .register-card:hover {
-    border-color: rgba(245,196,0,0.35);
+    border-color: rgba(0, 255, 170, 0.3);
     transform: translateY(-3px);
   }
 
   .register-header {
     text-align: center;
-    margin-bottom: 2rem;
-  }
-  .register-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-  .register-header h2 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2rem;
-    letter-spacing: 0.06em;
-    color: var(--y);
-  }
-  .register-header p {
-    font-size: 0.8rem;
-    color: var(--txm);
-    margin-top: 0.3rem;
+    margin-bottom: 32px;
   }
 
-  .form-group { margin-bottom: 1.3rem; }
+  .register-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .register-header h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #FFFFFF, #00FFAA);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .register-header p {
+    font-size: 0.8rem;
+    color: #8E9AAF;
+    margin-top: 8px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
   .form-label {
     display: block;
     font-size: 0.7rem;
     font-weight: 600;
-    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--txm);
-    margin-bottom: 0.4rem;
+    letter-spacing: 1px;
+    color: #8E9AAF;
+    margin-bottom: 8px;
   }
+
+  .form-label i {
+    color: #00FFAA;
+    margin-right: 6px;
+  }
+
   .form-control {
     width: 100%;
-    background: rgba(0,0,0,0.35);
-    border: 1px solid var(--brd);
-    border-radius: 16px;
-    padding: 0.85rem 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 14px 16px;
     font-family: 'Inter', sans-serif;
     font-size: 0.9rem;
-    color: var(--tx);
-    transition: all 0.2s;
+    color: white;
+    transition: all 0.3s;
   }
+
   .form-control:focus {
     outline: none;
-    border-color: var(--y);
-    background: rgba(0,0,0,0.5);
-    box-shadow: 0 0 0 3px rgba(245,196,0,0.1);
+    border-color: #00FFAA;
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 0 3px rgba(0, 255, 170, 0.1);
   }
-  .form-control::placeholder { color: var(--txd); }
+
+  .form-control::placeholder {
+    color: #8E9AAF;
+    opacity: 0.5;
+  }
 
   .btn-register {
     width: 100%;
-    background: var(--y);
+    background: #00FFAA;
     border: none;
-    border-radius: 60px;
-    padding: 0.9rem;
-    font-weight: 700;
+    border-radius: 40px;
+    padding: 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
     font-size: 0.85rem;
-    letter-spacing: 0.12em;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--dk);
+    color: #0B0F1C;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    margin: 1rem 0 1rem;
+    transition: all 0.3s;
+    margin: 16px 0 20px;
   }
+
   .btn-register:hover {
+    background: #00E099;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(245,196,0,0.35);
+    box-shadow: 0 8px 24px rgba(0, 255, 170, 0.3);
   }
+
   .btn-register:disabled {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
   }
 
   .text-center {
     text-align: center;
     font-size: 0.8rem;
-    color: var(--txm);
+    color: #B0C4DE;
   }
+
   .text-center a {
-    color: var(--y);
+    color: #00FFAA;
     text-decoration: none;
     font-weight: 600;
+    transition: opacity 0.2s;
   }
-  .text-center a:hover { text-decoration: underline; }
 
+  .text-center a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+
+  .divider-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00FFAA, transparent);
+    width: 60px;
+    margin: 20px auto 0;
+    border-radius: 2px;
+  }
+
+  /* Alertas */
   .alert {
-    padding: 0.8rem 1rem;
-    border-radius: 14px;
+    padding: 12px 16px;
+    border-radius: 16px;
     font-size: 0.8rem;
-    margin-bottom: 1.2rem;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-  }
-  .alert-danger {
-    background: rgba(208,2,27,0.12);
-    border: 1px solid rgba(208,2,27,0.4);
-    color: #ff7a7a;
-  }
-  .alert-success {
-    background: rgba(10,47,168,0.12);
-    border: 1px solid rgba(10,47,168,0.3);
-    color: #8bb5ff;
+    gap: 10px;
+    border: 1px solid transparent;
   }
 
+  .alert-danger {
+    background: rgba(255, 68, 68, 0.1);
+    border-color: rgba(255, 68, 68, 0.3);
+    color: #FF8888;
+  }
+
+  .alert-success {
+    background: rgba(0, 255, 170, 0.1);
+    border-color: rgba(0, 255, 170, 0.3);
+    color: #00FFAA;
+  }
+
+  /* Footer */
   footer {
     text-align: center;
-    padding: 1.5rem;
+    padding: 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: #8E9AAF;
     font-size: 0.7rem;
-    color: var(--txd);
-    border-top: 1px solid var(--brd);
   }
 
+  /* Spinner */
   .spinner {
     display: inline-block;
     width: 1rem;
     height: 1rem;
-    border: 2px solid rgba(0,0,0,0.2);
-    border-top-color: var(--dk);
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-top-color: #0B0F1C;
     border-radius: 50%;
     animation: spin 0.6s linear infinite;
     margin-right: 0.4rem;
   }
 
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Responsive */
   @media (max-width: 550px) {
-    .register-card { padding: 1.5rem; }
+    .register-card {
+      padding: 32px 24px;
+    }
+    .register-header h2 {
+      font-size: 1.5rem;
+    }
+    .main-brand-header h1 {
+      font-size: 1.5rem;
+    }
+    .main-brand-header .badge {
+      font-size: 0.7rem;
+      padding: 4px 16px;
+    }
   }
 </style>
 </head>
 <body>
 
-<div class="bg-wrap"></div>
-<div class="ec-stripe"></div>
+<div class="bg-gradient"></div>
+<div class="noise"></div>
 
-<nav>
-  <a class="nav-logo" href="{{ url_for('index') }}">
-    <span class="nav-ball">⚽</span> Polla Mundialista 2026
-  </a>
+<!-- Logo destacado de Oscar Caicedo -->
+<div class="main-brand-header">
+  <h1>⚽ OSCAR CAICEDO ⚽</h1>
+  <div class="badge">PEC MNT B12 · COORDINADOR OFICIAL</div>
+  <p>Polla Mundialista 2026 · Regístrate y participa</p>
+</div>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a class="nav-logo" href="{{ url_for('index') }}">
+      <span>⚽ <span class="accent">Polla Mundialista 2026</span></span>
+    </a>
+  </div>
 </nav>
 
 <div class="register-container">
@@ -249,27 +398,27 @@
 
     <form id="registerForm" method="POST" action="{{ url_for('register') }}">
       <div class="form-group">
-        <label class="form-label">👤 USUARIO *</label>
+        <label class="form-label"><i class="fas fa-user"></i> USUARIO *</label>
         <input type="text" name="username" id="username" class="form-control" 
                placeholder="Ej: juan.perez" required autofocus>
       </div>
       <div class="form-group">
-        <label class="form-label">📧 EMAIL *</label>
+        <label class="form-label"><i class="fas fa-envelope"></i> EMAIL *</label>
         <input type="email" name="email" id="email" class="form-control" 
                placeholder="juan@ejemplo.com" required>
       </div>
       <div class="form-group">
-        <label class="form-label">🔒 CONTRASEÑA *</label>
+        <label class="form-label"><i class="fas fa-lock"></i> CONTRASEÑA *</label>
         <input type="password" name="password" id="password" class="form-control" 
                placeholder="Mínimo 6 caracteres" required>
       </div>
       <div class="form-group">
-        <label class="form-label">🔁 CONFIRMAR CONTRASEÑA *</label>
+        <label class="form-label"><i class="fas fa-check-circle"></i> CONFIRMAR CONTRASEÑA *</label>
         <input type="password" name="confirm_password" id="confirm_password" class="form-control" 
                placeholder="Repite la contraseña" required>
       </div>
       <div class="form-group">
-        <label class="form-label">👤 NOMBRE COMPLETO</label>
+        <label class="form-label"><i class="fas fa-user-circle"></i> NOMBRE COMPLETO</label>
         <input type="text" name="nombre_completo" id="nombre_completo" class="form-control" 
                placeholder="Tu nombre y apellido (opcional)">
       </div>
@@ -281,12 +430,16 @@
       <div class="text-center">
         ¿Ya tienes cuenta? <a href="{{ url_for('login') }}">Inicia sesión aquí</a>
       </div>
+      <div class="text-center" style="margin-top: 10px;">
+        <a href="{{ url_for('index') }}">🏠 Volver al inicio</a>
+      </div>
+      <div class="divider-line"></div>
     </form>
   </div>
 </div>
 
 <footer>
-  © 2026 Polla Mundialista 2026 — Todos los derechos reservados
+  © 2026 Polla Mundialista 2026 — Oscar Caicedo · PEC MNT B12
 </footer>
 
 <script>
