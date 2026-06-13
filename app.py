@@ -10,7 +10,7 @@ import json
 import io
 import zipfile
 from collections import defaultdict
-import pytz  # Para manejo de zonas horarias
+import pytz
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'clave_secreta_polla_mundialista_2026'
@@ -20,7 +20,6 @@ app.secret_key = 'clave_secreta_polla_mundialista_2026'
 # ==================================================
 DATABASE_URL = os.environ.get('DATABASE_URL')
 if not DATABASE_URL:
-    # Fallback local
     DATABASE_URL = 'postgresql://postgres:1111@localhost:5432/polla_mundialista'
 else:
     if '?' not in DATABASE_URL:
@@ -28,7 +27,6 @@ else:
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 app.config['UPLOAD_FOLDER'] = 'static/avatars'
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -45,7 +43,6 @@ ECUADOR_TZ = pytz.timezone('America/Guayaquil')
 UTC_TZ = pytz.UTC
 
 def convertir_a_ecuador(dt_utc):
-    """Convierte un datetime UTC a la zona horaria de Ecuador"""
     if dt_utc is None:
         return None
     if dt_utc.tzinfo is None:
@@ -53,7 +50,6 @@ def convertir_a_ecuador(dt_utc):
     return dt_utc.astimezone(ECUADOR_TZ)
 
 def convertir_a_utc(dt_ecuador):
-    """Convierte un datetime (asumido en hora Ecuador) a UTC para almacenar en BD"""
     if dt_ecuador is None:
         return None
     if dt_ecuador.tzinfo is None:
@@ -61,7 +57,7 @@ def convertir_a_utc(dt_ecuador):
     return dt_ecuador.astimezone(UTC_TZ)
 
 # ==================================================
-# MODELOS (sin campo área_trabajo)
+# MODELOS
 # ==================================================
 
 class Usuario(db.Model):
@@ -93,7 +89,7 @@ class Partido(db.Model):
     fase = db.Column(db.String(20), nullable=False)
     seleccion_local_id = db.Column(db.Integer, db.ForeignKey('selecciones.id'))
     seleccion_visitante_id = db.Column(db.Integer, db.ForeignKey('selecciones.id'))
-    fecha_hora = db.Column(db.DateTime, nullable=False)   # Se guarda en UTC
+    fecha_hora = db.Column(db.DateTime, nullable=False)   # Guardado en UTC
     goles_local = db.Column(db.Integer)
     goles_visitante = db.Column(db.Integer)
     penales_local = db.Column(db.Integer, default=None)
@@ -101,7 +97,7 @@ class Partido(db.Model):
     estado = db.Column(db.String(20), default='pendiente')
     grupo = db.Column(db.String(1))
     bloqueado_manual = db.Column(db.Boolean, default=False)
-    
+
     local = db.relationship('Seleccion', foreign_keys=[seleccion_local_id])
     visitante = db.relationship('Seleccion', foreign_keys=[seleccion_visitante_id])
 
@@ -169,7 +165,6 @@ class LogAuditoria(db.Model):
     detalles = db.Column(db.Text)
     ip_address = db.Column(db.String(45))
     fecha = db.Column(db.DateTime, default=datetime.now)
-    
     usuario = db.relationship('Usuario')
 
 class HistorialResultado(db.Model):
@@ -182,7 +177,6 @@ class HistorialResultado(db.Model):
     goles_visitante_nuevo = db.Column(db.Integer)
     modificado_por = db.Column(db.Integer, db.ForeignKey('usuarios_polla.id'))
     fecha_modificacion = db.Column(db.DateTime, default=datetime.now)
-    
     partido = db.relationship('Partido')
     usuario = db.relationship('Usuario')
 
@@ -222,15 +216,15 @@ def is_match_editable(match, usuario_id=None):
         return False
     if not match.fecha_hora:
         return True
-    
+
     if usuario_id:
         intentos = PronosticoPartido.query.filter_by(
-            usuario_id=usuario_id, 
+            usuario_id=usuario_id,
             partido_id=match.id
         ).count()
         if intentos >= 2:
             return False
-    
+
     ahora_utc = datetime.now(UTC_TZ)
     diff_minutes = (match.fecha_hora - ahora_utc).total_seconds() / 60
     return diff_minutes > 30
@@ -397,8 +391,7 @@ def actualizar_puntos_totales_usuario(usuario_id):
         puntos_total.puntos_fase_grupos = puntos_grupos
         puntos_total.puntos_eliminatorias = puntos_eliminatorias
         puntos_total.resultados_exactos = resultados_exactos
-        
-        # Bonus por predicción de campeón (10 puntos si acertó)
+
         puntos_especiales = puntos_total.puntos_especiales or 0
         final_partido = Partido.query.filter_by(fase='FINAL').first()
         if final_partido and final_partido.estado == 'finalizado' and final_partido.goles_local is not None:
@@ -418,7 +411,7 @@ def actualizar_puntos_totales_usuario(usuario_id):
                 puntos_especiales = 0
         else:
             puntos_especiales = 0
-        
+
         puntos_total.puntos_especiales = puntos_especiales
         puntos_total.puntos_totales = (puntos_grupos + puntos_eliminatorias + puntos_especiales)
         db.session.commit()
@@ -626,7 +619,7 @@ def register():
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
         nombre_completo = request.form.get('nombre_completo')
-        
+
         if not username or not email or not password:
             error = 'Todos los campos son obligatorios'
         elif password != confirm_password:
@@ -786,7 +779,6 @@ def api_partidos():
             visitante_nombre = 'Por definir'
             visitante_bandera = '/static/default_flag.png'
 
-        # Convertir fecha/hora a hora Ecuador
         fecha_ecuador = convertir_a_ecuador(p.fecha_hora)
         fecha_str = fecha_ecuador.strftime('%Y-%m-%d %H:%M:%S')
 
@@ -866,7 +858,7 @@ def api_mis_pronosticos():
             data['penales_local'] = None
             data['penales_visitante'] = None
         resultado[str(p.partido_id)] = data
-    
+
     return jsonify(resultado)
 
 @app.route('/api/mis-pronosticos-especiales')
@@ -1050,26 +1042,25 @@ def api_mi_prediccion_campeon():
 def api_guardar_prediccion_campeon():
     if 'user_id' not in session:
         return jsonify({'error': 'No autorizado'}), 401
-    
+
     data = request.json
     campeon_id = data.get('campeon_id')
     if not campeon_id:
         return jsonify({'error': 'Debe seleccionar un equipo'}), 400
-    
-    # Verificar plazo: hasta 10 de junio de 2026, 23:30 (hora Ecuador)
+
     deadline_ecuador = ECUADOR_TZ.localize(datetime(2026, 6, 10, 23, 30, 0))
     ahora_ecuador = datetime.now(ECUADOR_TZ)
     if ahora_ecuador > deadline_ecuador:
         return jsonify({'error': 'El plazo para predecir al campeón ya expiró (10/06/2026 23:30)'}), 400
-    
+
     seleccion = db.session.get(Seleccion, campeon_id)
     if not seleccion:
         return jsonify({'error': 'Selección no válida'}), 400
-    
+
     pronostico_existente = PronosticoEspecial.query.filter_by(usuario_id=session['user_id']).first()
     if pronostico_existente and pronostico_existente.campeon_id is not None:
         return jsonify({'error': 'Ya realizaste tu predicción de campeón y no puedes cambiarla.'}), 400
-    
+
     if pronostico_existente:
         pronostico_existente.campeon_id = campeon_id
         pronostico_existente.fecha_actualizacion = datetime.now()
@@ -1083,46 +1074,44 @@ def api_guardar_prediccion_campeon():
         )
         db.session.add(pronostico)
         accion = 'CREATE'
-    
+
     db.session.commit()
-    log_auditoria(accion, 'prediccion_campeon', 
-                  pronostico_existente.id if pronostico_existente else pronostico.id, 
+    log_auditoria(accion, 'prediccion_campeon',
+                  pronostico_existente.id if pronostico_existente else pronostico.id,
                   f"Campeón: {seleccion.nombre}")
-    
+
     actualizar_puntos_totales_usuario(session['user_id'])
-    
+
     return jsonify({'success': True, 'message': 'Predicción guardada exitosamente (única e irreversible)'})
 
 @app.route('/api/certificado-campeon')
 def api_certificado_campeon():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    
+
     usuario = db.session.get(Usuario, session['user_id'])
     pronostico = PronosticoEspecial.query.filter_by(usuario_id=session['user_id']).first()
     if not pronostico or not pronostico.campeon_id:
         return jsonify({'error': 'No has realizado una predicción de campeón'}), 404
-    
+
     seleccion = db.session.get(Seleccion, pronostico.campeon_id)
     if not seleccion:
         return jsonify({'error': 'Selección no encontrada'}), 404
-    
+
     try:
         from reportlab.lib.pagesizes import letter, landscape
         from reportlab.pdfgen import canvas
         from reportlab.lib import colors
         import io
-        
+
         buffer = io.BytesIO()
         c = canvas.Canvas(buffer, pagesize=landscape(letter))
         width, height = landscape(letter)
-        
-        # Fondo y bordes
+
         c.setStrokeColor(colors.HexColor('#FFD100'))
         c.setLineWidth(3)
         c.rect(30, 30, width-60, height-60)
-        
-        # Encabezado
+
         c.setFillColor(colors.HexColor('#003580'))
         c.rect(0, height-70, width, 70, fill=True, stroke=False)
         c.setFillColor(colors.HexColor('#FFD100'))
@@ -1131,8 +1120,7 @@ def api_certificado_campeon():
         c.setFillColor(colors.white)
         c.setFont("Helvetica", 12)
         c.drawCentredString(width/2, height-58, "CERTIFICADO DE PREDICCIÓN")
-        
-        # Cuerpo
+
         y = height - 130
         c.setFillColor(colors.black)
         c.setFont("Helvetica", 14)
@@ -1159,14 +1147,13 @@ def api_certificado_campeon():
         c.setFont("Helvetica", 12)
         fecha_pred = pronostico.fecha_actualizacion.strftime("%d de %B de %Y a las %H:%M")
         c.drawCentredString(width/2, y, f"Predicción realizada el: {fecha_pred}")
-        
-        # Pie
+
         c.setFillColor(colors.HexColor('#001a40'))
         c.rect(0, 0, width, 40, fill=True, stroke=False)
         c.setFillColor(colors.HexColor('#FFD100'))
         c.setFont("Helvetica-Oblique", 9)
         c.drawCentredString(width/2, 18, '"El fútbol es pasión, los pronósticos son emoción. ¡A jugar!" — Polla Mundialista 2026')
-        
+
         c.save()
         buffer.seek(0)
         return send_file(
@@ -1270,32 +1257,32 @@ def api_actualizar_perfil():
 def api_cambiar_password():
     if 'user_id' not in session:
         return jsonify({'error': 'No autorizado'}), 401
-    
+
     data = request.json
     current_password = data.get('current_password')
     new_password = data.get('new_password')
-    
+
     if not current_password or not new_password:
         return jsonify({'error': 'Debe proporcionar contraseña actual y nueva'}), 400
-    
+
     if len(new_password) < 6:
         return jsonify({'error': 'La nueva contraseña debe tener al menos 6 caracteres'}), 400
-    
+
     usuario = db.session.get(Usuario, session['user_id'])
     if not usuario:
         return jsonify({'error': 'Usuario no encontrado'}), 404
-    
+
     if not check_password_hash(usuario.password_hash, current_password):
         return jsonify({'error': 'Contraseña actual incorrecta'}), 401
-    
+
     if check_password_hash(usuario.password_hash, new_password):
         return jsonify({'error': 'La nueva contraseña debe ser diferente a la actual'}), 400
-    
+
     usuario.password_hash = generate_password_hash(new_password)
     db.session.commit()
-    
+
     log_auditoria('UPDATE', 'password', usuario.id, 'Contraseña cambiada')
-    
+
     return jsonify({'success': True, 'message': 'Contraseña actualizada correctamente'})
 
 @app.route('/api/subir-avatar', methods=['POST'])
@@ -1545,9 +1532,7 @@ def api_admin_actualizar_resultado():
     log_auditoria('UPDATE', 'resultado', partido_id, detalle)
 
     recalcular_puntos_partido(partido_id)
-    
     actualizar_toda_eliminatoria()
-    
     return jsonify({'success': True})
 
 @app.route('/api/admin/recalcular-puntos', methods=['POST'])
@@ -1664,15 +1649,16 @@ def admin_crear_partido():
     for field in required:
         if field not in data:
             return jsonify({'error': f'Falta campo requerido: {field}'}), 400
-    # La fecha_hora enviada desde el formulario está en hora Ecuador (UTC-5)
-    fecha_ecuador = datetime.strptime(data['fecha_hora'], '%Y-%m-%d %H:%M:%S')
-    # Convertir a UTC para almacenar en BD
-    fecha_utc = convertir_a_utc(fecha_ecuador)
-    
+
     local = db.session.get(Seleccion, data['seleccion_local_id'])
     visitante = db.session.get(Seleccion, data['seleccion_visitante_id'])
     if not local or not visitante:
         return jsonify({'error': 'Equipo local o visitante no válido'}), 400
+
+    # La fecha_hora enviada está en formato 'YYYY-MM-DD HH:MM:SS' (hora Ecuador)
+    fecha_ecuador = datetime.strptime(data['fecha_hora'], '%Y-%m-%d %H:%M:%S')
+    fecha_utc = convertir_a_utc(fecha_ecuador)
+
     nuevo_partido = Partido(
         fase=data['fase'],
         seleccion_local_id=data['seleccion_local_id'],
@@ -1707,7 +1693,6 @@ def admin_backup():
                 item_dict = {c.name: getattr(item, c.name) for c in item.__table__.columns}
                 for key, value in item_dict.items():
                     if isinstance(value, datetime):
-                        # Convertir a string ISO sin zona horaria para compatibilidad
                         item_dict[key] = value.isoformat()
                 data_list.append(item_dict)
             zip_file.writestr(f'{tabla}.json', json.dumps(data_list, indent=2, default=str))
@@ -1725,7 +1710,6 @@ def init_db():
     with app.app_context():
         db.create_all()
 
-        # Migraciones
         migraciones = [
             "ALTER TABLE pronosticos_partidos ADD COLUMN IF NOT EXISTS ganador VARCHAR(20)",
             "ALTER TABLE pronosticos_partidos ADD COLUMN IF NOT EXISTS tipo_pronostico VARCHAR(20) DEFAULT 'ganador'",
@@ -1744,7 +1728,6 @@ def init_db():
                 db.session.rollback()
                 print(f"⚠️ Migración omitida: {e}")
 
-        # Actualizar tipo_pronostico
         try:
             db.session.execute(text("""
                 UPDATE pronosticos_partidos
@@ -1760,7 +1743,6 @@ def init_db():
             db.session.rollback()
             print(f"⚠️ Migración tipo_pronostico omitida: {e}")
 
-        # Insertar selecciones si no existen
         if Seleccion.query.count() == 0:
             selecciones_data = [
                 ("Argentina", "A"), ("Brasil", "B"), ("Francia", "C"), ("Alemania", "D"),
@@ -1781,7 +1763,6 @@ def init_db():
             db.session.commit()
             print("✅ 48 selecciones insertadas")
 
-        # Insertar/actualizar los 104 partidos (usando hora Ecuador y convirtiendo a UTC)
         from datetime import datetime
 
         grupos_raw = [
@@ -1895,9 +1876,7 @@ def init_db():
         ]
 
         def upsert_partido(fecha_str, hora_str, fase, grupo, local_nombre, visit_nombre):
-            # Crear datetime en hora Ecuador
             dt_ecuador = datetime.strptime(f"{fecha_str} {hora_str}", "%Y-%m-%d %H:%M")
-            # Convertir a UTC
             dt_utc = convertir_a_utc(dt_ecuador)
             local = Seleccion.query.filter_by(nombre=local_nombre).first() if local_nombre else None
             visit = Seleccion.query.filter_by(nombre=visit_nombre).first() if visit_nombre else None
@@ -1931,7 +1910,6 @@ def init_db():
 
         actualizar_toda_eliminatoria()
 
-        # Crear usuario ADMIN si no existe
         admin = Usuario.query.filter_by(username='ADMIN').first()
         if not admin:
             admin_user = Usuario(
