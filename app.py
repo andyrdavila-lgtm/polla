@@ -10,6 +10,7 @@ import json
 import io
 import zipfile
 from collections import defaultdict
+import pytz  # Para manejo de zonas horarias
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'clave_secreta_polla_mundialista_2026'
@@ -38,6 +39,26 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# Zona horaria de Ecuador (UTC-5, sin horario de verano)
+ECUADOR_TZ = pytz.timezone('America/Guayaquil')
+UTC_TZ = pytz.UTC
+
+def convertir_a_ecuador(dt_utc):
+    """Convierte un datetime UTC a la zona horaria de Ecuador"""
+    if dt_utc is None:
+        return None
+    if dt_utc.tzinfo is None:
+        dt_utc = UTC_TZ.localize(dt_utc)
+    return dt_utc.astimezone(ECUADOR_TZ)
+
+def convertir_a_utc(dt_ecuador):
+    """Convierte un datetime (asumido en hora Ecuador) a UTC para almacenar en BD"""
+    if dt_ecuador is None:
+        return None
+    if dt_ecuador.tzinfo is None:
+        dt_ecuador = ECUADOR_TZ.localize(dt_ecuador)
+    return dt_ecuador.astimezone(UTC_TZ)
 
 # ==================================================
 # MODELOS (sin campo área_trabajo)
@@ -72,7 +93,7 @@ class Partido(db.Model):
     fase = db.Column(db.String(20), nullable=False)
     seleccion_local_id = db.Column(db.Integer, db.ForeignKey('selecciones.id'))
     seleccion_visitante_id = db.Column(db.Integer, db.ForeignKey('selecciones.id'))
-    fecha_hora = db.Column(db.DateTime, nullable=False)
+    fecha_hora = db.Column(db.DateTime, nullable=False)   # Se guarda en UTC
     goles_local = db.Column(db.Integer)
     goles_visitante = db.Column(db.Integer)
     penales_local = db.Column(db.Integer, default=None)
@@ -210,9 +231,8 @@ def is_match_editable(match, usuario_id=None):
         if intentos >= 2:
             return False
     
-    ahora = datetime.now()
-    tiempo_inicio = match.fecha_hora
-    diff_minutes = (tiempo_inicio - ahora).total_seconds() / 60
+    ahora_utc = datetime.now(UTC_TZ)
+    diff_minutes = (match.fecha_hora - ahora_utc).total_seconds() / 60
     return diff_minutes > 30
 
 def admin_required(f):
@@ -581,7 +601,6 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        # Buscar por username o email (usando OR)
         usuario = Usuario.query.filter(
             (Usuario.username == username) | (Usuario.email == username),
             Usuario.activo == True
@@ -767,6 +786,10 @@ def api_partidos():
             visitante_nombre = 'Por definir'
             visitante_bandera = '/static/default_flag.png'
 
+        # Convertir fecha/hora a hora Ecuador
+        fecha_ecuador = convertir_a_ecuador(p.fecha_hora)
+        fecha_str = fecha_ecuador.strftime('%Y-%m-%d %H:%M:%S')
+
         resultado.append({
             'id': p.id,
             'fase': p.fase,
@@ -774,7 +797,7 @@ def api_partidos():
             'local_bandera': local_bandera,
             'visitante_nombre': visitante_nombre,
             'visitante_bandera': visitante_bandera,
-            'fecha_hora': p.fecha_hora.strftime('%Y-%m-%d %H:%M:%S'),
+            'fecha_hora': fecha_str,
             'goles_local': p.goles_local,
             'goles_visitante': p.goles_visitante,
             'penales_local': p.penales_local,
@@ -1033,9 +1056,10 @@ def api_guardar_prediccion_campeon():
     if not campeon_id:
         return jsonify({'error': 'Debe seleccionar un equipo'}), 400
     
-    # Verificar plazo: hasta 10 de junio de 2026, 23:30
-    deadline = datetime(2026, 6, 10, 23, 30, 0)
-    if datetime.now() > deadline:
+    # Verificar plazo: hasta 10 de junio de 2026, 23:30 (hora Ecuador)
+    deadline_ecuador = ECUADOR_TZ.localize(datetime(2026, 6, 10, 23, 30, 0))
+    ahora_ecuador = datetime.now(ECUADOR_TZ)
+    if ahora_ecuador > deadline_ecuador:
         return jsonify({'error': 'El plazo para predecir al campeón ya expiró (10/06/2026 23:30)'}), 400
     
     seleccion = db.session.get(Seleccion, campeon_id)
@@ -1154,8 +1178,6 @@ def api_certificado_campeon():
     except ImportError:
         return jsonify({'error': 'ReportLab no está instalado'}), 500
 
-# Nota: La ruta /api/areas-disponibles ha sido eliminada
-
 @app.route('/api/tabla-posiciones')
 def api_tabla_posiciones():
     resultados = db.session.query(
@@ -1205,9 +1227,11 @@ def api_historial_partidos():
     query = Partido.query.filter(Partido.estado == 'finalizado')
     total = query.count()
     partidos = query.order_by(Partido.fecha_hora.desc()).limit(limit).offset(offset).all()
-    return jsonify({
-        'total': total, 'limit': limit, 'offset': offset,
-        'data': [{
+    data = []
+    for p in partidos:
+        fecha_ecuador = convertir_a_ecuador(p.fecha_hora)
+        fecha_str = fecha_ecuador.strftime('%d/%m/%Y %H:%M')
+        data.append({
             'id': p.id,
             'local_nombre': p.local.nombre if p.local else '',
             'local_bandera': (p.local.bandera_local or p.local.bandera_url or
@@ -1219,9 +1243,9 @@ def api_historial_partidos():
             'goles_visitante': p.goles_visitante,
             'penales_local': p.penales_local,
             'penales_visitante': p.penales_visitante,
-            'fecha_hora': p.fecha_hora.strftime('%d/%m/%Y %H:%M')
-        } for p in partidos]
-    })
+            'fecha_hora': fecha_str
+        })
+    return jsonify({'total': total, 'limit': limit, 'offset': offset, 'data': data})
 
 @app.route('/api/perfil/actualizar', methods=['POST'])
 def api_actualizar_perfil():
@@ -1640,6 +1664,11 @@ def admin_crear_partido():
     for field in required:
         if field not in data:
             return jsonify({'error': f'Falta campo requerido: {field}'}), 400
+    # La fecha_hora enviada desde el formulario está en hora Ecuador (UTC-5)
+    fecha_ecuador = datetime.strptime(data['fecha_hora'], '%Y-%m-%d %H:%M:%S')
+    # Convertir a UTC para almacenar en BD
+    fecha_utc = convertir_a_utc(fecha_ecuador)
+    
     local = db.session.get(Seleccion, data['seleccion_local_id'])
     visitante = db.session.get(Seleccion, data['seleccion_visitante_id'])
     if not local or not visitante:
@@ -1648,7 +1677,7 @@ def admin_crear_partido():
         fase=data['fase'],
         seleccion_local_id=data['seleccion_local_id'],
         seleccion_visitante_id=data['seleccion_visitante_id'],
-        fecha_hora=datetime.strptime(data['fecha_hora'], '%Y-%m-%d %H:%M:%S'),
+        fecha_hora=fecha_utc,
         grupo=data.get('grupo'),
         estado='pendiente',
         bloqueado_manual=False
@@ -1678,6 +1707,7 @@ def admin_backup():
                 item_dict = {c.name: getattr(item, c.name) for c in item.__table__.columns}
                 for key, value in item_dict.items():
                     if isinstance(value, datetime):
+                        # Convertir a string ISO sin zona horaria para compatibilidad
                         item_dict[key] = value.isoformat()
                 data_list.append(item_dict)
             zip_file.writestr(f'{tabla}.json', json.dumps(data_list, indent=2, default=str))
@@ -1751,7 +1781,7 @@ def init_db():
             db.session.commit()
             print("✅ 48 selecciones insertadas")
 
-        # Insertar/actualizar los 104 partidos
+        # Insertar/actualizar los 104 partidos (usando hora Ecuador y convirtiendo a UTC)
         from datetime import datetime
 
         grupos_raw = [
@@ -1865,17 +1895,20 @@ def init_db():
         ]
 
         def upsert_partido(fecha_str, hora_str, fase, grupo, local_nombre, visit_nombre):
-            dt = datetime.strptime(f"{fecha_str} {hora_str}", "%Y-%m-%d %H:%M")
+            # Crear datetime en hora Ecuador
+            dt_ecuador = datetime.strptime(f"{fecha_str} {hora_str}", "%Y-%m-%d %H:%M")
+            # Convertir a UTC
+            dt_utc = convertir_a_utc(dt_ecuador)
             local = Seleccion.query.filter_by(nombre=local_nombre).first() if local_nombre else None
             visit = Seleccion.query.filter_by(nombre=visit_nombre).first() if visit_nombre else None
-            partido = Partido.query.filter_by(fecha_hora=dt, fase=fase).first()
+            partido = Partido.query.filter_by(fecha_hora=dt_utc, fase=fase).first()
             if not partido:
                 partido = Partido(
                     fase=fase,
                     grupo=grupo,
                     seleccion_local_id=local.id if local else None,
                     seleccion_visitante_id=visit.id if visit else None,
-                    fecha_hora=dt,
+                    fecha_hora=dt_utc,
                     estado='pendiente'
                 )
                 db.session.add(partido)
