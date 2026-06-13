@@ -225,10 +225,10 @@ def is_match_editable(match, usuario_id=None):
         if intentos >= 2:
             return False
 
-    ahora_utc = datetime.now(UTC_TZ)
+    ahora_utc = datetime.utcnow()
     diff_minutes = (match.fecha_hora - ahora_utc).total_seconds() / 60
     return diff_minutes > 30
-
+    
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
