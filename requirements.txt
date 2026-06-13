@@ -4,3 +4,4 @@ psycopg2-binary==2.9.9
 Werkzeug==2.3.7
 reportlab==4.0.4
 SQLAlchemy>=2.0.35
+pytz==2024.1
