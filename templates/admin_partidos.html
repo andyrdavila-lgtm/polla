@@ -3,51 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Cargar Resultados - Admin Polla Mundialista</title>
+    <title>Cargar Resultados · Admin Polla Mundialista 2026</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* ===== ESTILOS (MANTENIDOS) ===== */
         :root {
-            --ec-yellow: #FFD100;
-            --ec-blue: #003580;
-            --ec-red: #CC0001;
-            --ec-dark: #001a40;
-            --ec-green: #1a6b1a;
-            --white: #ffffff;
+            --y:   #F5C400;
+            --b:   #0A2FA8;
+            --r:   #D0021B;
+            --dk:  #060D1F;
+            --mid: #0D1A3A;
+            --s1:  #111C38;
+            --s2:  #162040;
+            --brd: rgba(255,255,255,0.08);
+            --tx:  rgba(255,255,255,0.92);
+            --txm: rgba(255,255,255,0.55);
+            --txd: rgba(255,255,255,0.30);
+            --green: #1a6b1a;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Barlow', sans-serif;
-            background: var(--ec-dark);
-            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            background: var(--dk);
+            color: var(--tx);
         }
         .bg-canvas {
             position: fixed; inset: 0; z-index: 0;
-            background: radial-gradient(ellipse at 20% 0%, rgba(0,53,128,0.6) 0%, transparent 60%),
-                        radial-gradient(ellipse at 80% 100%, rgba(26,107,26,0.4) 0%, transparent 60%),
-                        var(--ec-dark);
+            background: radial-gradient(ellipse 55% 70% at 80% 20%, rgba(10,47,168,0.22) 0%, transparent 60%),
+                        radial-gradient(ellipse 40% 55% at 10% 85%, rgba(208,2,27,0.14) 0%, transparent 55%),
+                        var(--dk);
             pointer-events: none;
         }
         .bg-canvas::after {
             content: '';
             position: absolute; inset: 0;
-            background-image: radial-gradient(circle, rgba(255,209,0,0.06) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: gridDrift 25s linear infinite;
+            background-image: radial-gradient(circle, rgba(245,196,0,0.05) 1px, transparent 1px);
+            background-size: 52px 52px;
+            animation: gridDrift 30s linear infinite;
         }
-        @keyframes gridDrift { to { background-position: 60px 60px; } }
+        @keyframes gridDrift { to { background-position: 52px 52px; } }
         .floater {
             position: fixed; z-index: 0;
-            width: 320px; height: 320px;
-            border-radius: 50%; filter: blur(80px);
-            pointer-events: none; opacity: 0.18;
+            width: 280px; height: 280px;
+            border-radius: 50%; filter: blur(60px);
+            pointer-events: none; opacity: 0.12;
             animation: floatBall 18s ease-in-out infinite;
         }
-        .floater-1 { background: var(--ec-yellow); top: -80px; left: -80px; }
-        .floater-2 { background: var(--ec-blue); bottom: 10%; right: -100px; animation-delay: -6s; }
-        .floater-3 { background: var(--ec-red); top: 50%; left: 40%; animation-delay: -12s; width: 200px; height: 200px; }
+        .floater-1 { background: var(--y); top: -80px; left: -80px; }
+        .floater-2 { background: var(--b); bottom: 10%; right: -100px; animation-delay: -6s; }
+        .floater-3 { background: var(--r); top: 50%; left: 40%; animation-delay: -12s; width: 180px; height: 180px; }
         @keyframes floatBall {
             0%,100% { transform: translate(0,0) scale(1); }
             33% { transform: translate(30px,-40px) scale(1.1); }
@@ -55,9 +60,9 @@
         }
         nav {
             position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            background: rgba(0,26,64,0.95);
+            background: rgba(6,13,31,0.95);
             backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255,209,0,0.15);
+            border-bottom: 1px solid var(--brd);
         }
         .nav-container {
             display: flex; align-items: center; justify-content: space-between;
@@ -66,12 +71,12 @@
         }
         .nav-brand {
             display: flex; align-items: center; gap: 8px;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 16px; font-weight: 700;
-            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem; font-weight: 600;
+            color: var(--tx);
             text-decoration: none;
         }
-        .nav-brand .ball { font-size: 22px; animation: spin 4s linear infinite; }
+        .nav-brand .ball { font-size: 1.2rem; animation: spin 4s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .menu-toggle {
             display: none; flex-direction: column;
@@ -79,7 +84,7 @@
         }
         .menu-toggle span {
             display: block; height: 3px; width: 100%;
-            background-color: var(--ec-yellow); border-radius: 3px;
+            background-color: var(--y); border-radius: 3px;
             transition: all 0.3s ease;
         }
         .menu-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
@@ -89,14 +94,14 @@
             display: flex; gap: 24px; list-style: none; transition: all 0.3s ease;
         }
         .nav-links a {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 14px;
-            font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-            color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;
+            font-family: 'Inter', sans-serif; font-size: 0.8rem;
+            font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase;
+            color: var(--txm); text-decoration: none; transition: color 0.3s;
         }
-        .nav-links a:hover, .nav-links a.active { color: var(--ec-yellow); }
+        .nav-links a:hover, .nav-links a.active { color: var(--y); }
         .nav-stripe {
             height: 3px;
-            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
             position: absolute; bottom: 0; left: 0; right: 0;
         }
         @media (max-width: 768px) {
@@ -104,12 +109,12 @@
             .nav-links {
                 position: fixed; top: 64px; left: -100%; width: 100%;
                 height: calc(100vh - 64px);
-                background: rgba(0,26,64,0.98); backdrop-filter: blur(20px);
+                background: rgba(6,13,31,0.98); backdrop-filter: blur(20px);
                 flex-direction: column; align-items: center; justify-content: center;
                 gap: 32px; transition: left 0.3s ease; z-index: 999;
             }
             .nav-links.active { left: 0; }
-            .nav-links a { font-size: 18px; padding: 12px; }
+            .nav-links a { font-size: 1rem; padding: 12px; }
         }
         .container {
             position: relative; z-index: 1;
@@ -119,11 +124,11 @@
         .page-header { margin-bottom: 24px; }
         .page-header h1 {
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 36px; color: var(--white);
+            font-size: 36px; color: var(--tx);
         }
-        .page-header h1 i { color: var(--ec-yellow); margin-right: 12px; }
+        .page-header h1 i { color: var(--y); margin-right: 12px; }
         .page-header p {
-            color: rgba(255,255,255,0.5);
+            color: var(--txm);
             font-size: 14px;
             margin-top: 8px;
         }
@@ -131,13 +136,14 @@
             padding: 12px 16px; border-radius: 12px; margin-bottom: 16px;
             font-size: 14px; display: none;
         }
-        .alert-success { background: rgba(26,107,26,0.2); border: 1px solid var(--ec-green); color: #90EE90; }
-        .alert-danger { background: rgba(204,0,1,0.2); border: 1px solid var(--ec-red); color: #ff6b6b; }
-        .alert-warning { background: rgba(255,209,0,0.2); border: 1px solid var(--ec-yellow); color: #FFD100; }
+        .alert-success { background: rgba(26,107,26,0.2); border: 1px solid var(--green); color: #90EE90; }
+        .alert-danger { background: rgba(208,2,27,0.2); border: 1px solid var(--r); color: #ff7a7a; }
+        .alert-warning { background: rgba(245,196,0,0.2); border: 1px solid var(--y); color: var(--y); }
 
         .filters-bar {
-            background: rgba(255,255,255,0.06); backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
+            background: var(--s1);
+            border: 1px solid var(--brd);
+            border-radius: 20px;
             padding: 16px; margin-bottom: 24px;
         }
         .filters-row {
@@ -149,19 +155,19 @@
         }
         .filter-group label {
             font-size: 11px; font-weight: 700; text-transform: uppercase;
-            color: rgba(255,255,255,0.5);
+            color: var(--txm);
         }
         .filter-group select, .filter-group input {
-            background: transparent; border: none; color: var(--white);
+            background: transparent; border: none; color: var(--tx);
             font-size: 13px; padding: 6px 8px; outline: none;
         }
-        .filter-group select option { background: var(--ec-dark); }
+        .filter-group select option { background: var(--dk); }
         .reset-btn {
-            background: rgba(255,209,0,0.2); border: 1px solid var(--ec-yellow);
-            color: var(--ec-yellow); padding: 6px 16px; border-radius: 40px;
+            background: rgba(245,196,0,0.2); border: 1px solid var(--y);
+            color: var(--y); padding: 6px 16px; border-radius: 40px;
             cursor: pointer; font-size: 12px; transition: all 0.3s;
         }
-        .reset-btn:hover { background: var(--ec-yellow); color: var(--ec-dark); }
+        .reset-btn:hover { background: var(--y); color: var(--dk); }
 
         .matches-grid {
             display: grid;
@@ -169,19 +175,20 @@
             gap: 20px;
         }
         .match-card {
-            background: rgba(255,255,255,0.06); backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
+            background: var(--s1);
+            border: 1px solid var(--brd);
+            border-radius: 20px;
             padding: 20px; transition: all 0.3s;
         }
-        .match-card:hover { border-color: var(--ec-yellow); transform: translateY(-4px); }
-        .match-card.bloqueado { opacity: 0.7; border-color: var(--ec-red); }
+        .match-card:hover { border-color: var(--y); transform: translateY(-4px); }
+        .match-card.bloqueado { opacity: 0.7; border-color: var(--r); }
         .match-header {
             display: flex; justify-content: space-between; align-items: center;
             padding-bottom: 12px; margin-bottom: 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid var(--brd);
         }
-        .match-phase { font-size: 11px; font-weight: 700; color: var(--ec-yellow); text-transform: uppercase; }
-        .match-date { font-size: 11px; color: rgba(255,255,255,0.4); }
+        .match-phase { font-size: 11px; font-weight: 700; color: var(--y); text-transform: uppercase; }
+        .match-date { font-size: 11px; color: var(--txd); }
         .match-teams {
             display: flex; align-items: center; justify-content: space-between;
             gap: 16px; margin-bottom: 20px;
@@ -193,10 +200,10 @@
             width: 70px; text-align: center; font-size: 24px;
             font-family: 'Bebas Neue', sans-serif;
             background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 12px; padding: 8px; color: var(--ec-yellow);
+            border-radius: 12px; padding: 8px; color: var(--y);
         }
-        .score-input:focus { outline: none; border-color: var(--ec-yellow); }
-        .vs { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: rgba(255,255,255,0.3); }
+        .score-input:focus { outline: none; border-color: var(--y); }
+        .vs { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--txd); }
         .penalty-section {
             margin-top: 12px; padding-top: 8px;
             border-top: 1px dashed rgba(255,159,67,0.3);
@@ -214,26 +221,26 @@
             display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;
         }
         .btn-save {
-            background: var(--ec-yellow); color: var(--ec-dark); border: none;
+            background: var(--y); color: var(--dk); border: none;
             padding: 10px 24px; border-radius: 30px; font-weight: 700;
             cursor: pointer; transition: transform 0.2s;
         }
         .btn-save:hover { transform: scale(1.05); }
         .btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .btn-bloqueo {
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1); border: 1px solid var(--brd);
             padding: 8px 16px; border-radius: 30px; font-weight: 600;
-            font-size: 11px; cursor: pointer; transition: all 0.2s; color: var(--white);
+            font-size: 11px; cursor: pointer; transition: all 0.2s; color: var(--tx);
         }
-        .btn-bloqueo.bloqueado { background: rgba(204,0,1,0.3); border-color: var(--ec-red); color: #ff6b6b; }
+        .btn-bloqueo.bloqueado { background: rgba(208,2,27,0.3); border-color: var(--r); color: #ff7a7a; }
         .btn-bloqueo:hover { transform: scale(1.02); }
         .status-badge {
             display: inline-block; padding: 4px 12px; border-radius: 20px;
             font-size: 11px; font-weight: 700;
         }
-        .status-pendiente { background: rgba(255,209,0,0.2); color: var(--ec-yellow); }
+        .status-pendiente { background: rgba(245,196,0,0.2); color: var(--y); }
         .status-finalizado { background: rgba(26,107,26,0.3); color: #4caf50; }
-        .status-bloqueado { background: rgba(204,0,1,0.3); color: #ff6b6b; }
+        .status-bloqueado { background: rgba(208,2,27,0.3); color: #ff7a7a; }
 
         .modal {
             display: none; position: fixed; z-index: 2000;
@@ -242,34 +249,34 @@
             justify-content: center; align-items: center;
         }
         .modal-content {
-            background: var(--ec-dark); border: 1px solid var(--ec-yellow);
+            background: var(--s1); border: 1px solid var(--y);
             border-radius: 20px; padding: 24px; max-width: 400px; width: 90%;
             text-align: center;
         }
         .modal-content h3 {
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 24px; color: var(--ec-yellow); margin-bottom: 16px;
+            font-size: 24px; color: var(--y); margin-bottom: 16px;
         }
-        .modal-content p { margin-bottom: 20px; color: rgba(255,255,255,0.7); }
+        .modal-content p { margin-bottom: 20px; color: var(--txm); }
         .modal-buttons { display: flex; gap: 12px; justify-content: center; }
         .modal-btn {
             padding: 10px 20px; border-radius: 30px; border: none;
             cursor: pointer; font-weight: 700;
         }
-        .modal-btn-confirm { background: var(--ec-red); color: white; }
+        .modal-btn-confirm { background: var(--r); color: white; }
         .modal-btn-cancel { background: rgba(255,255,255,0.2); color: white; }
 
         footer {
             background: rgba(0,0,0,0.5);
-            border-top: 1px solid rgba(255,255,255,0.06);
+            border-top: 1px solid var(--brd);
             padding: 20px; text-align: center; margin-top: 40px;
         }
         .footer-stripe {
             height: 3px;
-            background: linear-gradient(90deg, var(--ec-yellow) 33%, var(--ec-blue) 33% 66%, var(--ec-red) 66%);
+            background: linear-gradient(90deg, var(--y) 33%, var(--b) 33% 66%, var(--r) 66%);
             width: 80px; margin: 0 auto 12px;
         }
-        .footer-text { font-size: 10px; color: rgba(255,255,255,0.35); }
+        .footer-text { font-size: 10px; color: var(--txd); }
 
         @media (max-width: 768px) {
             .matches-grid { grid-template-columns: 1fr; }
@@ -280,7 +287,7 @@
         }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
-        ::-webkit-scrollbar-thumb { background: var(--ec-yellow); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: var(--y); border-radius: 3px; }
 
         .toast-notification {
             position: fixed; bottom: 30px; left: 50%;
@@ -290,8 +297,8 @@
             font-size: 14px; z-index: 2000;
             animation: fadeInUp 0.3s ease;
         }
-        .toast-notification.success { background: var(--ec-green); border-left: 4px solid var(--ec-yellow); }
-        .toast-notification.error { background: var(--ec-red); }
+        .toast-notification.success { background: var(--green); border-left: 4px solid var(--y); }
+        .toast-notification.error { background: var(--r); }
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateX(-50%) translateY(20px); }
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -307,7 +314,7 @@
     <nav>
         <div class="nav-container">
             <a class="nav-brand" href="{{ url_for('dashboard') }}">
-                <span class="ball">⚽</span> Polla Mundialista DGA 2026
+                <span class="ball">⚽</span> Polla Mundialista 2026
             </a>
             <div class="menu-toggle" id="menuToggle">
                 <span></span><span></span><span></span>
@@ -380,7 +387,7 @@
 
     <footer>
         <div class="footer-stripe"></div>
-        <div class="footer-text">© 2026 Polla Mundialista DGA LEGAL - Panel Administrador</div>
+        <div class="footer-text">© 2026 Polla Mundialista 2026 — Panel Administrador</div>
     </footer>
 
     <div id="confirmModal" class="modal">
@@ -442,7 +449,7 @@
                 applyFilters();
             } catch (err) {
                 console.error(err);
-                document.getElementById('matchesContainer').innerHTML = '<div style="text-align:center; color:red;">Error al cargar los partidos</div>';
+                document.getElementById('matchesContainer').innerHTML = '<div style="text-align:center; color:#ff7a7a;">Error al cargar los partidos</div>';
             }
         }
 
