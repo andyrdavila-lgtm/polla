@@ -9,8 +9,6 @@ from functools import wraps
 import json
 import io
 import zipfile
-from collections import defaultdict
-import pytz
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = 'clave_secreta_polla_mundialista_2026'
@@ -38,23 +36,22 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Zona horaria de Ecuador (UTC-5, sin horario de verano)
-ECUADOR_TZ = pytz.timezone('America/Guayaquil')
-UTC_TZ = pytz.UTC
-
+# ==================================================
+# FUNCIONES DE CONVERSIÓN DE ZONA HORARIA
+# Ecuador tiene UTC-5 fijo (sin horario de verano)
+# Las fechas en la BD se guardan en UTC (naive)
+# ==================================================
 def convertir_a_ecuador(dt_utc):
+    """Convierte un datetime UTC (naive) a hora Ecuador (naive) restando 5 horas"""
     if dt_utc is None:
         return None
-    if dt_utc.tzinfo is None:
-        dt_utc = UTC_TZ.localize(dt_utc)
-    return dt_utc.astimezone(ECUADOR_TZ)
+    return dt_utc - timedelta(hours=5)
 
 def convertir_a_utc(dt_ecuador):
+    """Convierte un datetime en hora Ecuador (naive) a UTC (naive) sumando 5 horas"""
     if dt_ecuador is None:
         return None
-    if dt_ecuador.tzinfo is None:
-        dt_ecuador = ECUADOR_TZ.localize(dt_ecuador)
-    return dt_ecuador.astimezone(UTC_TZ)
+    return dt_ecuador + timedelta(hours=5)
 
 # ==================================================
 # MODELOS
@@ -89,7 +86,7 @@ class Partido(db.Model):
     fase = db.Column(db.String(20), nullable=False)
     seleccion_local_id = db.Column(db.Integer, db.ForeignKey('selecciones.id'))
     seleccion_visitante_id = db.Column(db.Integer, db.ForeignKey('selecciones.id'))
-    fecha_hora = db.Column(db.DateTime, nullable=False)   # Guardado en UTC
+    fecha_hora = db.Column(db.DateTime, nullable=False)   # Guardado en UTC (naive)
     goles_local = db.Column(db.Integer)
     goles_visitante = db.Column(db.Integer)
     penales_local = db.Column(db.Integer, default=None)
@@ -121,7 +118,7 @@ class PronosticoPartido(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios_polla.id'))
     partido_id = db.Column(db.Integer, db.ForeignKey('partidos.id'))
-    tipo_pronostico = db.Column(db.String(20), default='ganador')
+    tipo_pronostico = db.Column(db.String(20), default='marcador')
     ganador = db.Column(db.String(20))
     goles_local = db.Column(db.Integer)
     goles_visitante = db.Column(db.Integer)
@@ -228,7 +225,7 @@ def is_match_editable(match, usuario_id=None):
     ahora_utc = datetime.utcnow()
     diff_minutes = (match.fecha_hora - ahora_utc).total_seconds() / 60
     return diff_minutes > 30
-    
+
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -278,11 +275,6 @@ def calcular_puntos_pronostico(pronostico, partido):
     ganador_real = partido.ganador_real
     puntos = 0
     es_exacto = False
-
-    if pronostico.tipo_pronostico == 'ganador':
-        if pronostico.ganador == ganador_real:
-            puntos = 3
-        return puntos, False
 
     if pronostico.tipo_pronostico == 'marcador':
         gl = pronostico.goles_local
@@ -779,6 +771,7 @@ def api_partidos():
             visitante_nombre = 'Por definir'
             visitante_bandera = '/static/default_flag.png'
 
+        # Convertir fecha UTC a hora Ecuador para mostrar
         fecha_ecuador = convertir_a_ecuador(p.fecha_hora)
         fecha_str = fecha_ecuador.strftime('%Y-%m-%d %H:%M:%S')
 
@@ -885,7 +878,11 @@ def api_guardar_pronostico_partido():
 
     data = request.json
     partido_id = data.get('partido_id')
-    tipo = data.get('tipo', 'ganador')
+    tipo = data.get('tipo', 'marcador')   # por defecto marcador
+
+    # Solo aceptamos marcador o penales (no ganador)
+    if tipo not in ['marcador', 'penales']:
+        return jsonify({'error': 'Tipo de pronóstico no válido'}), 400
 
     partido = db.session.get(Partido, partido_id)
     if not partido:
@@ -903,24 +900,7 @@ def api_guardar_pronostico_partido():
 
     nuevo_intento = intentos_actuales + 1
 
-    if tipo == 'ganador':
-        ganador = data.get('ganador')
-        if ganador not in ('local', 'visitante', 'empate'):
-            return jsonify({'error': 'Selecciona un ganador válido'}), 400
-        pronostico = PronosticoPartido(
-            usuario_id=session['user_id'],
-            partido_id=partido_id,
-            tipo_pronostico='ganador',
-            ganador=ganador,
-            goles_local=None,
-            goles_visitante=None,
-            penales_local=None,
-            penales_visitante=None,
-            ip_address=request.remote_addr,
-            intento_numero=nuevo_intento
-        )
-
-    elif tipo == 'marcador':
+    if tipo == 'marcador':
         try:
             gl = int(data['goles_local'])
             gv = int(data['goles_visitante'])
@@ -929,12 +909,7 @@ def api_guardar_pronostico_partido():
         if gl < 0 or gv < 0 or gl > 20 or gv > 20:
             return jsonify({'error': 'Goles fuera de rango (0-20)'}), 400
 
-        if gl > gv:
-            ganador_imp = 'local'
-        elif gl < gv:
-            ganador_imp = 'visitante'
-        else:
-            ganador_imp = 'empate'
+        ganador_imp = 'local' if gl > gv else 'visitante' if gl < gv else 'empate'
 
         pronostico = PronosticoPartido(
             usuario_id=session['user_id'],
@@ -1048,8 +1023,9 @@ def api_guardar_prediccion_campeon():
     if not campeon_id:
         return jsonify({'error': 'Debe seleccionar un equipo'}), 400
 
-    deadline_ecuador = ECUADOR_TZ.localize(datetime(2026, 6, 10, 23, 30, 0))
-    ahora_ecuador = datetime.now(ECUADOR_TZ)
+    # Plazo en hora Ecuador (UTC-5)
+    deadline_ecuador = datetime(2026, 6, 10, 23, 30, 0)
+    ahora_ecuador = convertir_a_ecuador(datetime.utcnow())
     if ahora_ecuador > deadline_ecuador:
         return jsonify({'error': 'El plazo para predecir al campeón ya expiró (10/06/2026 23:30)'}), 400
 
@@ -1410,7 +1386,7 @@ def api_mis_pronosticos_pdf():
             nombre_visit = partido.visitante.nombre if partido.visitante else '?'
             partido_str = f"{nombre_local} vs {nombre_visit}"
 
-            tipo = pron.tipo_pronostico or 'ganador'
+            tipo = pron.tipo_pronostico or 'marcador'
             if tipo == 'ganador':
                 if pron.ganador == 'local':
                     pron_str = f"Gana: {nombre_local}"
@@ -1703,16 +1679,17 @@ def admin_backup():
                      mimetype='application/zip')
 
 # ==================================================
-# INICIALIZACIÓN DE BASE DE DATOS
+# INICIALIZACIÓN DE BASE DE DATOS (corregida, sin duplicados)
 # ==================================================
 
 def init_db():
     with app.app_context():
         db.create_all()
 
+        # Migraciones
         migraciones = [
             "ALTER TABLE pronosticos_partidos ADD COLUMN IF NOT EXISTS ganador VARCHAR(20)",
-            "ALTER TABLE pronosticos_partidos ADD COLUMN IF NOT EXISTS tipo_pronostico VARCHAR(20) DEFAULT 'ganador'",
+            "ALTER TABLE pronosticos_partidos ADD COLUMN IF NOT EXISTS tipo_pronostico VARCHAR(20) DEFAULT 'marcador'",
             "ALTER TABLE pronosticos_partidos ADD COLUMN IF NOT EXISTS penales_local INTEGER",
             "ALTER TABLE pronosticos_partidos ADD COLUMN IF NOT EXISTS penales_visitante INTEGER",
             "ALTER TABLE partidos ADD COLUMN IF NOT EXISTS bloqueado_manual BOOLEAN DEFAULT FALSE",
@@ -1728,21 +1705,20 @@ def init_db():
                 db.session.rollback()
                 print(f"⚠️ Migración omitida: {e}")
 
+        # Actualizar tipo_pronostico por defecto a 'marcador'
         try:
             db.session.execute(text("""
                 UPDATE pronosticos_partidos
-                SET tipo_pronostico = CASE
-                    WHEN goles_local IS NOT NULL AND goles_visitante IS NOT NULL THEN 'marcador'
-                    ELSE 'ganador'
-                END
+                SET tipo_pronostico = 'marcador'
                 WHERE tipo_pronostico IS NULL OR tipo_pronostico = ''
             """))
             db.session.commit()
-            print("✅ Migración tipo_pronostico completada")
+            print("✅ Migración tipo_pronostico completada (marcador por defecto)")
         except Exception as e:
             db.session.rollback()
             print(f"⚠️ Migración tipo_pronostico omitida: {e}")
 
+        # Insertar selecciones si no existen
         if Seleccion.query.count() == 0:
             selecciones_data = [
                 ("Argentina", "A"), ("Brasil", "B"), ("Francia", "C"), ("Alemania", "D"),
@@ -1763,6 +1739,7 @@ def init_db():
             db.session.commit()
             print("✅ 48 selecciones insertadas")
 
+        # Insertar partidos (usando UPSERT y evitando duplicados)
         from datetime import datetime
 
         grupos_raw = [
@@ -1880,6 +1857,7 @@ def init_db():
             dt_utc = convertir_a_utc(dt_ecuador)
             local = Seleccion.query.filter_by(nombre=local_nombre).first() if local_nombre else None
             visit = Seleccion.query.filter_by(nombre=visit_nombre).first() if visit_nombre else None
+            # Buscar partido existente por fecha UTC y fase
             partido = Partido.query.filter_by(fecha_hora=dt_utc, fase=fase).first()
             if not partido:
                 partido = Partido(
@@ -1892,6 +1870,7 @@ def init_db():
                 )
                 db.session.add(partido)
             else:
+                # Actualizar equipos si han cambiado
                 if partido.seleccion_local_id != (local.id if local else None):
                     partido.seleccion_local_id = local.id if local else None
                 if partido.seleccion_visitante_id != (visit.id if visit else None):
@@ -1900,8 +1879,10 @@ def init_db():
                     partido.grupo = grupo
             return partido
 
+        # Insertar partidos de fase de grupos
         for fecha_str, hora_str, local_n, visit_n, grupo, fase in grupos_raw:
             upsert_partido(fecha_str, hora_str, fase, grupo, local_n, visit_n)
+        # Insertar partidos de eliminatorias
         for fecha_str, hora_str, fase in elim_raw:
             upsert_partido(fecha_str, hora_str, fase, None, None, None)
 
@@ -1910,6 +1891,7 @@ def init_db():
 
         actualizar_toda_eliminatoria()
 
+        # Crear usuario ADMIN si no existe
         admin = Usuario.query.filter_by(username='ADMIN').first()
         if not admin:
             admin_user = Usuario(
