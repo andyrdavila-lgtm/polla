@@ -523,14 +523,9 @@
             allMatches = await response.json();
             allMatches.forEach(m => {
                 if (m.intentos !== undefined) matchIntentos[m.id] = m.intentos;
-                // Forzar tipo por defecto a 'marcador' (para grupos) y si es eliminatoria, se elige penales o marcador según lo guardado
+                // Inicializar tipo de pronóstico por defecto
                 if (!predictionTypes[m.id]) {
-                    if (m.fase !== 'grupos' && m.fase !== 'grupos') {
-                        // Inicialmente, si no hay tipo guardado, usar 'marcador'
-                        predictionTypes[m.id] = 'marcador';
-                    } else {
-                        predictionTypes[m.id] = 'marcador';
-                    }
+                    predictionTypes[m.id] = 'marcador';
                 }
             });
         }
@@ -546,7 +541,6 @@
                 } else if (pred.goles_local !== undefined && pred.goles_visitante !== undefined) {
                     predictionTypes[matchId] = 'marcador';
                 } else {
-                    // si no hay datos, por defecto marcador
                     predictionTypes[matchId] = 'marcador';
                 }
             }
@@ -563,8 +557,17 @@
             if (match.bloqueado_manual) return false;
             if ((matchIntentos[match.id] || 0) >= 2) return false;
             if (!match.fecha_hora) return true;
-            const diff = (new Date(match.fecha_hora) - new Date()) / 60000;
+            // La fecha viene en formato ISO UTC con 'Z' (ej: "2026-06-11T20:00:00Z")
+            const matchDate = new Date(match.fecha_hora);
+            const now = new Date();
+            const diff = (matchDate - now) / 60000; // minutos
             return diff > 30;
+        }
+
+        // ─── CONVERSIÓN A HORA ECUADOR ───────────────────────────────────────
+        function formatFechaEcuador(fechaISO) {
+            const fecha = new Date(fechaISO);
+            return fecha.toLocaleString('es-EC', { timeZone: 'America/Guayaquil' });
         }
 
         // ─── RENDER HTML DE UN PARTIDO (SOLO MARCADOR Y PENALES) ──────────────
@@ -591,7 +594,7 @@
             const disabled = (!isEditable || isFinalizado || haAlcanzadoLim) ? 'disabled' : '';
             const localN   = match.local_nombre   || 'Por definir';
             const visitN   = match.visitante_nombre || 'Por definir';
-            const fecha    = new Date(match.fecha_hora).toLocaleString('es-EC', { timeZone: 'America/Guayaquil' });
+            const fechaStr = formatFechaEcuador(match.fecha_hora);
             const grupoDisp = match.grupo ? `Grupo ${match.grupo}` : (match.fase === 'grupos' ? '' : match.fase);
 
             const tipoMarcadorActive = savedTipo === 'marcador' ? 'active' : '';
@@ -642,7 +645,7 @@
                 </div>
 
                 <div class="match-info">
-                    <span><i class="far fa-calendar-alt"></i> ${fecha}</span>
+                    <span><i class="far fa-calendar-alt"></i> ${fechaStr}</span>
                     ${grupoDisp ? `<span class="match-group">${escapeHtml(grupoDisp)}</span>` : ''}
                     ${isFinalizado ? '<span style="color:#4caf50">✅ Finalizado</span>' : ''}
                     ${lockLabel && !isFinalizado ? `<span style="color:${lockClass==='intentos-limit'?'var(--y)':'#ff7a7a'}">${lockLabel}</span>` : ''}
@@ -699,7 +702,6 @@
                 (m.local_nombre || '').toLowerCase().includes(searchT) ||
                 (m.visitante_nombre || '').toLowerCase().includes(searchT)
             );
-            console.log(`🔍 Filtro: grupo=${grupoF}, búsqueda="${searchT}", partidos totales=${matches.length}, filtrados=${filtered.length}`);
             if (filtered.length === 0)
                 return '<div class="info-alert" style="text-align:center">No hay partidos con esos filtros</div>';
             return '<div class="matches-grid">' + filtered.map(renderMatchCard).join('') + '</div>';
@@ -719,7 +721,6 @@
             } else {
                 matches = allMatches.filter(m => m.fase !== 'grupos');
             }
-            console.log(`📌 Mostrando fase: ${phase}, partidos: ${matches.length}`);
             container.innerHTML = renderMatches(matches, phase);
             attachMatchEventListeners();
         }
