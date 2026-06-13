@@ -577,6 +577,30 @@
     border-radius: 12px;
   }
 
+  /* Oscar Caicedo destacado */
+  .oscar-brand {
+    text-align: center;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, rgba(0, 255, 170, 0.1), rgba(0, 102, 204, 0.05));
+    border-bottom: 1px solid rgba(0, 255, 170, 0.2);
+  }
+
+  .oscar-brand h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #00FFAA, #FFFFFF);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .oscar-brand p {
+    font-size: 0.8rem;
+    color: #8E9AAF;
+    margin-top: 4px;
+  }
+
   /* Responsive */
   @media (max-width: 768px) {
     .hero-title { font-size: 2.5rem; }
@@ -598,7 +622,19 @@
     .nav-links.active { left: 0; }
     .section { padding: 50px 20px; }
     .quote { margin: 0 20px 50px; padding: 24px; }
+    .oscar-brand h2 { font-size: 1.3rem; }
   }
+
+  @media (max-width: 480px) {
+    .countdown-item { padding: 8px 16px; min-width: 60px; }
+    .countdown-number { font-size: 1.3rem; }
+    .btn { padding: 10px 20px; font-size: 0.75rem; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+  ::-webkit-scrollbar-thumb { background: #00FFAA; border-radius: 3px; }
 </style>
 </head>
 <body>
@@ -606,21 +642,22 @@
 <div class="bg-gradient"></div>
 <div class="noise"></div>
 
+<!-- Banner destacado de Oscar Caicedo -->
+<div class="oscar-brand">
+  <h2>⚽ OSCAR CAICEDO · PEC MNT B12 ⚽</h2>
+  <p>Coordinador Oficial de la Polla Mundialista 2026</p>
+</div>
+
 <nav class="navbar">
   <div class="nav-container">
     <div class="logo">
       <span>⚽ <span class="accent">Polla Mundialista 2026</span></span>
-      <span class="sub">Oscar Caicedo · PEC MNT B12</span>
     </div>
     <div class="menu-toggle" id="menuToggle">
       <span></span><span></span><span></span>
     </div>
     <ul class="nav-links" id="navLinks">
-      <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-      <li><a href="{{ url_for('pronosticos') }}">Pronósticos</a></li>
-      <li><a href="{{ url_for('tabla_posiciones') }}">Tabla</a></li>
-      <li><a href="{{ url_for('perfil') }}">Mi Perfil</a></li>
-      <li><a href="{{ url_for('login') }}">Ingresar</a></li>
+      <li><a href="{{ url_for('login') }}" class="btn-primary" style="background:#00FFAA; color:#0B0F1C; padding:8px 20px; border-radius:40px;">🔐 Ingresar</a></li>
     </ul>
   </div>
 </nav>
