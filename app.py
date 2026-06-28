@@ -439,23 +439,9 @@ def actualizar_ronda(origen_fase, destino_fase, num_partidos_destino):
 def cargar_llave_personalizada():
     """
     Crea o actualiza los partidos de R32 y R16 según los enfrentamientos fijos.
-    Se ejecuta automáticamente en init_db si no hay 16 R32.
-    Todas las fechas están en horario Ecuador (UTC-5).
+    Usa los nombres exactos de la base de datos.
     """
-    # Mapeo nombre -> ID (debes tener estas selecciones en tu BD)
-    equipos = {
-        'Sudáfrica': 27, 'Canadá': 14, 'Alemania': 4, 'Paraguay': 17,
-        'Países Bajos': 7, 'Marruecos': 22, 'Brasil': 2, 'Japón': 18,
-        'Francia': 3, 'Suecia': 35, 'Costa de Marfil': 26, 'Noruega': 41,
-        'México': 9, 'Ecuador': 13, 'Inglaterra': 6, 'RD del Congo': 44,
-        'Estados Unidos': 15, 'Bosnia y Herzegovina': 47, 'Bélgica': 12,
-        'Argelia': 28, 'Portugal': 8, 'Croacia': 11, 'España': 5,
-        'Austria': 42, 'Suiza': 29, 'Irán': 38, 'Argentina': 1,
-        'Cabo Verde': 36, 'Colombia': 16, 'Ghana': 25, 'Australia': 20,
-        'Egipto': 24
-    }
-
-    # Enfrentamientos R32 (16) en el orden correcto
+    # Enfrentamientos R32 con nombres exactos (según tu tabla)
     r32_encuentros = [
         ('Sudáfrica', 'Canadá'),
         ('Alemania', 'Paraguay'),
@@ -464,8 +450,8 @@ def cargar_llave_personalizada():
         ('Francia', 'Suecia'),
         ('Costa de Marfil', 'Noruega'),
         ('México', 'Ecuador'),
-        ('Inglaterra', 'RD del Congo'),
-        ('Estados Unidos', 'Bosnia y Herzegovina'),
+        ('Inglaterra', 'RD Congo'),
+        ('EE.UU.', 'Bosnia'),
         ('Bélgica', 'Argelia'),
         ('Portugal', 'Croacia'),
         ('España', 'Austria'),
@@ -475,49 +461,46 @@ def cargar_llave_personalizada():
         ('Australia', 'Egipto')
     ]
 
-    # Fechas y horas en horario Ecuador (sin offset)
+    # Fechas y horas en horario Ecuador
     fechas_r32 = [
-        ('2026-06-28', '14:00'),
-        ('2026-06-29', '12:00'),
-        ('2026-06-29', '15:30'),
-        ('2026-06-29', '20:00'),
-        ('2026-06-30', '12:00'),
-        ('2026-06-30', '16:00'),
-        ('2026-06-30', '20:00'),
-        ('2026-07-01', '11:00'),
-        ('2026-07-01', '15:00'),
-        ('2026-07-01', '19:00'),
-        ('2026-07-02', '14:00'),
-        ('2026-07-02', '18:00'),
-        ('2026-07-02', '22:00'),
-        ('2026-07-03', '13:00'),
-        ('2026-07-03', '17:00'),
-        ('2026-07-03', '20:30')
+        ('2026-06-28', '14:00'), ('2026-06-29', '12:00'),
+        ('2026-06-29', '15:30'), ('2026-06-29', '20:00'),
+        ('2026-06-30', '12:00'), ('2026-06-30', '16:00'),
+        ('2026-06-30', '20:00'), ('2026-07-01', '11:00'),
+        ('2026-07-01', '15:00'), ('2026-07-01', '19:00'),
+        ('2026-07-02', '14:00'), ('2026-07-02', '18:00'),
+        ('2026-07-02', '22:00'), ('2026-07-03', '13:00'),
+        ('2026-07-03', '17:00'), ('2026-07-03', '20:30')
     ]
 
-    # Primero eliminar historiales de R32 y R16 para evitar conflictos
+    def get_seleccion_id(nombre):
+        selec = Seleccion.query.filter_by(nombre=nombre).first()
+        if not selec:
+            print(f"⚠️ Selección no encontrada: {nombre}")
+            return None
+        return selec.id
+
+    # Eliminar historiales y partidos antiguos
     for fase in ['R32', 'R16']:
         partidos = Partido.query.filter_by(fase=fase).all()
         for p in partidos:
             HistorialResultado.query.filter_by(partido_id=p.id).delete()
         db.session.commit()
 
-    # Eliminar partidos R32 y R16
     Partido.query.filter(Partido.fase.in_(['R32', 'R16'])).delete()
     db.session.commit()
-    print("🗑️ Eliminados R32 y R16 antiguos (con historiales)")
+    print("🗑️ Eliminados R32 y R16 antiguos")
 
     # Crear R32
     r32_ids = []
     for idx, (local_nom, visit_nom) in enumerate(r32_encuentros):
-        local_id = equipos.get(local_nom)
-        visit_id = equipos.get(visit_nom)
+        local_id = get_seleccion_id(local_nom)
+        visit_id = get_seleccion_id(visit_nom)
         if local_id is None or visit_id is None:
-            print(f"⚠️ Equipo no encontrado: {local_nom} o {visit_nom}")
+            print(f"⚠️ No se pudo crear: {local_nom} vs {visit_nom}")
             continue
-        # Convertir fecha/hora Ecuador a UTC
         dt_ecuador = datetime.strptime(f"{fechas_r32[idx][0]} {fechas_r32[idx][1]}", "%Y-%m-%d %H:%M")
-        dt_utc = convertir_a_utc(dt_ecuador)   # suma 5 horas
+        dt_utc = convertir_a_utc(dt_ecuador)
         partido = Partido(
             fase='R32',
             seleccion_local_id=local_id,
@@ -535,16 +518,11 @@ def cargar_llave_personalizada():
 
     # Crear R16 (sin equipos)
     fechas_r16 = [
-        ('2026-07-04', '12:00'),
-        ('2026-07-04', '16:00'),
-        ('2026-07-05', '15:00'),
-        ('2026-07-05', '19:00'),
-        ('2026-07-06', '14:00'),
-        ('2026-07-06', '19:00'),
-        ('2026-07-07', '11:00'),
-        ('2026-07-07', '15:00')
+        ('2026-07-04', '12:00'), ('2026-07-04', '16:00'),
+        ('2026-07-05', '15:00'), ('2026-07-05', '19:00'),
+        ('2026-07-06', '14:00'), ('2026-07-06', '19:00'),
+        ('2026-07-07', '11:00'), ('2026-07-07', '15:00')
     ]
-    r16_ids = []
     for fecha, hora in fechas_r16:
         dt_ecuador = datetime.strptime(f"{fecha} {hora}", "%Y-%m-%d %H:%M")
         dt_utc = convertir_a_utc(dt_ecuador)
@@ -558,11 +536,8 @@ def cargar_llave_personalizada():
             bloqueado_manual=False
         )
         db.session.add(partido)
-        db.session.flush()
-        r16_ids.append(partido.id)
     db.session.commit()
-    print(f"✅ Creados {len(r16_ids)} R16")
-
+    print(f"✅ Creados {len(fechas_r16)} R16")
 def propagar_llave_personalizada():
     """
     Propaga los ganadores de R32 a R16 según los pares definidos.
