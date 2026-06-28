@@ -803,6 +803,7 @@ def api_partidos():
     if grupo:
         query = query.filter_by(grupo=grupo)
     partidos = query.order_by(Partido.fecha_hora).all()
+
     resultado = []
     for p in partidos:
         intentos = 0
@@ -814,11 +815,12 @@ def api_partidos():
             ultimo_pronostico = PronosticoPartido.query.filter_by(
                 usuario_id=session['user_id'], partido_id=p.id
             ).order_by(PronosticoPartido.fecha_pronostico.desc()).first()
+
         local_nombre = p.local.nombre if p.local else 'Por definir'
         local_bandera = (p.local.bandera_local or p.local.bandera_url or get_bandera_default(p.local.nombre if p.local else None)) if p.local else '/static/default_flag.png'
         visitante_nombre = p.visitante.nombre if p.visitante else 'Por definir'
         visitante_bandera = (p.visitante.bandera_local or p.visitante.bandera_url or get_bandera_default(p.visitante.nombre if p.visitante else None)) if p.visitante else '/static/default_flag.png'
-        fecha_str = p.fecha_hora.isoformat() + 'Z'
+
         resultado.append({
             'id': p.id,
             'fase': p.fase,
@@ -826,7 +828,7 @@ def api_partidos():
             'local_bandera': local_bandera,
             'visitante_nombre': visitante_nombre,
             'visitante_bandera': visitante_bandera,
-            'fecha_hora': fecha_str,
+            'fecha_hora': p.fecha_hora.isoformat() + 'Z',
             'goles_local': p.goles_local,
             'goles_visitante': p.goles_visitante,
             'penales_local': p.penales_local,
@@ -846,8 +848,20 @@ def api_partidos():
             } if ultimo_pronostico else None,
             'editable': is_match_editable(p, session.get('user_id'))
         })
-    return jsonify(resultado)
 
+    # Obtener fases disponibles ordenadas
+    fases_orden = ['grupos', 'R32', 'R16', 'QF', 'SF', '3P', 'FINAL']
+    fases_existentes = db.session.query(Partido.fase).distinct().filter(Partido.fase.in_(fases_orden)).all()
+    fases_disponibles = [f[0] for f in fases_existentes if f[0]]
+    fases_disponibles.sort(key=lambda x: fases_orden.index(x) if x in fases_orden else 999)
+
+    fase_activa = get_fase_activa()
+
+    return jsonify({
+        'partidos': resultado,
+        'fases_disponibles': fases_disponibles,
+        'fase_activa': fase_activa
+    })
 @app.route('/api/mis-pronosticos')
 def api_mis_pronosticos():
     if 'user_id' not in session:
