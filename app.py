@@ -391,9 +391,240 @@ def obtener_ganador(partido):
         return partido.visitante
     return None
 
-def actualizar_toda_eliminatoria():
-    # Función simplificada, no es crítica para el funcionamiento básico
-    pass
+# ==================================================
+# GESTIÓN DE FASE ACTIVA
+# ==================================================
+def get_fase_activa():
+    config = ConfiguracionGlobal.query.filter_by(clave='fase_activa').first()
+    return config.valor if config else 'grupos'
+
+def set_fase_activa(fase):
+    config = ConfiguracionGlobal.query.filter_by(clave='fase_activa').first()
+    if config:
+        config.valor = fase
+        config.fecha_actualizacion = datetime.now()
+    else:
+        config = ConfiguracionGlobal(clave='fase_activa', valor=fase, descripcion='Fase activa del torneo')
+        db.session.add(config)
+    db.session.commit()
+
+# ==================================================
+# LLAVE PERSONALIZADA (R32 y R16)
+# ==================================================
+
+def actualizar_ronda(origen_fase, destino_fase, num_partidos_destino):
+    partidos_origen = Partido.query.filter_by(fase=origen_fase).order_by(Partido.fecha_hora).all()
+    partidos_destino = Partido.query.filter_by(fase=destino_fase).order_by(Partido.fecha_hora).all()
+    if len(partidos_destino) != num_partidos_destino:
+        print(f"⚠️ Advertencia: se esperaban {num_partidos_destino} partidos para {destino_fase}, pero hay {len(partidos_destino)}")
+        return
+    if len(partidos_origen) % 2 != 0:
+        print(f"⚠️ Número impar de partidos origen ({len(partidos_origen)}) para {origen_fase}, no se puede emparejar.")
+        return
+    parejas = [(partidos_origen[i], partidos_origen[i+1]) for i in range(0, len(partidos_origen), 2)]
+    if len(parejas) != num_partidos_destino:
+        print(f"⚠️ No se pueden formar {num_partidos_destino} parejas con {len(partidos_origen)} partidos de origen")
+        return
+    for idx, (partido_dest, (p1, p2)) in enumerate(zip(partidos_destino, parejas)):
+        ganador1 = obtener_ganador(p1)
+        ganador2 = obtener_ganador(p2)
+        if ganador1 and ganador2:
+            if partido_dest.seleccion_local_id != ganador1.id:
+                partido_dest.seleccion_local_id = ganador1.id
+            if partido_dest.seleccion_visitante_id != ganador2.id:
+                partido_dest.seleccion_visitante_id = ganador2.id
+            db.session.commit()
+            print(f"✅ {destino_fase} partido {partido_dest.id}: {ganador1.nombre} vs {ganador2.nombre}")
+
+def cargar_llave_personalizada():
+    """
+    Crea o actualiza los partidos de R32 y R16 según los enfrentamientos fijos.
+    Se ejecuta automáticamente en init_db si no hay 16 R32.
+    Todas las fechas están en horario Ecuador (UTC-5).
+    """
+    # Mapeo nombre -> ID (debes tener estas selecciones en tu BD)
+    equipos = {
+        'Sudáfrica': 27, 'Canadá': 14, 'Alemania': 4, 'Paraguay': 17,
+        'Países Bajos': 7, 'Marruecos': 22, 'Brasil': 2, 'Japón': 18,
+        'Francia': 3, 'Suecia': 35, 'Costa de Marfil': 26, 'Noruega': 41,
+        'México': 9, 'Ecuador': 13, 'Inglaterra': 6, 'RD del Congo': 44,
+        'Estados Unidos': 15, 'Bosnia y Herzegovina': 47, 'Bélgica': 12,
+        'Argelia': 28, 'Portugal': 8, 'Croacia': 11, 'España': 5,
+        'Austria': 42, 'Suiza': 29, 'Irán': 38, 'Argentina': 1,
+        'Cabo Verde': 36, 'Colombia': 16, 'Ghana': 25, 'Australia': 20,
+        'Egipto': 24
+    }
+
+    # Enfrentamientos R32 (16) en el orden correcto
+    r32_encuentros = [
+        ('Sudáfrica', 'Canadá'),
+        ('Alemania', 'Paraguay'),
+        ('Países Bajos', 'Marruecos'),
+        ('Brasil', 'Japón'),
+        ('Francia', 'Suecia'),
+        ('Costa de Marfil', 'Noruega'),
+        ('México', 'Ecuador'),
+        ('Inglaterra', 'RD del Congo'),
+        ('Estados Unidos', 'Bosnia y Herzegovina'),
+        ('Bélgica', 'Argelia'),
+        ('Portugal', 'Croacia'),
+        ('España', 'Austria'),
+        ('Suiza', 'Irán'),
+        ('Argentina', 'Cabo Verde'),
+        ('Colombia', 'Ghana'),
+        ('Australia', 'Egipto')
+    ]
+
+    # Fechas y horas en horario Ecuador (sin offset)
+    fechas_r32 = [
+        ('2026-06-28', '14:00'),
+        ('2026-06-29', '12:00'),
+        ('2026-06-29', '15:30'),
+        ('2026-06-29', '20:00'),
+        ('2026-06-30', '12:00'),
+        ('2026-06-30', '16:00'),
+        ('2026-06-30', '20:00'),
+        ('2026-07-01', '11:00'),
+        ('2026-07-01', '15:00'),
+        ('2026-07-01', '19:00'),
+        ('2026-07-02', '14:00'),
+        ('2026-07-02', '18:00'),
+        ('2026-07-02', '22:00'),
+        ('2026-07-03', '13:00'),
+        ('2026-07-03', '17:00'),
+        ('2026-07-03', '20:30')
+    ]
+
+    # Primero eliminar historiales de R32 y R16 para evitar conflictos
+    for fase in ['R32', 'R16']:
+        partidos = Partido.query.filter_by(fase=fase).all()
+        for p in partidos:
+            HistorialResultado.query.filter_by(partido_id=p.id).delete()
+        db.session.commit()
+
+    # Eliminar partidos R32 y R16
+    Partido.query.filter(Partido.fase.in_(['R32', 'R16'])).delete()
+    db.session.commit()
+    print("🗑️ Eliminados R32 y R16 antiguos (con historiales)")
+
+    # Crear R32
+    r32_ids = []
+    for idx, (local_nom, visit_nom) in enumerate(r32_encuentros):
+        local_id = equipos.get(local_nom)
+        visit_id = equipos.get(visit_nom)
+        if local_id is None or visit_id is None:
+            print(f"⚠️ Equipo no encontrado: {local_nom} o {visit_nom}")
+            continue
+        # Convertir fecha/hora Ecuador a UTC
+        dt_ecuador = datetime.strptime(f"{fechas_r32[idx][0]} {fechas_r32[idx][1]}", "%Y-%m-%d %H:%M")
+        dt_utc = convertir_a_utc(dt_ecuador)   # suma 5 horas
+        partido = Partido(
+            fase='R32',
+            seleccion_local_id=local_id,
+            seleccion_visitante_id=visit_id,
+            fecha_hora=dt_utc,
+            estado='pendiente',
+            grupo=None,
+            bloqueado_manual=False
+        )
+        db.session.add(partido)
+        db.session.flush()
+        r32_ids.append(partido.id)
+    db.session.commit()
+    print(f"✅ Creados {len(r32_ids)} R32")
+
+    # Crear R16 (sin equipos)
+    fechas_r16 = [
+        ('2026-07-04', '12:00'),
+        ('2026-07-04', '16:00'),
+        ('2026-07-05', '15:00'),
+        ('2026-07-05', '19:00'),
+        ('2026-07-06', '14:00'),
+        ('2026-07-06', '19:00'),
+        ('2026-07-07', '11:00'),
+        ('2026-07-07', '15:00')
+    ]
+    r16_ids = []
+    for fecha, hora in fechas_r16:
+        dt_ecuador = datetime.strptime(f"{fecha} {hora}", "%Y-%m-%d %H:%M")
+        dt_utc = convertir_a_utc(dt_ecuador)
+        partido = Partido(
+            fase='R16',
+            seleccion_local_id=None,
+            seleccion_visitante_id=None,
+            fecha_hora=dt_utc,
+            estado='pendiente',
+            grupo=None,
+            bloqueado_manual=False
+        )
+        db.session.add(partido)
+        db.session.flush()
+        r16_ids.append(partido.id)
+    db.session.commit()
+    print(f"✅ Creados {len(r16_ids)} R16")
+
+def propagar_llave_personalizada():
+    """
+    Propaga los ganadores de R32 a R16 según los pares definidos.
+    Solo asigna si ambos ganadores existen.
+    """
+    r32_partidos = Partido.query.filter_by(fase='R32').order_by(Partido.fecha_hora).all()
+    r16_partidos = Partido.query.filter_by(fase='R16').order_by(Partido.fecha_hora).all()
+
+    if len(r32_partidos) != 16 or len(r16_partidos) != 8:
+        print(f"⚠️ Error: R32={len(r32_partidos)}, R16={len(r16_partidos)}. No se puede propagar.")
+        return
+
+    # Pares de índices R32 para cada R16 (0-15)
+    pares_r16 = [
+        (0, 2),   # 73 vs 75
+        (1, 4),   # 74 vs 77
+        (3, 5),   # 76 vs 78
+        (6, 7),   # 79 vs 80
+        (10, 11), # 83 vs 84
+        (8, 9),   # 81 vs 82
+        (13, 15), # 86 vs 88
+        (12, 14)  # 85 vs 87
+    ]
+
+    for idx, (i1, i2) in enumerate(pares_r16):
+        p1 = r32_partidos[i1]
+        p2 = r32_partidos[i2]
+        ganador1 = obtener_ganador(p1)
+        ganador2 = obtener_ganador(p2)
+        if ganador1 and ganador2:
+            r16_partidos[idx].seleccion_local_id = ganador1.id
+            r16_partidos[idx].seleccion_visitante_id = ganador2.id
+            db.session.commit()
+            print(f"✅ R16 {r16_partidos[idx].id}: {ganador1.nombre} vs {ganador2.nombre}")
+        else:
+            print(f"⚠️ No se pudo asignar R16 {r16_partidos[idx].id}: faltan ganadores en R32")
+
+    # Propagar a QF, SF, Final, 3P usando la función estándar
+    actualizar_ronda('R16', 'QF', 4)
+    actualizar_ronda('QF', 'SF', 2)
+
+    sf_partidos = Partido.query.filter_by(fase='SF').order_by(Partido.fecha_hora).all()
+    final = Partido.query.filter_by(fase='FINAL').first()
+    tercero = Partido.query.filter_by(fase='3P').first()
+
+    if len(sf_partidos) == 2 and final and tercero:
+        ganador1 = obtener_ganador(sf_partidos[0])
+        ganador2 = obtener_ganador(sf_partidos[1])
+        perdedor1 = sf_partidos[0].visitante if sf_partidos[0].ganador_real == 'local' else sf_partidos[0].local
+        perdedor2 = sf_partidos[1].visitante if sf_partidos[1].ganador_real == 'local' else sf_partidos[1].local
+
+        if ganador1 and ganador2:
+            final.seleccion_local_id = ganador1.id
+            final.seleccion_visitante_id = ganador2.id
+            db.session.commit()
+            print(f"✅ FINAL: {ganador1.nombre} vs {ganador2.nombre}")
+
+        if perdedor1 and perdedor2:
+            tercero.seleccion_local_id = perdedor1.id
+            tercero.seleccion_visitante_id = perdedor2.id
+            db.session.commit()
+            print(f"✅ TERCER PUESTO: {perdedor1.nombre} vs {perdedor2.nombre}")
 
 # ==================================================
 # RUTAS PRINCIPALES
@@ -1213,7 +1444,8 @@ def api_admin_actualizar_resultado():
         detalle += f" (pen: {penales_local}-{penales_visitante})"
     log_auditoria('UPDATE', 'resultado', partido_id, detalle)
     recalcular_puntos_partido(partido_id)
-    # actualizar_toda_eliminatoria()  # opcional
+    # Propagar la llave personalizada después de actualizar un resultado
+    propagar_llave_personalizada()
     return jsonify({'success': True})
 
 @app.route('/api/admin/recalcular-puntos', methods=['POST'])
@@ -1407,6 +1639,36 @@ def admin_restore():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 # ==================================================
+# NUEVAS RUTAS ADMIN PARA LLAVE Y FASE ACTIVA
+# ==================================================
+
+@app.route('/api/admin/forzar-llave', methods=['POST'])
+@admin_required
+def api_admin_forzar_llave():
+    try:
+        cargar_llave_personalizada()
+        propagar_llave_personalizada()
+        log_auditoria('FORZAR_LLAVE', 'eliminatoria', None, "Llave eliminatoria recalculada (personalizada)")
+        return jsonify({'success': True, 'message': 'Llave eliminatoria actualizada correctamente'})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/set-fase-activa', methods=['POST'])
+@admin_required
+def api_set_fase_activa():
+    data = request.json
+    fase = data.get('fase')
+    if not fase:
+        return jsonify({'error': 'Fase no especificada'}), 400
+    fases_validas = ['grupos', 'R32', 'R16', 'QF', 'SF', '3P', 'FINAL']
+    if fase not in fases_validas:
+        return jsonify({'error': 'Fase no válida'}), 400
+    set_fase_activa(fase)
+    log_auditoria('SET_FASE_ACTIVA', 'configuracion', None, f"Fase activa cambiada a {fase}")
+    return jsonify({'success': True, 'fase_activa': fase})
+
+# ==================================================
 # INICIALIZACIÓN DE BASE DE DATOS (con corrección horaria -1 hora)
 # ==================================================
 def init_db():
@@ -1595,6 +1857,23 @@ def init_db():
             db.session.commit()
             print(f"✅ Partidos insertados: {Partido.query.count()} en total (con corrección horaria de -1 hora)")
 
+        # ---------- Cargar llave personalizada ----------
+        r32_count = Partido.query.filter_by(fase='R32').count()
+        if r32_count != 16:
+            print(f"⚠️ R32 encontrados: {r32_count}. Cargando llave personalizada...")
+            cargar_llave_personalizada()
+            propagar_llave_personalizada()
+        else:
+            print("✅ R32 correctos (16). Verificando R16...")
+            r16_count = Partido.query.filter_by(fase='R16').count()
+            if r16_count != 8:
+                print(f"⚠️ R16 encontrados: {r16_count}. Cargando llave personalizada...")
+                cargar_llave_personalizada()
+                propagar_llave_personalizada()
+            else:
+                print("✅ R16 correctos (8). Propagando ganadores...")
+                propagar_llave_personalizada()
+
         admin = Usuario.query.filter_by(username='ADMIN').first()
         if not admin:
             admin_user = Usuario(username='ADMIN', email='admin@polla.com', nombre_completo='Administrador', es_admin=True, activo=True)
@@ -1610,6 +1889,12 @@ def init_db():
             print("=" * 50 + "\n")
         else:
             print("✅ Usuario ADMIN ya existe")
+
+        # Inicializar fase activa si no existe
+        if not get_fase_activa():
+            set_fase_activa('grupos')
+            print("✅ Fase activa inicializada a 'grupos'")
+
         print("✅ Base de datos inicializada correctamente")
 
 # ==================================================
