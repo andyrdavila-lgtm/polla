@@ -47,7 +47,6 @@
             background-repeat: repeat;
         }
 
-        /* Navbar */
         .navbar {
             position: sticky;
             top: 0;
@@ -112,7 +111,6 @@
             transition: 0.3s;
         }
 
-        /* Main Brand Header */
         .main-brand-header {
             background: linear-gradient(135deg, rgba(0, 255, 170, 0.1), rgba(0, 102, 204, 0.05));
             border-bottom: 1px solid rgba(0, 255, 170, 0.2);
@@ -136,14 +134,12 @@
             margin-top: 4px;
         }
 
-        /* Container */
         .container {
             max-width: 1280px;
             margin: 0 auto;
             padding: 32px 24px 64px;
         }
 
-        /* Page Header */
         .page-header {
             margin-bottom: 32px;
         }
@@ -163,7 +159,6 @@
             margin-top: 8px;
         }
 
-        /* PDF Button */
         .pdf-btn {
             background: rgba(255, 68, 68, 0.15);
             border: 1px solid #FF4444;
@@ -185,7 +180,6 @@
             transform: scale(1.02);
         }
 
-        /* Filters Bar */
         .filters-bar {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
@@ -247,7 +241,6 @@
             color: #0B0F1C;
         }
 
-        /* Phase Tabs */
         .phase-tabs {
             display: flex;
             gap: 16px;
@@ -284,7 +277,6 @@
             color: #0B0F1C;
         }
 
-        /* Matches Grid */
         .matches-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -376,7 +368,6 @@
             color: #00FFAA;
         }
 
-        /* Prediction Options */
         .prediction-options {
             display: flex;
             gap: 12px;
@@ -403,7 +394,6 @@
             font-weight: 700;
         }
 
-        /* Score Inputs */
         .score-inputs {
             display: flex;
             align-items: center;
@@ -513,7 +503,6 @@
             color: #FFD700;
         }
 
-        /* Info Alert */
         .info-alert {
             background: rgba(0, 255, 170, 0.05);
             border: 1px solid rgba(0, 255, 170, 0.2);
@@ -525,7 +514,6 @@
             color: #B0C4DE;
         }
 
-        /* Toast */
         .toast-notification {
             position: fixed;
             bottom: 30px;
@@ -559,7 +547,6 @@
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
-        /* Spinner */
         .spinner {
             width: 40px;
             height: 40px;
@@ -574,7 +561,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Footer */
         footer {
             text-align: center;
             padding: 32px;
@@ -583,7 +569,6 @@
             font-size: 0.8rem;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .matches-grid {
                 grid-template-columns: 1fr;
@@ -683,21 +668,9 @@
         <div class="filters-bar">
             <div class="filters-row">
                 <div class="filter-group">
-                    <label><i class="fas fa-layer-group"></i> GRUPO/FASE:</label>
+                    <label><i class="fas fa-layer-group"></i> FASE / GRUPO:</label>
                     <select id="grupoFilter">
-                        <option value="">Todos</option>
-                        <option value="A">Grupo A</option><option value="B">Grupo B</option>
-                        <option value="C">Grupo C</option><option value="D">Grupo D</option>
-                        <option value="E">Grupo E</option><option value="F">Grupo F</option>
-                        <option value="G">Grupo G</option><option value="H">Grupo H</option>
-                        <option value="I">Grupo I</option><option value="J">Grupo J</option>
-                        <option value="K">Grupo K</option><option value="L">Grupo L</option>
-                        <option value="R32">Octavos (R32)</option>
-                        <option value="R16">Dieciseisavos (R16)</option>
-                        <option value="QF">Cuartos (QF)</option>
-                        <option value="SF">Semifinales (SF)</option>
-                        <option value="3P">Tercer Puesto (3P)</option>
-                        <option value="FINAL">Final</option>
+                        <option value="">Todas</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -710,13 +683,15 @@
             </div>
         </div>
 
+        <!-- Pestañas dinámicas -->
         <div class="phase-tabs" id="phaseTabs">
-            <div class="phase-tab active" data-phase="grupos"><i class="fas fa-users"></i> Fase de Grupos</div>
-            <div class="phase-tab" data-phase="eliminatoria"><i class="fas fa-trophy"></i> Eliminación Directa</div>
+            <div class="spinner" style="width:30px;height:30px;margin:10px auto;"></div>
         </div>
 
-        <div id="gruposContent" class="phase-content"><div class="spinner"></div></div>
-        <div id="eliminatoriaContent" class="phase-content" style="display:none;"><div class="spinner"></div></div>
+        <!-- Contenedor de partidos -->
+        <div id="matchesContainer">
+            <div class="spinner"></div>
+        </div>
     </div>
 
     <footer>
@@ -725,8 +700,9 @@
     </footer>
 
     <script>
+        // ─── NAV MÓVIL ───────────────────────────────────────────────────────
         const menuToggle = document.getElementById('menuToggle');
-        const navLinks = document.getElementById('navLinks');
+        const navLinks   = document.getElementById('navLinks');
         if (menuToggle) {
             menuToggle.addEventListener('click', () => {
                 menuToggle.classList.toggle('active');
@@ -736,10 +712,11 @@
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', () => {
                 if (menuToggle) menuToggle.classList.remove('active');
-                if (navLinks) navLinks.classList.remove('active');
+                if (navLinks)   navLinks.classList.remove('active');
             });
         });
 
+        // ─── TOAST ──────────────────────────────────────────────────────────
         function showToast(message, type = 'success') {
             const toast = document.createElement('div');
             toast.className = `toast-notification ${type}`;
@@ -749,14 +726,28 @@
             setTimeout(() => toast.remove(), 3500);
         }
 
-        let allMatches = [];
-        let allTeams = [];
-        let predictions = {};
+        // ─── ESTADO ──────────────────────────────────────────────────────────
+        let allMatches      = [];
+        let allTeams        = [];
+        let predictions     = {};
         let predictionTypes = {};
-        let matchIntentos = {};
-        let currentPhase = 'grupos';
-        let isLoading = false;
+        let matchIntentos   = {};
+        let currentPhase    = '';
+        let fasesDisponibles = [];
+        let faseActiva      = '';
+        let isLoading       = false;
 
+        const nombreFases = {
+            'grupos': 'Fase de Grupos',
+            'R32': 'Dieciseisavos (R32)',
+            'R16': 'Octavos (R16)',
+            'QF': 'Cuartos (QF)',
+            'SF': 'Semifinales (SF)',
+            '3P': 'Tercer Puesto',
+            'FINAL': 'Final'
+        };
+
+        // ─── PUNTOS INFO ────────────────────────────────────────────────────
         function getPointsInfo(tipo, fase) {
             const esGrupos = (fase === 'grupos');
             if (tipo === 'marcador') return esGrupos ? '🎯 5 pts (exacto) / 3 pts (ganador)' : '🎯 8 pts (exacto) / 3 pts (ganador)';
@@ -764,6 +755,7 @@
             return '📊 3 pts (acertar ganador)';
         }
 
+        // ─── AUTH ───────────────────────────────────────────────────────────
         function checkAuth() {
             fetch('/api/verificar-sesion')
                 .then(r => r.json())
@@ -774,12 +766,15 @@
                 .catch(() => window.location.href = "{{ url_for('login') }}");
         }
 
+        // ─── CARGA DE DATOS ────────────────────────────────────────────────
         async function loadData() {
             if (isLoading) return;
             isLoading = true;
             try {
                 await Promise.all([loadTeams(), loadMatches()]);
                 await loadSavedPredictions();
+                renderTabs();
+                applyFilters();
             } catch (error) {
                 console.error('Error loading data:', error);
                 showToast('Error al cargar los datos', 'error');
@@ -796,7 +791,12 @@
         async function loadMatches() {
             const response = await fetch('/api/partidos');
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            allMatches = await response.json();
+            const data = await response.json();
+            allMatches = data.partidos || [];
+            fasesDisponibles = data.fases_disponibles || [];
+            faseActiva = data.fase_activa || '';
+
+            // Inicializar intentos
             allMatches.forEach(m => {
                 if (m.intentos !== undefined) matchIntentos[m.id] = m.intentos;
                 if (!predictionTypes[m.id]) predictionTypes[m.id] = 'marcador';
@@ -805,18 +805,91 @@
 
         async function loadSavedPredictions() {
             const response = await fetch('/api/mis-pronosticos');
+            if (!response.ok) return;
             const data = await response.json();
-            predictions = data;
+            predictions = data; // { "partido_id": { ... } }
             for (const [matchId, pred] of Object.entries(predictions)) {
-                if (pred.penales_local !== undefined && pred.penales_visitante !== undefined) predictionTypes[matchId] = 'penales';
-                else if (pred.goles_local !== undefined && pred.goles_visitante !== undefined) predictionTypes[matchId] = 'marcador';
-                else predictionTypes[matchId] = 'marcador';
+                if (pred.penales_local !== undefined && pred.penales_visitante !== undefined) {
+                    predictionTypes[matchId] = 'penales';
+                } else if (pred.goles_local !== undefined && pred.goles_visitante !== undefined) {
+                    predictionTypes[matchId] = 'marcador';
+                } else {
+                    predictionTypes[matchId] = 'marcador';
+                }
             }
-            await showPhase('grupos');
         }
 
+        // ─── RENDER DE PESTAÑAS ──────────────────────────────────────────────
+        function renderTabs() {
+            const container = document.getElementById('phaseTabs');
+            if (!fasesDisponibles.length) {
+                container.innerHTML = '<div class="phase-tab active" data-phase="grupos">Fase de Grupos</div>';
+                return;
+            }
+
+            if (!faseActiva || !fasesDisponibles.includes(faseActiva)) {
+                faseActiva = fasesDisponibles[0];
+            }
+            currentPhase = faseActiva;
+
+            let html = '';
+            fasesDisponibles.forEach(fase => {
+                const nombre = nombreFases[fase] || fase;
+                const isActive = (fase === faseActiva) ? 'active' : '';
+                html += `<div class="phase-tab ${isActive}" data-phase="${fase}">${nombre}</div>`;
+            });
+            container.innerHTML = html;
+
+            container.querySelectorAll('.phase-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    container.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    currentPhase = this.dataset.phase;
+                    document.getElementById('grupoFilter').value = '';
+                    applyFilters();
+                });
+            });
+
+            updateFilterOptions();
+        }
+
+        // ─── ACTUALIZAR OPCIONES DE FILTRO ──────────────────────────────────
+        function updateFilterOptions() {
+            const select = document.getElementById('grupoFilter');
+            const currentVal = select.value;
+            select.innerHTML = '<option value="">Todas</option>';
+
+            // Agregar fases disponibles
+            fasesDisponibles.forEach(fase => {
+                const nombre = nombreFases[fase] || fase;
+                const opt = document.createElement('option');
+                opt.value = fase;
+                opt.textContent = nombre;
+                select.appendChild(opt);
+            });
+
+            // Agregar grupos (si existen en la fase actual)
+            const grupos = new Set();
+            allMatches.filter(m => m.fase === 'grupos' && m.grupo).forEach(m => grupos.add(m.grupo));
+            if (grupos.size > 0) {
+                const sorted = ['A','B','C','D','E','F','G','H','I','J','K','L'].filter(g => grupos.has(g));
+                sorted.forEach(g => {
+                    const opt = document.createElement('option');
+                    opt.value = `grupo_${g}`;
+                    opt.textContent = `Grupo ${g}`;
+                    select.appendChild(opt);
+                });
+            }
+
+            if (currentVal && [...select.options].some(o => o.value === currentVal)) {
+                select.value = currentVal;
+            }
+        }
+
+        // ─── ESCAPAR HTML ──────────────────────────────────────────────────
         function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
+        // ─── EDITABILIDAD ────────────────────────────────────────────────────
         function isMatchEditable(match) {
             if (!match) return false;
             if (match.estado === 'finalizado') return false;
@@ -834,6 +907,7 @@
             return fecha.toLocaleString('es-EC', { timeZone: 'America/Guayaquil' });
         }
 
+        // ─── RENDER DE UNA TARJETA ──────────────────────────────────────────
         function renderMatchCard(match) {
             const intentos = matchIntentos[match.id] || 0;
             const isEditable = isMatchEditable(match);
@@ -858,69 +932,125 @@
             const tipoMarcadorActive = savedTipo === 'marcador' ? 'active' : '';
             const tipoPenalesActive = savedTipo === 'penales' ? 'active' : '';
 
-            const buildInputHtml = (tipo, saved, disabled, localN, visitN) => {
+            const buildInputHtml = (tipo, saved, disabled) => {
                 if (tipo === 'marcador') {
                     const gl = saved.goles_local !== undefined ? saved.goles_local : '';
                     const gv = saved.goles_visitante !== undefined ? saved.goles_visitante : '';
-                    return `<div class="score-inputs"><input type="number" class="score-input" id="local_${match.id}" value="${gl}" placeholder="0" min="0" step="1" ${disabled}><span class="score-divider">-</span><input type="number" class="score-input" id="visitante_${match.id}" value="${gv}" placeholder="0" min="0" step="1" ${disabled}></div>`;
+                    return `<div class="score-inputs">
+                                <input type="number" class="score-input" id="local_${match.id}" value="${gl}" placeholder="0" min="0" step="1" ${disabled}>
+                                <span class="score-divider">-</span>
+                                <input type="number" class="score-input" id="visitante_${match.id}" value="${gv}" placeholder="0" min="0" step="1" ${disabled}>
+                            </div>`;
                 }
                 if (tipo === 'penales') {
                     const gl = saved.goles_local !== undefined ? saved.goles_local : '';
                     const gv = saved.goles_visitante !== undefined ? saved.goles_visitante : '';
                     const pl = saved.penales_local !== undefined ? saved.penales_local : '';
                     const pv = saved.penales_visitante !== undefined ? saved.penales_visitante : '';
-                    return `<div class="score-section-label" style="font-size:10px; text-align:center; margin-bottom:8px;">Marcador en 90 minutos</div>
-                            <div class="score-inputs"><input type="number" class="score-input" id="local_${match.id}" value="${gl}" placeholder="0" min="0" step="1" ${disabled}><span class="score-divider">-</span><input type="number" class="score-input" id="visitante_${match.id}" value="${gv}" placeholder="0" min="0" step="1" ${disabled}></div>
-                            <div class="penalty-section"><div class="penalty-label">⚡ Penales (solo si empataron en 90')</div><div class="score-inputs"><input type="number" class="score-input penalty" id="pen_local_${match.id}" value="${pl}" placeholder="0" min="0" step="1" ${disabled}><span class="score-divider" style="color:#ff9f43">-</span><input type="number" class="score-input penalty" id="pen_visitante_${match.id}" value="${pv}" placeholder="0" min="0" step="1" ${disabled}></div></div>`;
+                    return `<div style="font-size:10px; text-align:center; margin-bottom:8px; color:#8E9AAF;">Marcador en 90 minutos</div>
+                            <div class="score-inputs">
+                                <input type="number" class="score-input" id="local_${match.id}" value="${gl}" placeholder="0" min="0" step="1" ${disabled}>
+                                <span class="score-divider">-</span>
+                                <input type="number" class="score-input" id="visitante_${match.id}" value="${gv}" placeholder="0" min="0" step="1" ${disabled}>
+                            </div>
+                            <div class="penalty-section">
+                                <div class="penalty-label">⚡ Penales (solo si empataron en 90')</div>
+                                <div class="score-inputs">
+                                    <input type="number" class="score-input penalty" id="pen_local_${match.id}" value="${pl}" placeholder="0" min="0" step="1" ${disabled}>
+                                    <span class="score-divider" style="color:#ff9f43">-</span>
+                                    <input type="number" class="score-input penalty" id="pen_visitante_${match.id}" value="${pv}" placeholder="0" min="0" step="1" ${disabled}>
+                                </div>
+                            </div>`;
                 }
                 return '';
             };
 
             return `<div class="match-card ${lockClass}" data-match-id="${match.id}" ${lockLabel ? `data-lock-label="${lockLabel}"` : ''}>
                         <div class="match-teams">
-                            <div class="team">${match.local_bandera ? `<img src="${match.local_bandera}" class="team-flag" onerror="this.style.display='none'">` : '<div style="font-size:32px">🏆</div>'}<div class="team-name">${escapeHtml(localN)}</div></div>
+                            <div class="team">
+                                ${match.local_bandera ? `<img src="${match.local_bandera}" class="team-flag" onerror="this.style.display='none'">` : '<div style="font-size:32px">🏆</div>'}
+                                <div class="team-name">${escapeHtml(localN)}</div>
+                            </div>
                             <div class="vs">VS</div>
-                            <div class="team">${match.visitante_bandera ? `<img src="${match.visitante_bandera}" class="team-flag" onerror="this.style.display='none'">` : '<div style="font-size:32px">🏆</div>'}<div class="team-name">${escapeHtml(visitN)}</div></div>
+                            <div class="team">
+                                ${match.visitante_bandera ? `<img src="${match.visitante_bandera}" class="team-flag" onerror="this.style.display='none'">` : '<div style="font-size:32px">🏆</div>'}
+                                <div class="team-name">${escapeHtml(visitN)}</div>
+                            </div>
                         </div>
                         <div class="prediction-options">
-                            <div class="prediction-type ${tipoMarcadorActive}" data-type="marcador" data-id="${match.id}" ${disabled ? 'style="pointer-events:none;opacity:0.5"' : ''}><i class="fas fa-chart-bar"></i> Marcador</div>
-                            ${esEliminatoria ? `<div class="prediction-type ${tipoPenalesActive}" data-type="penales" data-id="${match.id}" ${disabled ? 'style="pointer-events:none;opacity:0.5"' : ''}><i class="fas fa-bullseye"></i> Con Penales</div>` : ''}
+                            <div class="prediction-type ${tipoMarcadorActive}" data-type="marcador" data-id="${match.id}" ${disabled ? 'style="pointer-events:none;opacity:0.5"' : ''}>
+                                <i class="fas fa-chart-bar"></i> Marcador
+                            </div>
+                            ${esEliminatoria ? `<div class="prediction-type ${tipoPenalesActive}" data-type="penales" data-id="${match.id}" ${disabled ? 'style="pointer-events:none;opacity:0.5"' : ''}>
+                                <i class="fas fa-bullseye"></i> Con Penales
+                            </div>` : ''}
                         </div>
-                        <div id="prediction-content-${match.id}">${buildInputHtml(savedTipo, savedPred, disabled, localN, visitN)}</div>
+                        <div id="prediction-content-${match.id}">${buildInputHtml(savedTipo, savedPred, disabled)}</div>
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px;">
-                            <div><span class="points-badge" id="points-badge-${match.id}">📊 ${getPointsInfo(savedTipo, match.fase)}</span>${intentos > 0 ? `<span class="intento-badge">Intento ${intentos}/2</span>` : ''}</div>
-                            <button class="btn-save-match" data-id="${match.id}" ${disabled ? 'disabled' : ''}><i class="fas fa-save"></i> Guardar</button>
+                            <div>
+                                <span class="points-badge" id="points-badge-${match.id}">📊 ${getPointsInfo(savedTipo, match.fase)}</span>
+                                ${intentos > 0 ? `<span class="intento-badge">Intento ${intentos}/2</span>` : ''}
+                            </div>
+                            <button class="btn-save-match" data-id="${match.id}" ${disabled ? 'disabled' : ''}>
+                                <i class="fas fa-save"></i> Guardar
+                            </button>
                         </div>
-                        <div class="match-info"><span><i class="far fa-calendar-alt"></i> ${fechaStr}</span>${grupoDisp ? `<span>${escapeHtml(grupoDisp)}</span>` : ''}${isFinalizado ? '<span style="color:#4caf50">✅ Finalizado</span>' : ''}</div>
+                        <div class="match-info">
+                            <span><i class="far fa-calendar-alt"></i> ${fechaStr}</span>
+                            ${grupoDisp ? `<span>${escapeHtml(grupoDisp)}</span>` : ''}
+                            ${isFinalizado ? '<span style="color:#4caf50">✅ Finalizado</span>' : ''}
+                        </div>
                     </div>`;
         }
 
-        function renderMatches(matches, phase) {
-            if (!matches || matches.length === 0) return '<div class="info-alert">No hay partidos programados para esta fase</div>';
-            const grupoF = document.getElementById('grupoFilter').value;
-            const searchT = document.getElementById('searchFilter').value.toLowerCase();
-            let filtered = matches.slice();
-            if (grupoF) filtered = filtered.filter(m => m.grupo === grupoF || m.fase === grupoF);
-            if (searchT) filtered = filtered.filter(m => (m.local_nombre || '').toLowerCase().includes(searchT) || (m.visitante_nombre || '').toLowerCase().includes(searchT));
-            if (filtered.length === 0) return '<div class="info-alert">No hay partidos con esos filtros</div>';
-            return '<div class="matches-grid">' + filtered.map(m => renderMatchCard(m)).join('') + '</div>';
-        }
-
-        async function showPhase(phase) {
-            currentPhase = phase;
-            const container = document.getElementById(phase + 'Content');
-            if (!container) return;
-            document.getElementById('gruposContent').style.display = 'none';
-            document.getElementById('eliminatoriaContent').style.display = 'none';
-            container.style.display = 'block';
-            let matches = (phase === 'grupos') ? allMatches.filter(m => m.fase === 'grupos') : allMatches.filter(m => m.fase !== 'grupos');
-            container.innerHTML = renderMatches(matches, phase);
+        // ─── RENDER Y FILTRADO ──────────────────────────────────────────────
+        function renderMatches(matches) {
+            const container = document.getElementById('matchesContainer');
+            if (!matches || matches.length === 0) {
+                container.innerHTML = `<div class="info-alert">No hay partidos en esta fase</div>`;
+                return;
+            }
+            // Ordenar por fecha
+            matches.sort((a, b) => new Date(a.fecha_hora) - new Date(b.fecha_hora));
+            container.innerHTML = '<div class="matches-grid">' + matches.map(renderMatchCard).join('') + '</div>';
             attachMatchEventListeners();
         }
 
+        function applyFilters() {
+            if (!allMatches.length) return;
+            let matches = allMatches.filter(m => m.fase === currentPhase);
+
+            const filterVal = document.getElementById('grupoFilter').value;
+            if (filterVal) {
+                if (filterVal.startsWith('grupo_')) {
+                    const grupo = filterVal.replace('grupo_', '');
+                    matches = matches.filter(m => m.grupo === grupo && m.fase === 'grupos');
+                } else {
+                    matches = matches.filter(m => m.fase === filterVal);
+                }
+            }
+
+            const searchT = document.getElementById('searchFilter').value.toLowerCase();
+            if (searchT) {
+                matches = matches.filter(m =>
+                    (m.local_nombre || '').toLowerCase().includes(searchT) ||
+                    (m.visitante_nombre || '').toLowerCase().includes(searchT)
+                );
+            }
+
+            renderMatches(matches);
+        }
+
+        // ─── EVENTOS DE PRONÓSTICO ───────────────────────────────────────────
         function attachMatchEventListeners() {
-            document.querySelectorAll('.prediction-type').forEach(el => { el.removeEventListener('click', handleTypeChange); el.addEventListener('click', handleTypeChange); });
-            document.querySelectorAll('.btn-save-match').forEach(btn => { btn.removeEventListener('click', handleSaveMatch); btn.addEventListener('click', handleSaveMatch); });
+            document.querySelectorAll('.prediction-type:not([style*="pointer-events:none"])').forEach(el => {
+                el.removeEventListener('click', handleTypeChange);
+                el.addEventListener('click', handleTypeChange);
+            });
+            document.querySelectorAll('.btn-save-match:not([disabled])').forEach(btn => {
+                btn.removeEventListener('click', handleSaveMatch);
+                btn.addEventListener('click', handleSaveMatch);
+            });
         }
 
         function handleTypeChange(e) {
@@ -938,8 +1068,12 @@
             if (contentDiv) {
                 const disabled = (!isMatchEditable(match) || match.estado === 'finalizado' || (matchIntentos[matchId] || 0) >= 2) ? 'disabled' : '';
                 const buildInputHtml = (tipo, saved, disabled) => {
-                    if (tipo === 'marcador') return `<div class="score-inputs"><input type="number" class="score-input" id="local_${matchId}" value="${saved.goles_local !== undefined ? saved.goles_local : ''}" placeholder="0" min="0" step="1" ${disabled}><span class="score-divider">-</span><input type="number" class="score-input" id="visitante_${matchId}" value="${saved.goles_visitante !== undefined ? saved.goles_visitante : ''}" placeholder="0" min="0" step="1" ${disabled}></div>`;
-                    if (tipo === 'penales') return `<div class="score-section-label" style="font-size:10px; text-align:center; margin-bottom:8px;">Marcador en 90 minutos</div><div class="score-inputs"><input type="number" class="score-input" id="local_${matchId}" value="${saved.goles_local !== undefined ? saved.goles_local : ''}" placeholder="0" min="0" step="1" ${disabled}><span class="score-divider">-</span><input type="number" class="score-input" id="visitante_${matchId}" value="${saved.goles_visitante !== undefined ? saved.goles_visitante : ''}" placeholder="0" min="0" step="1" ${disabled}></div><div class="penalty-section"><div class="penalty-label">⚡ Penales</div><div class="score-inputs"><input type="number" class="score-input penalty" id="pen_local_${matchId}" value="${saved.penales_local !== undefined ? saved.penales_local : ''}" placeholder="0" min="0" step="1" ${disabled}><span class="score-divider" style="color:#ff9f43">-</span><input type="number" class="score-input penalty" id="pen_visitante_${matchId}" value="${saved.penales_visitante !== undefined ? saved.penales_visitante : ''}" placeholder="0" min="0" step="1" ${disabled}></div></div>`;
+                    if (tipo === 'marcador') {
+                        return `<div class="score-inputs"><input type="number" class="score-input" id="local_${matchId}" value="${saved.goles_local !== undefined ? saved.goles_local : ''}" placeholder="0" min="0" step="1" ${disabled}><span class="score-divider">-</span><input type="number" class="score-input" id="visitante_${matchId}" value="${saved.goles_visitante !== undefined ? saved.goles_visitante : ''}" placeholder="0" min="0" step="1" ${disabled}></div>`;
+                    }
+                    if (tipo === 'penales') {
+                        return `<div style="font-size:10px; text-align:center; margin-bottom:8px; color:#8E9AAF;">Marcador en 90 minutos</div><div class="score-inputs"><input type="number" class="score-input" id="local_${matchId}" value="${saved.goles_local !== undefined ? saved.goles_local : ''}" placeholder="0" min="0" step="1" ${disabled}><span class="score-divider">-</span><input type="number" class="score-input" id="visitante_${matchId}" value="${saved.goles_visitante !== undefined ? saved.goles_visitante : ''}" placeholder="0" min="0" step="1" ${disabled}></div><div class="penalty-section"><div class="penalty-label">⚡ Penales</div><div class="score-inputs"><input type="number" class="score-input penalty" id="pen_local_${matchId}" value="${saved.penales_local !== undefined ? saved.penales_local : ''}" placeholder="0" min="0" step="1" ${disabled}><span class="score-divider" style="color:#ff9f43">-</span><input type="number" class="score-input penalty" id="pen_visitante_${matchId}" value="${saved.penales_visitante !== undefined ? saved.penales_visitante : ''}" placeholder="0" min="0" step="1" ${disabled}></div></div>`;
+                    }
                     return '';
                 };
                 contentDiv.innerHTML = buildInputHtml(newTipo, saved, disabled);
@@ -987,22 +1121,7 @@
             } catch(err) { showToast('❌ Error de conexión', 'error'); btn.innerHTML = '<i class="fas fa-save"></i> Guardar'; btn.disabled = false; }
         }
 
-        function applyFilters() {
-            const container = document.getElementById(currentPhase + 'Content');
-            if (!container) return;
-            let matches = (currentPhase === 'grupos') ? allMatches.filter(m => m.fase === 'grupos') : allMatches.filter(m => m.fase !== 'grupos');
-            container.innerHTML = renderMatches(matches, currentPhase);
-            attachMatchEventListeners();
-        }
-
-        document.querySelectorAll('.phase-tab').forEach(tab => {
-            tab.addEventListener('click', async () => {
-                document.querySelectorAll('.phase-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                await showPhase(tab.dataset.phase);
-            });
-        });
-
+        // ─── EVENTOS DE FILTROS ──────────────────────────────────────────────
         document.getElementById('grupoFilter').addEventListener('change', applyFilters);
         document.getElementById('searchFilter').addEventListener('input', applyFilters);
         document.getElementById('resetFilters').addEventListener('click', () => {
@@ -1011,9 +1130,17 @@
             applyFilters();
             showToast('✅ Filtros limpiados', 'success');
         });
-        document.getElementById('pdfBackupBtn').addEventListener('click', () => window.location.href = '/api/mis-pronosticos-pdf');
-        document.getElementById('logoutBtn')?.addEventListener('click', (e) => { e.preventDefault(); fetch('/logout').then(() => window.location.href = "{{ url_for('login') }}"); });
 
+        // ─── PDF ──────────────────────────────────────────────────────────────
+        document.getElementById('pdfBackupBtn').addEventListener('click', () => window.location.href = '/api/mis-pronosticos-pdf');
+
+        // ─── LOGOUT ────────────────────────────────────────────────────────────
+        document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            fetch('/logout').then(() => window.location.href = "{{ url_for('login') }}");
+        });
+
+        // ─── INICIALIZAR ──────────────────────────────────────────────────────
         checkAuth();
     </script>
 </body>
